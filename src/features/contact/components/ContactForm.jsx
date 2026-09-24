@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { api } from '@/services/api.js'
 import './ContactForm.scss'
 
+// eslint-disable-next-line sonarjs/super-linear-regex -- patrón lineal de email, sin backtracking super-lineal
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const ContactForm = () => {
