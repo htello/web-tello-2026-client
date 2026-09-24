@@ -1,21 +1,21 @@
 # Portfolio de Antonio Tello
 
-Frontend para el portfolio artístico de Antonio Tello. El repositorio está en una fase inicial: por ahora conserva la aplicación de ejemplo de React y Vite; las secciones del portfolio descritas en `promps/` son objetivos planificados, no funcionalidades disponibles.
+Frontend del portfolio artístico de Antonio Tello. La galería pública (HU17, fases 1-7) está implementada y el panel de administración (HU18, fases 8-12) está en progreso: la fase 9 (login admin, recuperación de contraseña y rutas protegidas) está completada.
 
 ## Estado
 
-- **Implementado:** plantilla inicial de React 19 y Vite, estilos CSS de ejemplo y configuración de ESLint.
-- **En progreso:** preparación del repositorio para construir el portfolio.
-- **Planificado:** secciones públicas de pintura, diseño, ilustración, biografía y contacto; autenticación y administración; integración con API; accesibilidad y pruebas automatizadas. Los detalles por fase están en `promps/`.
+- **Implementado:** secciones públicas de pintura (colecciones, galerías, lightbox), ilustración, diseño (por subcategorías), exposiciones, biografía y contacto; cliente HTTP con gestión de errores y timeout; login admin con sesión JWT (`sessionStorage`), recuperación/restablecimiento de contraseña y rutas `/admin` protegidas por rol.
+- **En progreso:** panel de administración (HU18) — CRUD de colecciones, pinturas, exposiciones, diseño, ilustraciones, biografía y usuarios (fases 10-12), con subida de imágenes vía `POST /admin/upload`.
+- **Planificado:** despliegue del front en hosting estático (Vercel/Netlify). Los detalles por fase están en `promps/`.
 
 ## Stack y requisitos
 
-- React 19 y JavaScript/JSX.
-- Vite 8 para desarrollo y build.
-- ESLint 10.
-- Node.js compatible con la versión de Vite instalada y pnpm.
-
-Sass, Vitest, Testing Library y Playwright aparecen en los prompts de fases, pero todavía no están configurados como dependencias del proyecto.
+- React 19 y JavaScript/JSX (sin TypeScript), con React Compiler vía Babel.
+- Vite 8 para desarrollo y build; alias `@/` → `src/`.
+- SASS/SCSS con metodología BEM y variables centralizadas en `src/styles/_variables.scss`.
+- ESLint 10 (flat config, incluye reglas de React Compiler y Sonar).
+- Vitest 5 + React Testing Library + `user-event` (unitarios) y Playwright (E2E en `e2e/`).
+- Node.js >= 22 y pnpm.
 
 ## Instalación y uso
 
@@ -33,7 +33,7 @@ pnpm preview
 
 ## Variables de entorno
 
-Actualmente la aplicación no consume variables de entorno y no hay un archivo `.env.example`. `VITE_API_URL` está previsto para una futura integración; no se debe tratar como configuración implementada ni poner secretos en variables `VITE_*`.
+Copiar `.env.example` a `.env`. La única variable pública es `VITE_API_URL` (base de la API; por defecto `http://localhost:3000/api/v1`). En producción: `https://portfolio-api-u5sx.onrender.com/api/v1`. Nunca poner secretos en variables `VITE_*` (se embeben en el bundle).
 
 ## Scripts disponibles
 
@@ -43,42 +43,69 @@ Actualmente la aplicación no consume variables de entorno y no hay un archivo `
 | `pnpm lint` | Ejecuta ESLint sobre el proyecto. |
 | `pnpm build` | Genera el build de producción en `dist/`. |
 | `pnpm preview` | Sirve localmente el build generado. |
-
-No hay scripts `test`, `test:run`, `test:e2e`, `quality` o `verify` en `package.json`. `src/App.test.jsx` contiene un test de ejemplo que importa Vitest y Testing Library, pero esas dependencias y la configuración para ejecutarlo aún no están presentes.
+| `pnpm test` | Vitest en modo watch. |
+| `pnpm test:run` | Vitest una pasada. |
+| `pnpm run test:coverage` | Cobertura (100% en `services/`, `hooks/` y `utils/`; global ≥90%). |
+| `pnpm test:e2e` | Playwright (requiere `pnpm exec playwright install` la primera vez). |
+| `pnpm quality` | `lint` + `test:run`. |
+| `pnpm verify` | `quality` + E2E + `build`. |
 
 ## CI en GitHub
 
-GitHub Actions ejecuta `pnpm lint` y `pnpm build` en pushes a `main`/`develop` y en pull requests dirigidos a esas ramas, igual que el workflow del servidor. Usa Node.js 22, pnpm 9 y `pnpm install --frozen-lockfile`. No ejecuta tests mientras no haya un script de test configurado en el cliente.
+GitHub Actions ejecuta `pnpm lint` y `pnpm build` en pushes a `main`/`develop` y en pull requests dirigidos a esas ramas (Node.js 22, pnpm, `--frozen-lockfile`). Está pendiente añadir los tests al workflow.
 
 ## Estructura actual
 
 ```text
 src/
-├── App.jsx          # Aplicación de ejemplo de Vite/React
-├── App.css          # Estilos de la aplicación de ejemplo
-├── App.test.jsx     # Test de ejemplo, aún no ejecutable con los scripts actuales
-├── index.css        # Estilos globales de ejemplo
-├── main.jsx         # Punto de entrada React
-└── assets/          # Recursos de ejemplo
-promps/              # Especificación y fases planificadas del proyecto
-public/              # Recursos públicos de ejemplo
+├── app/            # Layout público
+├── components/     # UI compartida (LoadingState, ErrorState, EmptyState, imágenes protegidas)
+├── constants/      # Reglas de negocio y constantes (regex email, timeouts, subcategorías)
+├── context/        # AuthContext (sesión admin)
+├── features/
+│   ├── home/       # Hero
+│   ├── painting/   # Vista de pintura, colecciones, exposiciones, lightbox
+│   ├── design/     # Slider de subcategorías y galería
+│   ├── illustration/
+│   ├── biography/
+│   ├── contact/    # Formulario de contacto
+│   └── admin/      # Login, recuperación de contraseña, ruta protegida y panel
+├── hooks/          # useAsyncData, useAuth
+├── services/       # Cliente HTTP (api.js) con ApiError, Bearer token y handler 401/403
+├── styles/         # Parciales SASS (_variables, _mixins, _base)
+├── test/           # Setup de Vitest
+├── utils/          # Validaciones, ordenación, formatos
+├── App.jsx         # Rutas (públicas + /admin/*) bajo AuthProvider
+└── main.jsx        # Punto de entrada con BrowserRouter
+e2e/                # Tests E2E de Playwright
+promps/             # Planificación por fases (fase-01 → fase-12)
 ```
 
 ## Integración API
 
-El backend no está incluido y `server/docs/openapi.yaml` no está disponible en este workspace. La aplicación actual no realiza integración API. Antes de implementar peticiones, rutas, esquemas, errores o uploads, hay que contrastarlos con el OpenAPI real; no se deben inferir contratos a partir de los prompts.
+El backend vive en el repositorio hermano `../server` (API desplegada en Render, Frankfurt). La fuente de verdad del contrato es `../server/docs/openapi.yaml`, consultado siempre a través de `../server/docs/openapi-INDEX.md`. Convenciones: éxito `{ data, meta? }`; error `{ error, code }`; auth con `Authorization: Bearer <token>` (JWT, 24 h); rutas `/admin/**` exigen rol `ADMIN`. La API en Render free tiene cold start de ~50 s tras inactividad: el cliente usa timeout de 90 s.
+
+## Acceso admin
+
+- `/admin/login` — login contra `POST /auth/login` (rate limit 10/min).
+- `/admin` — panel protegido por `ProtectedRoute` (token + rol `ADMIN`); un 401/403 en cualquier petición `/admin` cierra la sesión y redirige al login.
+- `/admin/forgot-password` — solicitud de enlace (respuesta siempre genérica; rate limit 5/15 min).
+- `/reset-password?token=...` — restablecimiento (ruta pública: es el enlace que genera el server con `FRONTEND_URL`); contraseña nueva ≥8 caracteres, una mayúscula y un símbolo.
+
+La sesión se persiste en `sessionStorage` (nunca `localStorage`); el token y las contraseñas no se exponen en el DOM ni se registran en consola.
 
 ## Testing y validación
 
-Hoy están disponibles `pnpm lint` y `pnpm build`. El test de ejemplo no se puede ejecutar hasta configurar sus dependencias y un script de test. Los comandos de fases futuras solo deben documentarse como disponibles cuando existan en `package.json`.
+Unitarios con Vitest + React Testing Library (red mockeada con `vi.stubGlobal('fetch', ...)`) y E2E con Playwright. Verificación obligatoria por fase: `pnpm lint`, `pnpm test:run`, `pnpm build` (y cobertura al cerrar fase).
 
 ## Despliegue
 
-No hay proveedor ni flujo de despliegue configurado en el repositorio. `pnpm build` genera los archivos estáticos en `dist/`, que podrán publicarse en un servicio de hosting estático cuando se defina el proceso de despliegue.
+Pendiente (Vercel o Netlify; build estático en `dist/`). Al desplegar, actualizar en Render `CORS_ORIGIN` y `FRONTEND_URL` con el dominio del front y probar el flujo completo (login, recuperación, galerías, contacto).
 
 ## Troubleshooting
 
-- **No se encuentra `pnpm`:** instala o habilita pnpm en el entorno y vuelve a ejecutar `pnpm install --frozen-lockfile`.
-- **Falla la instalación por versión de Node:** usa una versión de Node.js compatible con la versión de Vite declarada en `package.json`.
-- **No aparece el portfolio esperado:** las páginas del portfolio están planificadas; la aplicación actual sigue siendo la plantilla inicial.
-- **No se pueden ejecutar los tests:** faltan las dependencias y scripts de test en la configuración actual.
+- **No se encuentra `pnpm`:** instala o habilita pnpm y vuelve a ejecutar `pnpm install --frozen-lockfile`.
+- **La API no responde o tarda ~50 s:** cold start de Render free; espera o comprueba `GET /health`.
+- **CORS en desarrollo:** el server solo acepta el origen configurado en `CORS_ORIGIN`; revisa el puerto de `pnpm dev`.
+- **`/admin` redirige al login:** sesión ausente/expirada (JWT 24 h) o usuario sin rol `ADMIN`.
+- **No se pueden ejecutar los E2E:** instala los navegadores con `pnpm exec playwright install`.
