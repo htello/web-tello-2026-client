@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { api } from '@/services/api.js'
+import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
@@ -9,30 +10,11 @@ import Lightbox from '@/features/painting/components/Lightbox.jsx'
 import './IllustrationGallery.scss'
 
 const IllustrationGallery = () => {
-  const [illustrations, setIllustrations] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [selected, setSelected] = useState(null)
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      try {
-        const { data } = await api.get('/illustrations')
-        if (!cancelled) setIllustrations(sortByPosition(data ?? []))
-      } catch (err) {
-        if (!cancelled) setError(err)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const { data: illustrations, loading, error } = useAsyncData(async (signal) => {
+    const res = await api.get('/illustrations', { signal })
+    return sortByPosition(res.data ?? [])
+  })
 
   if (loading) return <LoadingState />
   if (error) return <ErrorState message="No se pudieron cargar las ilustraciones." />

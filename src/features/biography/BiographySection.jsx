@@ -1,13 +1,21 @@
-import { usePortfolioContext } from '@/context/PortfolioContext.js'
-import { ARTIST_NAME } from '@/constants/businessRules.js'
+import { api } from '@/services/api.js'
+import { useAsyncData } from '@/hooks/useAsyncData.js'
+import { ARTIST_NAME, isNotFound } from '@/constants/businessRules.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
-import SectionHeader from '@/components/SectionHeader.jsx'
 import './BiographySection.scss'
 
 const BiographySection = () => {
-  const { biography, loading, error } = usePortfolioContext()
+  const { data: biography, loading, error } = useAsyncData(async (signal) => {
+    try {
+      const res = await api.get('/biography', { signal })
+      return res.data
+    } catch (err) {
+      if (isNotFound(err)) return null
+      throw err
+    }
+  })
 
   if (loading) return <LoadingState />
   if (error) return <ErrorState message="No se pudo cargar la biografía." />
@@ -15,7 +23,7 @@ const BiographySection = () => {
 
   return (
     <section className="biography">
-      <SectionHeader title="Biografía" />
+      <h2 className="biography__title">Biografía</h2>
       <p className="biography__content">{biography.content}</p>
       {biography.imageUrl && (
         <img

@@ -1,4 +1,5 @@
-import { usePortfolioContext } from '@/context/PortfolioContext.js'
+import { api } from '@/services/api.js'
+import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { formatDate } from '@/utils/formatDate.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
 import LoadingState from '@/components/LoadingState.jsx'
@@ -7,12 +8,15 @@ import EmptyState from '@/components/EmptyState.jsx'
 import './ExhibitionList.scss'
 
 const ExhibitionList = () => {
-  const { exhibitions, loading, error } = usePortfolioContext()
+  const { data, loading, error } = useAsyncData(async (signal) => {
+    const res = await api.get('/exhibitions', { signal })
+    return res.data ?? []
+  })
 
   if (loading) return <LoadingState />
   if (error) return <ErrorState message="No se pudieron cargar las exposiciones." />
 
-  const sorted = sortByPosition(exhibitions)
+  const sorted = sortByPosition(data)
 
   if (sorted.length === 0) {
     return <EmptyState message="No hay exposiciones disponibles." />

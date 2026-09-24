@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { api } from '@/services/api.js'
+import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
@@ -9,30 +10,14 @@ import Lightbox from './Lightbox.jsx'
 import './CollectionGallery.scss'
 
 const CollectionGallery = ({ collectionId }) => {
-  const [collection, setCollection] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [selectedPainting, setSelectedPainting] = useState(null)
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      try {
-        const { data } = await api.get(`/collections/${collectionId}`)
-        if (!cancelled) setCollection(data)
-      } catch (err) {
-        if (!cancelled) setError(err)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [collectionId])
+  const { data: collection, loading, error } = useAsyncData(
+    async (signal) => {
+      const res = await api.get(`/collections/${collectionId}`, { signal })
+      return res.data
+    },
+    [collectionId],
+  )
 
   if (loading) return <LoadingState />
   if (error) return <ErrorState message="No se pudo cargar la colección." />
