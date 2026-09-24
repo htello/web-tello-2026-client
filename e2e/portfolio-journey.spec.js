@@ -17,12 +17,13 @@ test.describe('recorrido del portfolio', () => {
     await expect(home.nav.getByRole('link', { name: 'Pintura' })).toBeVisible()
   })
 
-  test('Pintura muestra un slider de colecciones', async ({ page }) => {
+  test('Pintura muestra un slider por cada colección, uno debajo del otro', async ({ page }) => {
     await mockApi(page)
     const painting = new PaintingPage(page)
     await painting.goto()
 
     await expect(painting.collectionHeading('Serie Azul')).toBeVisible()
+    await expect(painting.collectionHeading('Serie Roja')).toBeVisible()
   })
 
   test('seleccionar una colección abre su galería y el lightbox', async ({ page }) => {
@@ -48,10 +49,12 @@ test.describe('recorrido del portfolio', () => {
     await expect(page.getByText('Valencia')).toBeVisible()
   })
 
-  test('Diseño selecciona una subcategoría y muestra su galería', async ({ page }) => {
+  test('Diseño muestra un slider por subcategoría y abre su galería', async ({ page }) => {
     await mockApi(page)
     const design = new DesignPage(page)
     await design.goto()
+
+    await expect(page.getByRole('link', { name: 'Packaging y Expositores' })).toBeVisible()
 
     await design.selectSubcategory('Imagen corporativa')
 

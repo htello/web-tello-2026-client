@@ -11,10 +11,6 @@ export class PaintingPage {
     return this.page.getByRole('heading', { name })
   }
 
-  async nextCollection() {
-    await this.page.getByRole('button', { name: 'Colección siguiente' }).click()
-  }
-
   async selectCollection(name) {
     await this.page.getByRole('link', { name }).click()
   }

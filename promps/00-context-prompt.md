@@ -18,10 +18,10 @@ FLUJO PÚBLICO DEFINITIVO:
 - El menú principal contiene Pintura, Ilustración, Diseño, Biografía y Contacto.
 - La Home muestra una única imagen grande de fondo que cubre toda la pantalla, con el menú superpuesto.
 - La imagen de fondo debe funcionar como la pieza visual principal de la portada, con una composición responsive y legible.
-- Pintura muestra un slider por cada colección con imágenes destacadas de esa colección y un acceso a Exhibiciones.
+- Pintura muestra un slider por cada colección (uno debajo del otro) con imágenes destacadas de esa colección y un acceso a Exhibiciones.
 - Al seleccionar una colección se abre la galería completa de esa colección.
 - Al seleccionar Exhibiciones se abre la página de exposiciones.
-- Diseño muestra un slider de subcategorías; al seleccionar una subcategoría se abre su galería.
+- Diseño muestra un slider por cada subcategoría (uno debajo del otro); al seleccionar una subcategoría se abre su galería.
 - Ilustración abre directamente una galería con todas las ilustraciones.
 - Biografía muestra el texto de la biografía y una fotografía del artista.
 - Contacto muestra un formulario con nombre, email, asunto y mensaje.

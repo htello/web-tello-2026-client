@@ -1,9 +1,9 @@
 @use '@/styles/variables' as *;
 
 .design-subcategory-slider {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-  gap: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
 
   &__title {
     margin: 0 0 $space-2;
@@ -19,16 +19,20 @@
     }
   }
 
-  &__images {
+  &__slider {
     display: flex;
-    flex-wrap: wrap;
     gap: $space-3;
+    overflow-x: auto;
+    padding-bottom: $space-2;
+    scroll-snap-type: x mandatory;
   }
 
   &__image {
-    width: 100%;
+    flex: 0 0 auto;
+    width: 10rem;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+    scroll-snap-align: start;
   }
 
   &__status {

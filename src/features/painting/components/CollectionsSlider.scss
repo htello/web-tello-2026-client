@@ -1,25 +1,9 @@
 @use '@/styles/variables' as *;
 
 .collection-slider {
-  position: relative;
-
-  &__controls {
-    display: flex;
-    gap: $space-2;
-  }
-
-  &__nav {
-    padding: $space-2 $space-3;
-    background: $color-surface;
-    color: $color-text;
-    border: 1px solid $color-border;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-  }
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
 
   &__status {
     color: $color-text-muted;
