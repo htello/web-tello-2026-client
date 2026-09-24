@@ -1,0 +1,15 @@
+.protected-artwork {
+  position: relative;
+  display: block;
+
+  &__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+  }
+}
