@@ -32,7 +32,7 @@ Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las 
 
 - Éxito: `{ "data": ... }` (listados admin de usuarios: `{ "data": [...], "meta": { total, page, limit, pages } }`).
 - Error: `{ "error": "mensaje en español", "code": "CODIGO" }`.
-- Códigos de error: `VALIDATION_ERROR` (400/422), `UNAUTHORIZED` (401), `NOT_FOUND` (404), `DUPLICATE_ERROR` (409/400), `RATE_LIMITED` (429), `EMAIL_ERROR` (502), `INTERNAL_ERROR` (500), `SERVICE_UNAVAILABLE` (503 en `/health/db`).
+- Códigos de error: `VALIDATION_ERROR` (400), `UNAUTHORIZED` (401, sin token), `FORBIDDEN` (403, token inválido/expirado o sin rol ADMIN), `NOT_FOUND` (404), `DUPLICATE_ERROR` (400), `RATE_LIMITED` (429), `EMAIL_ERROR` (502), `INTERNAL_ERROR` (500), `SERVICE_UNAVAILABLE` (503 en `/health/db`).
 - Auth: header `Authorization: Bearer <token>` (JWT, expira a las 24 h). Rutas `/admin/**` exigen rol `ADMIN`.
 
 ### Convención de imágenes (OBLIGATORIA, acordada con el server)
