@@ -1,0 +1,13 @@
+@use 'variables';
+
+@mixin breakpoint-up($name) {
+  @if $name == 'sm' {
+    @media (min-width: variables.$breakpoint-sm) { @content; }
+  } @else if $name == 'md' {
+    @media (min-width: variables.$breakpoint-md) { @content; }
+  } @else if $name == 'lg' {
+    @media (min-width: variables.$breakpoint-lg) { @content; }
+  } @else if $name == 'xl' {
+    @media (min-width: variables.$breakpoint-xl) { @content; }
+  }
+}
