@@ -1,7 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 import CollectionsSlider from './CollectionsSlider.jsx'
+
+const renderSlider = () =>
+  render(
+    <MemoryRouter>
+      <CollectionsSlider />
+    </MemoryRouter>,
+  )
 
 const collections = [
   { id: 1, title: 'Serie Azul', description: 'Obras en azul', coverImage: 'https://example.com/azul.jpg', position: 1, isPublished: true, paintingsCount: 1 },
@@ -48,7 +56,7 @@ describe('CollectionsSlider', () => {
   })
 
   it('muestra la colección activa con título, descripción y pintura destacada', async () => {
-    render(<CollectionsSlider />)
+    renderSlider()
 
     expect(await screen.findByRole('heading', { name: 'Serie Azul' })).toBeInTheDocument()
     expect(screen.getByText('Obras en azul')).toBeInTheDocument()
@@ -57,7 +65,7 @@ describe('CollectionsSlider', () => {
 
   it('permite avanzar entre colecciones con controles accesibles', async () => {
     const user = userEvent.setup()
-    render(<CollectionsSlider />)
+    renderSlider()
 
     await screen.findByRole('heading', { name: 'Serie Azul' })
     await user.click(screen.getByRole('button', { name: 'Colección siguiente' }))
@@ -67,7 +75,7 @@ describe('CollectionsSlider', () => {
 
   it('usa la portada como fallback cuando no hay pinturas destacadas', async () => {
     const user = userEvent.setup()
-    render(<CollectionsSlider />)
+    renderSlider()
 
     await screen.findByRole('heading', { name: 'Serie Azul' })
     await user.click(screen.getByRole('button', { name: 'Colección siguiente' }))
@@ -76,7 +84,7 @@ describe('CollectionsSlider', () => {
   })
 
   it('enlaza cada colección a su galería', async () => {
-    render(<CollectionsSlider />)
+    renderSlider()
 
     const link = await screen.findByRole('link', { name: 'Serie Azul' })
     expect(link).toHaveAttribute('href', '/painting/collections/1')
@@ -84,7 +92,7 @@ describe('CollectionsSlider', () => {
 
   it('muestra un estado vacío cuando no hay colecciones', async () => {
     vi.stubGlobal('fetch', mockApi({ collectionsData: [] }))
-    render(<CollectionsSlider />)
+    renderSlider()
 
     expect(await screen.findByText(/no hay colecciones/i)).toBeInTheDocument()
   })

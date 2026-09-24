@@ -1,9 +1,10 @@
+import { Link } from 'react-router-dom'
 import './ExhibitionLink.scss'
 
 const ExhibitionLink = () => (
-  <a className="exhibition-link" href="/painting/exhibitions">
+  <Link className="exhibition-link" to="/painting/exhibitions">
     Exhibiciones
-  </a>
+  </Link>
 )
 
 export default ExhibitionLink
