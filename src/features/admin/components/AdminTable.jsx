@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import EmptyState from '@/components/EmptyState.jsx'
 import LoadingState from '@/components/LoadingState.jsx'
 import './AdminTable.scss'
@@ -9,6 +10,9 @@ import './AdminTable.scss'
  * - Las acciones (editar/borrar/subir/bajar) solo se renderizan si se pasa su
  *   manejador, con nombres accesibles construidos desde `rowLabel`.
  * - Subir está deshabilitado en la primera fila y Bajar en la última.
+ * - Tras mover una fila, el foco sigue a su botón (las filas intercambian
+ *   posiciones bajo el cursor; sin esto, el siguiente clic pulsaría el botón
+ *   de otra fila y deshacería el movimiento percibido).
  *
  * @param {object} props
  * @param {Array<{ key: string, header: string, render?: (row: object) => import('react').ReactNode }>} props.columns
@@ -32,6 +36,32 @@ const AdminTable = ({
   onMoveUp,
   onMoveDown,
 }) => {
+  const moveButtonRefs = useRef({})
+
+  const registerMoveRef = (key) => (node) => {
+    moveButtonRefs.current[key] = node
+  }
+
+  /**
+   * Ejecuta el movimiento y devuelve el foco al botón de la fila movida
+   * (tras el re-render con claves estables el nodo viaja con su fila).
+   * @param {'up' | 'down'} direction
+   * @param {object} row
+   * @param {number} index
+   * @param {(row: object, index: number) => void} handler
+   */
+  const handleMove = (direction, row, index, handler) => {
+    handler(row, index)
+    const focusMovedButton = () => {
+      moveButtonRefs.current[`${row.id}-${direction}`]?.focus()
+    }
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(focusMovedButton)
+    } else {
+      focusMovedButton()
+    }
+  }
+
   if (loading) return <LoadingState message="Cargando elementos…" />
   if (rows.length === 0) return <EmptyState message={emptyMessage} />
 
@@ -66,10 +96,11 @@ const AdminTable = ({
                 {onMoveUp && (
                   <button
                     type="button"
+                    ref={registerMoveRef(`${row.id}-up`)}
                     className="admin-table__action"
                     aria-label={`Subir ${rowLabel(row)}`}
                     disabled={index === 0}
-                    onClick={() => onMoveUp(row, index)}
+                    onClick={() => handleMove('up', row, index, onMoveUp)}
                   >
                     ↑
                   </button>
@@ -77,10 +108,11 @@ const AdminTable = ({
                 {onMoveDown && (
                   <button
                     type="button"
+                    ref={registerMoveRef(`${row.id}-down`)}
                     className="admin-table__action"
                     aria-label={`Bajar ${rowLabel(row)}`}
                     disabled={index === rows.length - 1}
-                    onClick={() => onMoveDown(row, index)}
+                    onClick={() => handleMove('down', row, index, onMoveDown)}
                   >
                     ↓
                   </button>

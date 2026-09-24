@@ -17,6 +17,9 @@ import ProtectedRoute from './features/admin/components/ProtectedRoute.jsx'
 import AdminLayout from './features/admin/AdminLayout.jsx'
 import AdminDashboard from './features/admin/AdminDashboard.jsx'
 import AdminSectionPlaceholder from './features/admin/AdminSectionPlaceholder.jsx'
+import AdminCollections from './features/admin/AdminCollections.jsx'
+import AdminPaintings from './features/admin/AdminPaintings.jsx'
+import AdminExhibitions from './features/admin/AdminExhibitions.jsx'
 import heroImage from './assets/prueba-camisa-1200.jpg'
 
 function CollectionGalleryRoute() {
@@ -50,9 +53,9 @@ function App() {
         <Route path="admin" element={<ProtectedRoute />}>
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
-            <Route path="collections" element={<AdminSectionPlaceholder title="Colecciones" />} />
-            <Route path="paintings" element={<AdminSectionPlaceholder title="Pinturas" />} />
-            <Route path="exhibitions" element={<AdminSectionPlaceholder title="Exhibiciones" />} />
+            <Route path="collections" element={<AdminCollections />} />
+            <Route path="paintings" element={<AdminPaintings />} />
+            <Route path="exhibitions" element={<AdminExhibitions />} />
             <Route path="design" element={<AdminSectionPlaceholder title="Diseño" />} />
             <Route path="illustrations" element={<AdminSectionPlaceholder title="Ilustración" />} />
             <Route path="biography" element={<AdminSectionPlaceholder title="Biografía" />} />
