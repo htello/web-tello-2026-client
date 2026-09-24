@@ -1,15 +1,10 @@
+import { getTechnicalDetails } from '@/utils/getTechnicalDetails.js'
 import './PaintingCard.scss'
-
-const DETAILS = [
-  { label: 'Dimensiones', key: 'dimensions' },
-  { label: 'Técnica', key: 'technique' },
-  { label: 'Año', key: 'year' },
-]
 
 const PaintingCard = ({ painting, onOpen }) => {
   const { id, title, imageUrl } = painting
 
-  const details = DETAILS.filter(({ key }) => painting[key])
+  const details = getTechnicalDetails(painting)
 
   return (
     <article className="painting-card">
@@ -29,10 +24,10 @@ const PaintingCard = ({ painting, onOpen }) => {
         <h3 className="painting-card__title">{title}</h3>
         {details.length > 0 && (
           <dl className="painting-card__details">
-            {details.map(({ label, key }) => (
+            {details.map(({ label, value }) => (
               <div key={label} className="painting-card__detail">
                 <dt>{label}</dt>
-                <dd>{painting[key]}</dd>
+                <dd>{value}</dd>
               </div>
             ))}
           </dl>
