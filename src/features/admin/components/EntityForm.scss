@@ -1,0 +1,90 @@
+@use '@/styles/variables' as *;
+
+.entity-form {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  max-width: 40rem;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  &__label {
+    font-weight: 600;
+  }
+
+  &__control {
+    padding: $space-2;
+    background: $color-surface;
+    color: $color-text;
+    border: 1px solid $color-border;
+
+    &[aria-invalid='true'] {
+      border-color: #e57373;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-accent;
+      outline-offset: 1px;
+    }
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+  }
+
+  &__error {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: #e57373;
+  }
+
+  &__server-error {
+    margin: 0;
+    padding: $space-3;
+    color: #e57373;
+    border: 1px solid #e57373;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $space-3;
+  }
+
+  &__submit {
+    padding: $space-2 $space-4;
+    background: $color-accent;
+    color: $color-background;
+    border: 0;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__cancel {
+    padding: $space-2 $space-4;
+    background: transparent;
+    color: $color-text-muted;
+    border: 1px solid $color-border;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-text;
+      border-color: $color-accent;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
