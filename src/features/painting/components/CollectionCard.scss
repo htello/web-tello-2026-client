@@ -1,0 +1,33 @@
+@use '@/styles/variables' as *;
+
+.collection-card {
+  &__title {
+    margin: 0 0 $space-2;
+    font-size: $font-size-xl;
+
+    a {
+      color: $color-text;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__description {
+    color: $color-text-muted;
+  }
+
+  &__images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
+  }
+
+  &__image {
+    width: 10rem;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+}
