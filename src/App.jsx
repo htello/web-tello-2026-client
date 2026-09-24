@@ -1,7 +1,7 @@
 import { Routes, Route, useParams } from 'react-router-dom'
 import Layout from './app/Layout.jsx'
 import HomeHero from './features/home/HomeHero.jsx'
-import CollectionsSlider from './features/painting/components/CollectionsSlider.jsx'
+import PaintingView from './features/painting/PaintingView.jsx'
 import CollectionGallery from './features/painting/components/CollectionGallery.jsx'
 import ExhibitionList from './features/painting/components/ExhibitionList.jsx'
 import BiographySection from './features/biography/BiographySection.jsx'
@@ -26,7 +26,7 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<HomeHero backgroundImage={heroImage} />} />
-        <Route path="painting" element={<CollectionsSlider />} />
+        <Route path="painting" element={<PaintingView />} />
         <Route path="painting/collections/:id" element={<CollectionGalleryRoute />} />
         <Route path="painting/exhibitions" element={<ExhibitionList />} />
         <Route path="biography" element={<BiographySection />} />
