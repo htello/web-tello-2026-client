@@ -91,7 +91,7 @@ Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las 
 ## Reglas TDD (cuando Vitest esté instalado — Fase 01)
 
 Resumen: RED → GREEN → REFACTOR.
-- Cobertura objetivo: **100% en `src/api/`, `src/hooks/` y `src/utils/`**; componentes con tests de comportamiento (RTL). Umbral global: mantener ≥90% y no bajarlo.
+- Cobertura objetivo: **100% en `src/services/`, `src/hooks/` y `src/utils/`**; componentes con tests de comportamiento (RTL). Umbral global: mantener ≥90% y no bajarlo.
 - Mockear la red con `vi.stubGlobal('fetch', ...)` (patrón ya usado en `src/App.test.jsx`); NUNCA llamar a la API real en tests unitarios.
 - Cada test independiente; `cleanup()` + `vi.unstubAllGlobals()` en `afterEach`.
 - Queries de RTL por rol/label/texto accesible (`getByRole`, `findByText`); evitar `data-testid` salvo necesidad.
@@ -112,7 +112,8 @@ pnpm build                       # build de producción (dist/)
 pnpm preview                     # servir el build localmente
 pnpm lint                        # ESLint (flat config)
 # Pendientes de instalar en Fase 01:
-# pnpm test                      # Vitest run
+# pnpm test                      # Vitest watch
+# pnpm test:run                  # Vitest run (una pasada)
 # pnpm run test:coverage         # cobertura
 ```
 
@@ -121,12 +122,25 @@ pnpm lint                        # ESLint (flat config)
 ```
 client/
 ├── src/
-│   ├── api/            # (planificado) cliente HTTP: fetch wrapper, endpoints por recurso
-│   ├── components/     # (planificado) componentes reutilizables
-│   ├── hooks/          # (planificado) hooks propios (useAuth, useFetch/useCollections...)
-│   ├── pages/          # (planificado) vistas/rutas (públicas + admin)
-│   ├── styles/         # (planificado) SASS: _variables, _mixins, base, layout, componentes
+│   ├── app/            # router, layout y providers (NO App.jsx)
+│   ├── services/       # cliente HTTP y servicios de API
+│   ├── components/     # componentes UI compartidos
+│   ├── features/
+│   │   ├── home/       # hero y obras destacadas
+│   │   ├── painting/   # colecciones, pinturas y lightbox
+│   │   ├── design/     # proyectos de diseño y filtros
+│   │   ├── illustration/
+│   │   ├── exhibitions/
+│   │   ├── biography/
+│   │   ├── contact/
+│   │   └── admin/      # login y gestión protegida
+│   ├── hooks/          # hooks transversales (useAuth, useFetch...)
+│   ├── utils/
+│   ├── infrastructure/ # Sentry y configuración externa
+│   ├── styles/         # SASS: parciales _variables, _mixins, base, layout, componentes
 │   ├── assets/         # imágenes estáticas
+│   ├── test/           # setup y helpers de test
+│   ├── index.scss      # entry SASS (importa parciales de styles/)
 │   ├── App.jsx         # raíz (hoy: plantilla de ejemplo)
 │   └── main.jsx        # entry point
 ├── promps/             # planificación por fases (fase-01 → fase-07)
@@ -145,7 +159,7 @@ client/
 - **Templates**: siempre template literals, nunca concatenación `+`.
 - **Imports**: ES Modules; alias `@/` si se configura en Vite (decidir en Fase 01 y mantenerlo).
 - **Naming**: `PascalCase` componentes y tipos; `camelCase` variables/funciones/hooks (`useXxx`); `SCREAMING_SNAKE_CASE` constantes; archivos de componentes en `PascalCase.jsx`.
-- **JSDoc**: obligatorio en `src/api/`, `src/hooks/` y `src/utils/` (`@param`, `@returns`); opcional en componentes simples.
+- **JSDoc**: obligatorio en `src/services/`, `src/hooks/` y `src/utils/` (`@param`, `@returns`); opcional en componentes simples.
 - **Props**: validar con `propTypes` o destructuración con defaults; documentar props no obvias.
 - Sin `console.log` de datos sensibles (tokens, emails de usuarios) — usar solo en desarrollo y retirar antes de commitear.
 
