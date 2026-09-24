@@ -1,4 +1,5 @@
 import { usePortfolioContext } from '@/context/PortfolioContext.js'
+import { ARTIST_NAME } from '@/constants/businessRules.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
@@ -20,7 +21,7 @@ const BiographySection = () => {
         <img
           className="biography__image"
           src={biography.imageUrl}
-          alt="Fotografía de Antonio Tello"
+          alt={`Fotografía de ${ARTIST_NAME}`}
         />
       )}
     </section>

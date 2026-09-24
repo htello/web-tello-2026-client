@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
+import { DESIGN_SUBCATEGORIES } from '@/constants/businessRules.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import './DesignSubcategorySlider.scss'
-
-const SUBCATEGORIES = [
-  { key: 'imagen-corporativa', label: 'Imagen corporativa' },
-  { key: 'packaging-expositores', label: 'Packaging y Expositores' },
-  { key: 'carteleria', label: 'Cartelería' },
-  { key: 'editorial', label: 'Editorial' },
-]
 
 const DesignSubcategorySlider = () => {
   const [projectsBySubcategory, setProjectsBySubcategory] = useState({})
@@ -24,7 +18,7 @@ const DesignSubcategorySlider = () => {
       try {
         const bySubcategory = {}
         await Promise.all(
-          SUBCATEGORIES.map(async ({ key }) => {
+          DESIGN_SUBCATEGORIES.map(async ({ key }) => {
             const res = await api.get(`/design?subcategory=${key}`)
             bySubcategory[key] = res.data ?? []
           }),
@@ -49,7 +43,7 @@ const DesignSubcategorySlider = () => {
 
   return (
     <div className="design-subcategory-slider">
-      {SUBCATEGORIES.map(({ key, label }) => {
+      {DESIGN_SUBCATEGORIES.map(({ key, label }) => {
         const projects = projectsBySubcategory[key] ?? []
         const featured = projects.filter((p) => p.isFeatured)
         const images = featured.length > 0 ? featured : projects.slice(0, 1)

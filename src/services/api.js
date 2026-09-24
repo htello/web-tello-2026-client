@@ -3,10 +3,9 @@
  * Fuente de verdad del contrato: server/docs/openapi.yaml.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'
+import { API_TIMEOUT_MS } from '@/constants/businessRules.js'
 
-// Timeout generoso: el server en Render tiene cold start de ~50 s.
-const DEFAULT_TIMEOUT = 90000
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'
 
 let authToken = null
 
@@ -41,7 +40,7 @@ export function setAuthToken(token) {
  * @param {{ body?: unknown, timeout?: number, signal?: AbortSignal }} [options]
  * @returns {Promise<{ data: unknown, meta?: unknown }>}
  */
-async function request(method, path, { body, timeout = DEFAULT_TIMEOUT, signal } = {}) {
+async function request(method, path, { body, timeout = API_TIMEOUT_MS, signal } = {}) {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeout)
   const abortFromCaller = () => controller.abort()

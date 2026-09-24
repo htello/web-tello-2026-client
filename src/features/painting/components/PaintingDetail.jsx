@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { getTechnicalDetails } from '@/utils/getTechnicalDetails.js'
+import { isNotFound } from '@/constants/businessRules.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
@@ -34,8 +35,8 @@ const PaintingDetail = ({ paintingId }) => {
 
   if (loading) return <LoadingState />
 
-  const isNotFound = error && (error.status === 404 || error.code === 'NOT_FOUND')
-  if (isNotFound) return <EmptyState message="No encontrada" />
+  const notFound = error && isNotFound(error)
+  if (notFound) return <EmptyState message="No encontrada" />
   if (error) return <ErrorState message="No se pudo cargar la pintura." />
 
   const details = getTechnicalDetails(painting)

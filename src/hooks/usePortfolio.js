@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
+import { isNotFound } from '@/constants/businessRules.js'
 
 /**
  * Hook de estado público del portfolio.
@@ -36,10 +37,10 @@ export function usePortfolio() {
           api.get('/paintings/featured', { signal }),
           api.get('/collections', { signal }),
           api.get('/exhibitions', { signal }),
-          api.get('/biography', { signal }).catch((err) => {
-            if (err.status === 404 || err.code === 'NOT_FOUND') return { data: null }
-            throw err
-          }),
+        api.get('/biography', { signal }).catch((err) => {
+          if (isNotFound(err)) return { data: null }
+          throw err
+        }),
         ])
 
         if (cancelled) return
