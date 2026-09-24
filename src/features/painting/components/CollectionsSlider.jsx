@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import CollectionCard from './CollectionCard.jsx'
 import './CollectionsSlider.scss'
 
@@ -42,12 +45,10 @@ const CollectionsSlider = () => {
     }
   }, [])
 
-  if (loading) return <p className="collection-slider__status">Cargando…</p>
-  if (error) {
-    return <p className="collection-slider__status">No se pudieron cargar las colecciones.</p>
-  }
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudieron cargar las colecciones." />
   if (collections.length === 0) {
-    return <p className="collection-slider__status">No hay colecciones disponibles.</p>
+    return <EmptyState message="No hay colecciones disponibles." />
   }
 
   return (

@@ -1,16 +1,20 @@
 import { usePortfolioContext } from '@/context/PortfolioContext.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
+import SectionHeader from '@/components/SectionHeader.jsx'
 import './BiographySection.scss'
 
 const BiographySection = () => {
   const { biography, loading, error } = usePortfolioContext()
 
-  if (loading) return <p className="biography__status">Cargando…</p>
-  if (error) return <p className="biography__status">No se pudo cargar la biografía.</p>
-  if (!biography) return <p className="biography__status">Sin biografía.</p>
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudo cargar la biografía." />
+  if (!biography) return <EmptyState message="Sin biografía." />
 
   return (
     <section className="biography">
-      <h2 className="biography__title">Biografía</h2>
+      <SectionHeader title="Biografía" />
       <p className="biography__content">{biography.content}</p>
       {biography.imageUrl && (
         <img

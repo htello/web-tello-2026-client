@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import PaintingCard from './PaintingCard.jsx'
 import Lightbox from './Lightbox.jsx'
 import './CollectionGallery.scss'
@@ -31,13 +34,13 @@ const CollectionGallery = ({ collectionId }) => {
     }
   }, [collectionId])
 
-  if (loading) return <p className="collection-gallery__status">Cargando…</p>
-  if (error) return <p className="collection-gallery__status">No se pudo cargar la colección.</p>
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudo cargar la colección." />
 
   const paintings = sortByPosition(collection.paintings ?? [])
 
   if (paintings.length === 0) {
-    return <p className="collection-gallery__status">No hay obras en esta colección.</p>
+    return <EmptyState message="No hay obras en esta colección." />
   }
 
   return (

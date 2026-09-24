@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
 import { formatDate } from '@/utils/formatDate.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import './ExhibitionList.scss'
 
 const ExhibitionList = () => {
@@ -29,12 +32,10 @@ const ExhibitionList = () => {
     }
   }, [])
 
-  if (loading) return <p className="exhibition-list__status">Cargando…</p>
-  if (error) {
-    return <p className="exhibition-list__status">No se pudieron cargar las exposiciones.</p>
-  }
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudieron cargar las exposiciones." />
   if (exhibitions.length === 0) {
-    return <p className="exhibition-list__status">No hay exposiciones disponibles.</p>
+    return <EmptyState message="No hay exposiciones disponibles." />
   }
 
   return (

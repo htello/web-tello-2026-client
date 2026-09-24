@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { getTechnicalDetails } from '@/utils/getTechnicalDetails.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import './PaintingDetail.scss'
 
 const PaintingDetail = ({ paintingId }) => {
@@ -29,11 +32,11 @@ const PaintingDetail = ({ paintingId }) => {
     }
   }, [paintingId])
 
-  if (loading) return <p className="painting-detail__status">Cargando…</p>
+  if (loading) return <LoadingState />
 
   const isNotFound = error && (error.status === 404 || error.code === 'NOT_FOUND')
-  if (isNotFound) return <p className="painting-detail__status">No encontrada</p>
-  if (error) return <p className="painting-detail__status">No se pudo cargar la pintura.</p>
+  if (isNotFound) return <EmptyState message="No encontrada" />
+  if (error) return <ErrorState message="No se pudo cargar la pintura." />
 
   const details = getTechnicalDetails(painting)
   const collectionId = painting.collection?.id

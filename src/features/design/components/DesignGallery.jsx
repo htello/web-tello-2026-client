@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import './DesignGallery.scss'
 
 const DesignGallery = ({ subcategory }) => {
@@ -27,10 +30,10 @@ const DesignGallery = ({ subcategory }) => {
     }
   }, [subcategory])
 
-  if (loading) return <p className="design-gallery__status">Cargando…</p>
-  if (error) return <p className="design-gallery__status">No se pudieron cargar los proyectos.</p>
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudieron cargar los proyectos." />
   if (projects.length === 0) {
-    return <p className="design-gallery__status">No hay proyectos en esta categoría.</p>
+    return <EmptyState message="No hay proyectos en esta categoría." />
   }
 
   return (

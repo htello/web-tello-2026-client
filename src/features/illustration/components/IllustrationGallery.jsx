@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import IllustrationCard from './IllustrationCard.jsx'
 import Lightbox from '@/features/painting/components/Lightbox.jsx'
 import './IllustrationGallery.scss'
@@ -31,12 +34,10 @@ const IllustrationGallery = () => {
     }
   }, [])
 
-  if (loading) return <p className="illustration-gallery__status">Cargando…</p>
-  if (error) {
-    return <p className="illustration-gallery__status">No se pudieron cargar las ilustraciones.</p>
-  }
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudieron cargar las ilustraciones." />
   if (illustrations.length === 0) {
-    return <p className="illustration-gallery__status">No hay ilustraciones disponibles.</p>
+    return <EmptyState message="No hay ilustraciones disponibles." />
   }
 
   return (

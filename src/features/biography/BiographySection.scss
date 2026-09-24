@@ -3,11 +3,6 @@
 .biography {
   max-width: 48rem;
 
-  &__title {
-    margin: 0 0 $space-4;
-    font-size: $font-size-2xl;
-  }
-
   &__content {
     white-space: pre-wrap;
   }
@@ -18,9 +13,5 @@
     aspect-ratio: 3 / 4;
     object-fit: cover;
     margin-top: $space-6;
-  }
-
-  &__status {
-    color: $color-text-muted;
   }
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
 import './DesignSubcategorySlider.scss'
 
 const SUBCATEGORIES = [
@@ -42,10 +44,8 @@ const DesignSubcategorySlider = () => {
     }
   }, [])
 
-  if (loading) return <p className="design-subcategory-slider__status">Cargando…</p>
-  if (error) {
-    return <p className="design-subcategory-slider__status">No se pudieron cargar los proyectos.</p>
-  }
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudieron cargar los proyectos." />
 
   return (
     <div className="design-subcategory-slider">
