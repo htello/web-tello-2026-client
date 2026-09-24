@@ -1,5 +1,8 @@
+import HomeHero from './features/home/HomeHero.jsx'
+import heroImage from './assets/prueba-camisa-1200.jpg'
+
 function App() {
-  return <main>Portfolio de Antonio Tello</main>
+  return <HomeHero backgroundImage={heroImage} />
 }
 
 export default App
