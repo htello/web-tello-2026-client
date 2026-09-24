@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { api } from '@/services/api.js'
-import { EMAIL_REGEX } from '@/constants/businessRules.js'
+import { validateContact } from '@/utils/validateContact.js'
 import './ContactForm.scss'
 
 const ContactForm = () => {
@@ -12,20 +12,10 @@ const ContactForm = () => {
   const [status, setStatus] = useState('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
-  const validate = () => {
-    const next = {}
-    if (!name.trim()) next.name = 'El nombre es obligatorio'
-    if (!email.trim()) next.email = 'El email es obligatorio'
-    else if (!EMAIL_REGEX.test(email)) next.email = 'Email no válido'
-    if (!subject.trim()) next.subject = 'El asunto es obligatorio'
-    if (!message.trim()) next.message = 'El mensaje es obligatorio'
-    return next
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault()
 
-    const next = validate()
+    const next = validateContact({ name, email, subject, message })
     setErrors(next)
     if (Object.keys(next).length > 0) return
 
