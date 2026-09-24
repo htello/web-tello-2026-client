@@ -1,0 +1,44 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode-go/qwen3.8-max",
+  "small_model": "opencode-go/qwen3.8-flash",
+  "watcher": {
+    "ignore": [
+      "node_modules/",
+      "dist/",
+      ".git/",
+      "build/",
+      "coverage/",
+      ".vite/",
+      ".cache/",
+      "pnpm-lock.yaml",
+      "package-lock.json",
+      "yarn.lock",
+      ".env",
+      ".env.*",
+      ".DS_Store",
+      "*.log",
+      "*.map",
+      "*.min.js"
+    ]
+  },
+  "tool_output": {
+    "max_lines": 200,
+    "max_bytes": 8192
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "tail_turns": 10,
+    "preserve_recent_tokens": 2000,
+    "reserved": 8000
+  },
+  "attachment": {
+    "image": {
+      "auto_resize": true,
+      "max_width": 1024,
+      "max_height": 1024,
+      "max_base64_bytes": 1048576
+    }
+  }
+}
