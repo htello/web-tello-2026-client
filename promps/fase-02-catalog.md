@@ -27,7 +27,8 @@ Requisitos:
 - Base URL configurable con import.meta.env.VITE_API_URL
 - Métodos get, post, put y delete
 - Parsear respuestas { data, meta }
-- Convertir errores de API a un Error con status y code
+- Convertir errores de API a un Error con status y code (leer `code` del body de error del server)
+- Timeout generoso (el server en Render tiene cold start de ~50 s) y soporte de AbortController
 - Permitir enviar JSON y FormData sin forzar Content-Type para FormData
 - No añadir todavía lógica de autenticación
 ```

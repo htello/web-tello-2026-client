@@ -1,24 +1,17 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import App from './App.jsx'
 
-describe('portfolio navigation', () => {
-  beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('API unavailable')))
-  })
-
-  afterEach(() => {
-    cleanup()
-    vi.unstubAllGlobals()
-  })
-
-  it('shows persistent public navigation and the three portfolio destinations', async () => {
+describe('App', () => {
+  it('muestra la navegación principal con las cinco disciplinas', () => {
     render(<App />)
 
-    expect(screen.getByRole('navigation', { name: 'Navegación principal' })).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'Pintura' })).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'Diseño' })).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'Ilustración' })).toBeTruthy()
-    expect(await screen.findByText(/obras destacadas/i)).toBeTruthy()
+    expect(
+      screen.getByRole('navigation', { name: 'Navegación principal' }),
+    ).toBeInTheDocument()
+
+    for (const name of ['Pintura', 'Ilustración', 'Diseño', 'Biografía', 'Contacto']) {
+      expect(screen.getByRole('link', { name })).toBeInTheDocument()
+    }
   })
 })

@@ -35,12 +35,12 @@ METODOLOGÍA DE TRABAJO:
    - Implementar código MÍNIMO para pasar (Green)
    - Refactorizar si es necesario
 
-2. Scope Rule para organización de carpetas:
-   - GLOBAL SCOPE (src/shared/): Código usado en múltiples features
-   → models/, utils/, constants/, components/, strategies/, hooks/
+2. Organización de carpetas (estructura canónica):
+   - GLOBAL SCOPE en src/: models/, utils/, constants/, components/, hooks/, services/
    - LOCAL SCOPE (src/features/X/): Código específico de una feature
      → home/, painting/, design/, illustration/, exhibitions/, biography/, contact/, admin/
    - Context global: src/context/
+   - Estilos: src/styles/ (parciales _variables, _mixins, _base) + src/index.scss
    - Infraestructura: src/infrastructure/
 
 3. Verificación continua:
@@ -62,10 +62,12 @@ TU ROL COMO ASISTENTE:
 
 REGLAS DE CÓDIGO:
 - JavaScript moderno con ESLint
-- Sass/SCSS para estilos
+- Sass/SCSS para estilos (BEM, parciales con @use, variables centralizadas)
 - Testing Library con queries accesibles (getByRole > getByTestId)
 - Componentes funcionales con hooks
 - Nombres descriptivos en inglés
+- JSDoc obligatorio en src/services/, src/hooks/ y src/utils/
+- Mockear la red en tests con vi.stubGlobal('fetch', ...) (nunca MSW ni API real)
 
 ¿Entendido? Cuando confirmes, comenzamos con el primer paso.
 ```
@@ -77,7 +79,7 @@ REGLAS DE CÓDIGO:
 ```
 Recuerda:
 - TDD: test primero, implementación después
-- Scope Rule: shared/ = global, features/X/ = local
+- Estructura: global en src/ (models, utils, components, hooks, services), local en features/X/
 - Solo genera lo que te pido (test O implementación, no ambos)
 - Verificar con: pnpm test:run && pnpm build
 ```
@@ -98,7 +100,7 @@ Vamos a continuar con [siguiente paso].
 
 Recuerda:
 - TDD: test primero, implementación después  
-- Scope Rule: shared/ = global, features/X/ = local
+- Estructura: global en src/ (models, utils, components, hooks, services), local en features/X/
 - Solo genera lo que te pido
 ```
 
@@ -110,7 +112,7 @@ Este prompt establece:
 
 1. **Contexto del proyecto** - Qué estamos construyendo y con qué tecnologías
 2. **Metodología TDD** - El usuario entiende el ciclo Red-Green-Refactor
-3. **Scope Rule** - Organización clara de carpetas
+3. **Organización de carpetas** - Estructura global en `src/` y local en `features/X/`
 4. **Roles definidos** - El usuario da requisitos, la IA genera código
 5. **Límites claros** - La IA no genera más de lo pedido
 6. **Verificación** - Siempre correr tests después de cada paso

@@ -53,6 +53,10 @@ Revisa también el HomeHero:
 - debe existir un contraste suficiente entre menú y fondo
 - en mobile debe conservar una altura estable y evitar recortes importantes
 - si la imagen es decorativa, usa background-image; si aporta contenido, proporciona texto alternativo equivalente
+
+Ten en cuenta el cold start del server en producción (~50 s en la primera petición):
+- los estados de carga (Skeleton/LoadingState) deben ser claros y no parecer un fallo
+- los timeouts de las peticiones deben ser generosos
 ```
 
 ## Paso 4: SEO y Open Graph

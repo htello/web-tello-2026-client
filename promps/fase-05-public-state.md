@@ -9,11 +9,12 @@ el slider de subcategorías de Diseño, galerías, exposiciones y la biografía 
 **Prompt RED:**
 ```
 Genera usePortfolio.test.js.
-Usa MSW o mocks del cliente API para probar:
+Usa vi.stubGlobal('fetch', ...) para mockear la red (NUNCA MSW ni la API real) y probar:
 - carga inicial de featured paintings, collections, exhibitions y biography
 - estado loading
 - error de una petición
 - refresh del contenido
+- biografía ausente (404) tratada como "sin biografía", no como error
 No inventes datos fuera de los modelos de server/docs.
 ```
 
@@ -47,6 +48,7 @@ loading, error y estado sin contenido.
 Implementa BiographySection.jsx usando el contexto y Sass.
 La sección Biografía debe mostrar el texto y la fotografía del artista en una composición responsive.
 No interpretes content como HTML; debe renderizarse como texto plano.
+Si GET /biography devuelve 404 (aún no creada), muestra "sin biografía" sin estado de error.
 ```
 
 ## Paso 4: Layout

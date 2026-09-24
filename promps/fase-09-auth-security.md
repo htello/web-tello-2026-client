@@ -30,11 +30,12 @@ Mockea POST /api/v1/auth/login.
 **Prompt GREEN:**
 ```
 Implementa AuthProvider y useAuth.
-- POST /api/v1/auth/login
+- POST /api/v1/auth/login (rate limit 10/min)
 - guardar token y user en una estrategia explícita de sesión
 - limpiar sesión en logout
 - añadir Authorization: Bearer <token> a peticiones admin
 - no exponer password ni token en el DOM
+- distinguir 401 (sin token) de 403 (token inválido/expirado o sin rol ADMIN)
 - redirigir al login si una respuesta admin es 401/403
 ```
 
@@ -62,8 +63,8 @@ Endpoints:
 - POST /api/v1/auth/reset-password con { token, password }
 
 Requisitos:
-- El mensaje de forgot-password debe ser genérico y no revelar si el email existe.
-- Mostrar errores 400 y 429 de forma accesible.
+- El mensaje de forgot-password debe ser genérico y no revelar si el email existe (el server siempre responde 200).
+- Mostrar errores 400 y 429 de forma accesible (recuperación: rate limit 5/15 min).
 - Nunca imprimir tokens ni contraseñas en consola, DOM o Sentry.
 - Validar password con mínimo 8 caracteres, una mayúscula y un símbolo.
 Genera primero los tests y después la implementación.
