@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import App from './App.jsx'
 
 describe('App', () => {
   it('muestra la navegación principal con las cinco disciplinas', () => {
-    render(<App />)
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>,
+    )
 
     expect(
       screen.getByRole('navigation', { name: 'Navegación principal' }),
