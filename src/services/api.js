@@ -8,6 +8,17 @@ import { API_TIMEOUT_MS } from '@/constants/businessRules.js'
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'
 
 let authToken = null
+let unauthorizedHandler = null
+
+/**
+ * Registra un callback invocado cuando una ruta /admin responde 401/403
+ * (token inválido/expirado o sin rol ADMIN). Pasa `null` para desregistrarlo.
+ *
+ * @param {((error: ApiError) => void) | null} handler
+ */
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler = handler
+}
 
 /**
  * Error de la API con status y code (código del body de error del server).
@@ -64,11 +75,15 @@ async function request(method, path, { body, timeout = API_TIMEOUT_MS, signal } 
     const payload = isJson ? await response.json() : null
 
     if (!response.ok) {
-      throw new ApiError(
+      const error = new ApiError(
         payload?.error ?? `Error ${response.status}`,
         response.status,
         payload?.code,
       )
+      if (path.startsWith('/admin') && (error.status === 401 || error.status === 403)) {
+        unauthorizedHandler?.(error)
+      }
+      throw error
     }
 
     return payload

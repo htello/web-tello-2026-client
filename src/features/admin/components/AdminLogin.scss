@@ -1,0 +1,68 @@
+@use '@/styles/variables' as *;
+
+.admin-login {
+  max-width: 24rem;
+  margin: $space-12 auto;
+  padding: 0 $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+
+  &__title {
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+
+    label {
+      font-weight: 600;
+    }
+
+    input {
+      padding: $space-2;
+      background: $color-surface;
+      color: $color-text;
+      border: 1px solid $color-border;
+    }
+  }
+
+  &__submit {
+    padding: $space-2 $space-4;
+    background: $color-accent;
+    color: $color-background;
+    border: 0;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__error {
+    color: #e57373;
+    margin: 0;
+  }
+
+  &__success {
+    color: $color-accent;
+    margin: 0;
+  }
+
+  &__forgot {
+    color: $color-text-muted;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+}

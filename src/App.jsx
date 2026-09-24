@@ -1,4 +1,5 @@
 import { Routes, Route, useParams } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext.jsx'
 import Layout from './app/Layout.jsx'
 import HomeHero from './features/home/HomeHero.jsx'
 import PaintingView from './features/painting/PaintingView.jsx'
@@ -9,6 +10,11 @@ import DesignSubcategorySlider from './features/design/components/DesignSubcateg
 import DesignGallery from './features/design/components/DesignGallery.jsx'
 import IllustrationGallery from './features/illustration/components/IllustrationGallery.jsx'
 import ContactForm from './features/contact/components/ContactForm.jsx'
+import AdminLogin from './features/admin/components/AdminLogin.jsx'
+import ForgotPasswordForm from './features/admin/components/ForgotPasswordForm.jsx'
+import ResetPasswordForm from './features/admin/components/ResetPasswordForm.jsx'
+import ProtectedRoute from './features/admin/components/ProtectedRoute.jsx'
+import AdminPanel from './features/admin/components/AdminPanel.jsx'
 import heroImage from './assets/prueba-camisa-1200.jpg'
 
 function CollectionGalleryRoute() {
@@ -23,19 +29,27 @@ function DesignGalleryRoute() {
 
 function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route index element={<HomeHero backgroundImage={heroImage} />} />
-        <Route path="painting" element={<PaintingView />} />
-        <Route path="painting/collections/:id" element={<CollectionGalleryRoute />} />
-        <Route path="painting/exhibitions" element={<ExhibitionList />} />
-        <Route path="biography" element={<BiographySection />} />
-        <Route path="illustration" element={<IllustrationGallery />} />
-        <Route path="design" element={<DesignSubcategorySlider />} />
-        <Route path="design/:subcategory" element={<DesignGalleryRoute />} />
-        <Route path="contact" element={<ContactForm />} />
-      </Route>
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<HomeHero backgroundImage={heroImage} />} />
+          <Route path="painting" element={<PaintingView />} />
+          <Route path="painting/collections/:id" element={<CollectionGalleryRoute />} />
+          <Route path="painting/exhibitions" element={<ExhibitionList />} />
+          <Route path="biography" element={<BiographySection />} />
+          <Route path="illustration" element={<IllustrationGallery />} />
+          <Route path="design" element={<DesignSubcategorySlider />} />
+          <Route path="design/:subcategory" element={<DesignGalleryRoute />} />
+          <Route path="contact" element={<ContactForm />} />
+        </Route>
+        <Route path="admin/login" element={<AdminLogin />} />
+        <Route path="admin/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="reset-password" element={<ResetPasswordForm />} />
+        <Route path="admin" element={<ProtectedRoute />}>
+          <Route index element={<AdminPanel />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   )
 }
 

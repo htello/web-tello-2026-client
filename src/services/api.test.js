@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { api, setAuthToken } from './api.js'
+import { api, setAuthToken, setUnauthorizedHandler } from './api.js'
 
 const BASE = 'http://localhost:3000/api/v1'
 
@@ -17,6 +17,7 @@ describe('api', () => {
     vi.unstubAllGlobals()
     vi.useRealTimers()
     setAuthToken(null)
+    setUnauthorizedHandler(null)
   })
 
   it('hace GET y devuelve el envelope { data, meta }', async () => {
@@ -199,5 +200,82 @@ describe('api', () => {
 
     const [, options] = fetchMock.mock.calls[0]
     expect(options.headers['Authorization']).toBeUndefined()
+  })
+
+  it('invoca el unauthorizedHandler en 403 de rutas /admin', async () => {
+    const handler = vi.fn()
+    setUnauthorizedHandler(handler)
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          jsonResponse({ error: 'Token expirado', code: 'FORBIDDEN' }, false, 403),
+        ),
+    )
+
+    await expect(api.get('/admin/collections')).rejects.toMatchObject({ status: 403 })
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 403, code: 'FORBIDDEN' }),
+    )
+  })
+
+  it('invoca el unauthorizedHandler en 401 de rutas /admin', async () => {
+    const handler = vi.fn()
+    setUnauthorizedHandler(handler)
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(jsonResponse({ error: 'Sin token', code: 'UNAUTHORIZED' }, false, 401)),
+    )
+
+    await expect(api.get('/admin/users')).rejects.toMatchObject({ status: 401 })
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 401, code: 'UNAUTHORIZED' }),
+    )
+  })
+
+  it('no invoca el unauthorizedHandler en 401 fuera de /admin', async () => {
+    const handler = vi.fn()
+    setUnauthorizedHandler(handler)
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          jsonResponse({ error: 'Credenciales inválidas', code: 'UNAUTHORIZED' }, false, 401),
+        ),
+    )
+
+    await expect(api.post('/auth/login', {})).rejects.toMatchObject({ status: 401 })
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('no invoca el unauthorizedHandler en 500 de rutas /admin', async () => {
+    const handler = vi.fn()
+    setUnauthorizedHandler(handler)
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(jsonResponse({ error: 'Error', code: 'INTERNAL_ERROR' }, false, 500)),
+    )
+
+    await expect(api.get('/admin/collections')).rejects.toMatchObject({ status: 500 })
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('deja de invocar el unauthorizedHandler tras desregistrarlo', async () => {
+    const handler = vi.fn()
+    setUnauthorizedHandler(handler)
+    setUnauthorizedHandler(null)
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(jsonResponse({ error: 'Prohibido', code: 'FORBIDDEN' }, false, 403)),
+    )
+
+    await expect(api.get('/admin/collections')).rejects.toMatchObject({ status: 403 })
+    expect(handler).not.toHaveBeenCalled()
   })
 })

@@ -24,6 +24,9 @@ export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export const NOT_FOUND_STATUS = 404
 export const NOT_FOUND_CODE = 'NOT_FOUND'
 
+/** Longitud mínima de contraseña (login y reset). */
+export const MIN_PASSWORD_LENGTH = 8
+
 /** Timeout por defecto de las peticiones (el server tiene cold start de ~50 s). */
 export const API_TIMEOUT_MS = 90000
 
