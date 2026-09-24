@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Lint and build
+    name: Lint, test and build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -35,6 +35,9 @@ jobs:
 
       - name: Lint
         run: pnpm lint
+
+      - name: Tests
+        run: pnpm test:run
 
       - name: Build
         run: pnpm build
