@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App.jsx'
@@ -8,6 +8,7 @@ const ADMIN = { id: 1, email: 'admin@example.com', name: 'Antonio', role: 'ADMIN
 describe('App', () => {
   afterEach(() => {
     cleanup()
+    vi.unstubAllGlobals()
     sessionStorage.clear()
   })
 
@@ -40,6 +41,15 @@ describe('App', () => {
   })
 
   it('muestra el panel admin con una sesión ADMIN restaurada', () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        headers: { get: () => 'application/json' },
+        json: async () => ({ data: [] }),
+      }),
+    )
     sessionStorage.setItem('admin_session', JSON.stringify({ token: 'token-1', user: ADMIN }))
 
     render(
@@ -50,5 +60,6 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: /panel de administración/i })).toBeInTheDocument()
     expect(screen.getByText(/hola, antonio/i)).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Administración' })).toBeInTheDocument()
   })
 })

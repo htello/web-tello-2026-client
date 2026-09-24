@@ -14,7 +14,9 @@ import AdminLogin from './features/admin/components/AdminLogin.jsx'
 import ForgotPasswordForm from './features/admin/components/ForgotPasswordForm.jsx'
 import ResetPasswordForm from './features/admin/components/ResetPasswordForm.jsx'
 import ProtectedRoute from './features/admin/components/ProtectedRoute.jsx'
-import AdminPanel from './features/admin/components/AdminPanel.jsx'
+import AdminLayout from './features/admin/AdminLayout.jsx'
+import AdminDashboard from './features/admin/AdminDashboard.jsx'
+import AdminSectionPlaceholder from './features/admin/AdminSectionPlaceholder.jsx'
 import heroImage from './assets/prueba-camisa-1200.jpg'
 
 function CollectionGalleryRoute() {
@@ -46,7 +48,16 @@ function App() {
         <Route path="admin/forgot-password" element={<ForgotPasswordForm />} />
         <Route path="reset-password" element={<ResetPasswordForm />} />
         <Route path="admin" element={<ProtectedRoute />}>
-          <Route index element={<AdminPanel />} />
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="collections" element={<AdminSectionPlaceholder title="Colecciones" />} />
+            <Route path="paintings" element={<AdminSectionPlaceholder title="Pinturas" />} />
+            <Route path="exhibitions" element={<AdminSectionPlaceholder title="Exhibiciones" />} />
+            <Route path="design" element={<AdminSectionPlaceholder title="Diseño" />} />
+            <Route path="illustrations" element={<AdminSectionPlaceholder title="Ilustración" />} />
+            <Route path="biography" element={<AdminSectionPlaceholder title="Biografía" />} />
+            <Route path="users" element={<AdminSectionPlaceholder title="Usuarios" />} />
+          </Route>
         </Route>
       </Routes>
     </AuthProvider>

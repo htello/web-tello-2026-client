@@ -18,6 +18,18 @@ export const NAV_SECTIONS = [
   { label: 'Contacto', to: '/contact' },
 ]
 
+/** Secciones del panel de administración y sus rutas. */
+export const ADMIN_NAV_SECTIONS = [
+  { label: 'Dashboard', to: '/admin', end: true },
+  { label: 'Colecciones', to: '/admin/collections' },
+  { label: 'Pinturas', to: '/admin/paintings' },
+  { label: 'Exhibiciones', to: '/admin/exhibitions' },
+  { label: 'Diseño', to: '/admin/design' },
+  { label: 'Ilustración', to: '/admin/illustrations' },
+  { label: 'Biografía', to: '/admin/biography' },
+  { label: 'Usuarios', to: '/admin/users' },
+]
+
 // eslint-disable-next-line sonarjs/super-linear-regex -- patrón lineal de email, sin backtracking super-lineal
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
