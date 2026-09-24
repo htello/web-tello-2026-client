@@ -8,6 +8,8 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'
 // Timeout generoso: el server en Render tiene cold start de ~50 s.
 const DEFAULT_TIMEOUT = 90000
 
+let authToken = null
+
 /**
  * Error de la API con status y code (código del body de error del server).
  * @param {string} message
@@ -24,6 +26,16 @@ export class ApiError extends Error {
 }
 
 /**
+ * Establece el token JWT que se adjunta como `Authorization: Bearer` en
+ * las peticiones. Pasa `null` para limpiarlo (logout).
+ *
+ * @param {string | null} token
+ */
+export function setAuthToken(token) {
+  authToken = token
+}
+
+/**
  * @param {string} method
  * @param {string} path
  * @param {{ body?: unknown, timeout?: number, signal?: AbortSignal }} [options]
@@ -35,7 +47,10 @@ async function request(method, path, { body, timeout = DEFAULT_TIMEOUT, signal }
   const abortFromCaller = () => controller.abort()
   signal?.addEventListener('abort', abortFromCaller, { once: true })
 
-  const options = { method, signal: controller.signal, headers: {} }
+  const headers = {}
+  if (authToken) headers['Authorization'] = `Bearer ${authToken}`
+
+  const options = { method, signal: controller.signal, headers }
 
   if (body !== undefined) {
     if (body instanceof FormData) {
