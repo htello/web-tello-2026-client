@@ -5,11 +5,20 @@ import CollectionsSlider from './features/painting/components/CollectionsSlider.
 import CollectionGallery from './features/painting/components/CollectionGallery.jsx'
 import ExhibitionList from './features/painting/components/ExhibitionList.jsx'
 import BiographySection from './features/biography/BiographySection.jsx'
+import DesignSubcategorySlider from './features/design/components/DesignSubcategorySlider.jsx'
+import DesignGallery from './features/design/components/DesignGallery.jsx'
+import IllustrationGallery from './features/illustration/components/IllustrationGallery.jsx'
+import ContactForm from './features/contact/components/ContactForm.jsx'
 import heroImage from './assets/prueba-camisa-1200.jpg'
 
 function CollectionGalleryRoute() {
   const { id } = useParams()
   return <CollectionGallery collectionId={Number(id)} />
+}
+
+function DesignGalleryRoute() {
+  const { subcategory } = useParams()
+  return <DesignGallery subcategory={subcategory} />
 }
 
 function App() {
@@ -21,9 +30,10 @@ function App() {
         <Route path="painting/collections/:id" element={<CollectionGalleryRoute />} />
         <Route path="painting/exhibitions" element={<ExhibitionList />} />
         <Route path="biography" element={<BiographySection />} />
-        <Route path="illustration" element={<p>Ilustración</p>} />
-        <Route path="design" element={<p>Diseño</p>} />
-        <Route path="contact" element={<p>Contacto</p>} />
+        <Route path="illustration" element={<IllustrationGallery />} />
+        <Route path="design" element={<DesignSubcategorySlider />} />
+        <Route path="design/:subcategory" element={<DesignGalleryRoute />} />
+        <Route path="contact" element={<ContactForm />} />
       </Route>
     </Routes>
   )
