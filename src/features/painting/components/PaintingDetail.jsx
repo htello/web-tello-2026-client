@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { getTechnicalDetails } from '@/utils/getTechnicalDetails.js'
 import './PaintingDetail.scss'
@@ -56,9 +57,9 @@ const PaintingDetail = ({ paintingId }) => {
         </dl>
       )}
       {collectionId && (
-        <a className="painting-detail__back" href={`/painting/collections/${collectionId}`}>
+        <Link className="painting-detail__back" to={`/painting/collections/${collectionId}`}>
           Volver a la colección
-        </a>
+        </Link>
       )}
     </article>
   )

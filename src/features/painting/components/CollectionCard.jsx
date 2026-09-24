@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import './CollectionCard.scss'
 
 const CollectionCard = ({ collection, paintings }) => {
@@ -10,7 +11,7 @@ const CollectionCard = ({ collection, paintings }) => {
   return (
     <article className="collection-card">
       <h3 className="collection-card__title">
-        <a href={`/painting/collections/${collection.id}`}>{collection.title}</a>
+        <Link to={`/painting/collections/${collection.id}`}>{collection.title}</Link>
       </h3>
       {collection.description && (
         <p className="collection-card__description">{collection.description}</p>

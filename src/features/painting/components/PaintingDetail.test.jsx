@@ -1,6 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import PaintingDetail from './PaintingDetail.jsx'
+
+const renderDetail = (paintingId) =>
+  render(
+    <MemoryRouter>
+      <PaintingDetail paintingId={paintingId} />
+    </MemoryRouter>,
+  )
 
 function jsonResponse(data, ok = true, status = 200) {
   return {
@@ -38,7 +46,7 @@ describe('PaintingDetail', () => {
 
   it('muestra la pintura y sus datos técnicos', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: fullPainting })))
-    render(<PaintingDetail paintingId={7} />)
+    renderDetail(7)
 
     expect(await screen.findByRole('heading', { name: 'Atardecer' })).toBeInTheDocument()
     expect(screen.getByRole('img', { name: 'Atardecer' })).toBeInTheDocument()
@@ -49,7 +57,7 @@ describe('PaintingDetail', () => {
 
   it('no renderiza filas vacías cuando faltan datos técnicos', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: partialPainting })))
-    render(<PaintingDetail paintingId={8} />)
+    renderDetail(8)
 
     await screen.findByRole('heading', { name: 'Sin datos' })
     expect(screen.queryByText(/dimensiones/i)).not.toBeInTheDocument()
@@ -59,7 +67,7 @@ describe('PaintingDetail', () => {
 
   it('muestra un botón para volver a la colección', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: fullPainting })))
-    render(<PaintingDetail paintingId={7} />)
+    renderDetail(7)
 
     const back = await screen.findByRole('link', { name: /volver a la colección/i })
     expect(back).toHaveAttribute('href', '/painting/collections/3')
@@ -67,7 +75,7 @@ describe('PaintingDetail', () => {
 
   it('muestra not found para una pintura inexistente', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ error: 'No encontrada', code: 'NOT_FOUND' }, false, 404)))
-    render(<PaintingDetail paintingId={999} />)
+    renderDetail(999)
 
     expect(await screen.findByText(/no encontrada/i)).toBeInTheDocument()
   })
