@@ -1,4 +1,4 @@
-# Fase 11: Observabilidad con Sentry (15 min)
+# Fase 17: Observabilidad con Sentry
 
 ## Resultado Final
 Errores del cliente, fallos de API y acciones importantes llegan a Sentry sin filtrar secretos.
@@ -38,8 +38,9 @@ El fallback no debe mostrar tokens ni datos sensibles del error.
 
 **Prompt para la IA:**
 ```
-Añade breadcrumbs para navegación, apertura de colección, apertura de pintura, submit de contacto y errores HTTP.
-Incluye endpoint y status, pero nunca Authorization, password, message completo del contacto o datos personales.
+Añade breadcrumbs para navegación, apertura de colección, apertura de pintura, submit de contacto, errores HTTP
+y acciones del panel admin (login, logout, create/update/delete de entidades y uploads).
+Incluye endpoint y status, pero nunca Authorization, password, token, message completo del contacto o datos personales.
 Captura excepciones inesperadas del cliente y conserva errores recuperables como estado de UI.
 ```
 

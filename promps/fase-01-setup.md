@@ -1,4 +1,4 @@
-# Fase 1: Setup + Primera Obra (15 min)
+# Fase 1: Setup + Primera Obra
 
 ## Resultado Final
 Base del portfolio lista: Sass/SCSS con parciales, Vitest + Testing Library configurados, plantilla Vite limpia y una `PaintingCard` testeada.

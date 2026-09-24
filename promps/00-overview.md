@@ -20,7 +20,7 @@
 
 ## Estructura de Fases
 
-> Mapeo de historias: **HU17 Galería Pública = fases 1–7** y **HU18 Panel Admin = fases 8–12**.
+> Mapeo de historias: **HU17 Galería Pública = fases 1–7** y **HU18 Panel Admin = fases 8–18**.
 
 | # | Fase | Resultado | TDD |
 |---|---|---|---|
@@ -33,9 +33,15 @@
 | 7 | [E2E del Portfolio](./fase-07-e2e.md) | Recorrido público con Playwright | No |
 | 8 | [Refactoring](./fase-08-refactoring.md) | Cliente API y componentes compartidos limpios | No |
 | 9 | [Login Admin + Seguridad](./fase-09-auth-security.md) | JWT, AuthContext y ProtectedRoute | Sí |
-| 10 | [A11y, UX y SEO](./fase-10-a11y-ux.md) | Portfolio accesible, protegido y optimizado | Sí |
-| 11 | [Observabilidad con Sentry](./fase-11-sentry.md) | Errores y API monitorizados | No |
-| 12 | [Panel Admin + Quality Gates](./fase-12-quality-gates.md) | CRUD, uploads, hooks y build final | No |
+| 10 | [Panel Admin: Fundación](./fase-10-admin-foundation.md) | adminApi, AdminLayout, hooks/componentes compartidos y dashboard | Sí |
+| 11 | [Panel Admin: CRUD Pintura](./fase-11-admin-painting-crud.md) | Colecciones, pinturas, exhibiciones y reorder | Sí |
+| 12 | [Panel Admin: CRUD Contenido](./fase-12-admin-content-crud.md) | Diseño, ilustración y biografía | Sí |
+| 13 | [Panel Admin: Upload](./fase-13-admin-upload.md) | Imagen en 2 pasos integrada en los formularios | Sí |
+| 14 | [Panel Admin: Usuarios + E2E](./fase-14-admin-users-e2e.md) | Usuarios paginados y journey admin con Playwright | Parcial |
+| 15 | [Refactor del Admin](./fase-15-admin-refactor.md) | Panel DRY, contrato verificado y cobertura | No |
+| 16 | [A11y, UX y SEO](./fase-16-a11y-ux.md) | Portfolio y panel accesibles, protegidos y optimizados | Sí |
+| 17 | [Observabilidad con Sentry](./fase-17-sentry.md) | Errores y API monitorizados | No |
+| 18 | [Quality Gates + Build Final](./fase-18-quality-gates.md) | Gate de coverage, CI y build de despliegue | No |
 
 ## Dominios y API
 

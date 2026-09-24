@@ -1,4 +1,4 @@
-# Fase 5: Estado Público + Biografía (15 min)
+# Fase 5: Estado Público + Biografía 
 
 ## Resultado Final
 La aplicación tiene estado global de contenido público y muestra HomeHero, los sliders por colección de Pintura,
