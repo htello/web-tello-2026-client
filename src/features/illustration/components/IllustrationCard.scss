@@ -1,0 +1,27 @@
+@use '@/styles/variables' as *;
+
+.illustration-card {
+  &__button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  &__image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  &__title {
+    margin: $space-2 0 0;
+    font-size: $font-size-lg;
+  }
+
+  &__description {
+    color: $color-text-muted;
+  }
+}

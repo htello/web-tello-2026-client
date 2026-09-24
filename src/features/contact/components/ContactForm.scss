@@ -1,0 +1,54 @@
+@use '@/styles/variables' as *;
+
+.contact-form {
+  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+
+    label {
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      padding: $space-2;
+      background: $color-surface;
+      color: $color-text;
+      border: 1px solid $color-border;
+    }
+
+    textarea {
+      min-height: 8rem;
+      resize: vertical;
+    }
+  }
+
+  &__submit {
+    padding: $space-2 $space-4;
+    background: $color-accent;
+    color: $color-background;
+    border: 0;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__error {
+    color: #e57373;
+    margin: 0;
+  }
+
+  &__success {
+    color: $color-accent;
+    margin: 0;
+  }
+}
