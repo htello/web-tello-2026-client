@@ -46,6 +46,10 @@ Actualmente la aplicación no consume variables de entorno y no hay un archivo `
 
 No hay scripts `test`, `test:run`, `test:e2e`, `quality` o `verify` en `package.json`. `src/App.test.jsx` contiene un test de ejemplo que importa Vitest y Testing Library, pero esas dependencias y la configuración para ejecutarlo aún no están presentes.
 
+## CI en GitHub
+
+GitHub Actions ejecuta `pnpm lint` y `pnpm build` en pushes a `main`/`develop` y en pull requests dirigidos a esas ramas, igual que el workflow del servidor. Usa Node.js 22, pnpm 9 y `pnpm install --frozen-lockfile`. No ejecuta tests mientras no haya un script de test configurado en el cliente.
+
 ## Estructura actual
 
 ```text
