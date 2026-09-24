@@ -3,10 +3,11 @@
  * Fuente de verdad del contrato: server/docs/openapi.yaml.
  */
 
+import { API_TIMEOUT_MS } from '@/constants/businessRules.js'
+
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'
 
-// Timeout generoso: el server en Render tiene cold start de ~50 s.
-const DEFAULT_TIMEOUT = 90000
+let authToken = null
 
 /**
  * Error de la API con status y code (código del body de error del server).
@@ -24,26 +25,37 @@ export class ApiError extends Error {
 }
 
 /**
+ * Establece el token JWT que se adjunta como `Authorization: Bearer` en
+ * las peticiones. Pasa `null` para limpiarlo (logout).
+ *
+ * @param {string | null} token
+ */
+export function setAuthToken(token) {
+  authToken = token
+}
+
+/**
  * @param {string} method
  * @param {string} path
  * @param {{ body?: unknown, timeout?: number, signal?: AbortSignal }} [options]
  * @returns {Promise<{ data: unknown, meta?: unknown }>}
  */
-async function request(method, path, { body, timeout = DEFAULT_TIMEOUT, signal } = {}) {
+async function request(method, path, { body, timeout = API_TIMEOUT_MS, signal } = {}) {
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), timeout)
   const abortFromCaller = () => controller.abort()
   signal?.addEventListener('abort', abortFromCaller, { once: true })
 
-  const options = { method, signal: controller.signal, headers: {} }
+  const headers = {}
+  if (authToken) headers['Authorization'] = `Bearer ${authToken}`
 
-  if (body !== undefined) {
-    if (body instanceof FormData) {
-      options.body = body
-    } else {
-      options.headers['Content-Type'] = 'application/json'
-      options.body = JSON.stringify(body)
-    }
+  const options = { method, signal: controller.signal, headers }
+
+  if (body instanceof FormData) {
+    options.body = body
+  } else if (body !== undefined) {
+    options.headers['Content-Type'] = 'application/json'
+    options.body = JSON.stringify(body)
   }
 
   try {

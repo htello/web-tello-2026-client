@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { getImageProtectionProps } from '@/utils/getImageProtectionProps.js'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './Lightbox.scss'
 
 const Lightbox = ({ isOpen, image, onClose }) => {
@@ -32,10 +32,12 @@ const Lightbox = ({ isOpen, image, onClose }) => {
       <button type="button" className="lightbox__close" onClick={onClose}>
         Cerrar
       </button>
-      <img
+      <ProtectedArtworkImage
         className="lightbox__image"
-        {...getImageProtectionProps(image.alt)}
         src={image.src}
+        alt={image.alt}
+        objectFit="contain"
+        loading="eager"
       />
     </div>
   )

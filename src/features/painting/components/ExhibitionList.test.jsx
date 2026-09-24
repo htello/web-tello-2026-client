@@ -16,9 +16,13 @@ const exhibitions = [
   { id: 2, title: 'Expo A', date: '2023-03-05', location: 'Valencia', description: 'Retrospectiva', position: 1, isPublished: true },
 ]
 
+function mockExhibitions({ exhibitionsData = exhibitions } = {}) {
+  return vi.fn(() => Promise.resolve(jsonResponse({ data: exhibitionsData })))
+}
+
 describe('ExhibitionList', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: exhibitions })))
+    vi.stubGlobal('fetch', mockExhibitions())
   })
 
   afterEach(() => {
@@ -42,7 +46,7 @@ describe('ExhibitionList', () => {
   })
 
   it('muestra un estado vacío sin exposiciones', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: [] })))
+    vi.stubGlobal('fetch', mockExhibitions({ exhibitionsData: [] }))
     render(<ExhibitionList />)
 
     expect(await screen.findByText(/no hay exposiciones/i)).toBeInTheDocument()

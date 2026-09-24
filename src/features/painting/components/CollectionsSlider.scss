@@ -4,8 +4,4 @@
   display: flex;
   flex-direction: column;
   gap: $space-8;
-
-  &__status {
-    color: $color-text-muted;
-  }
 }

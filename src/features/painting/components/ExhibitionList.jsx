@@ -1,45 +1,30 @@
-import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
+import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { formatDate } from '@/utils/formatDate.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import './ExhibitionList.scss'
 
 const ExhibitionList = () => {
-  const [exhibitions, setExhibitions] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { data, loading, error } = useAsyncData(async (signal) => {
+    const res = await api.get('/exhibitions', { signal })
+    return res.data ?? []
+  })
 
-  useEffect(() => {
-    let cancelled = false
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudieron cargar las exposiciones." />
 
-    async function load() {
-      try {
-        const { data } = await api.get('/exhibitions')
-        if (!cancelled) setExhibitions(sortByPosition(data))
-      } catch (err) {
-        if (!cancelled) setError(err)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
+  const sorted = sortByPosition(data)
 
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  if (loading) return <p className="exhibition-list__status">Cargando…</p>
-  if (error) {
-    return <p className="exhibition-list__status">No se pudieron cargar las exposiciones.</p>
-  }
-  if (exhibitions.length === 0) {
-    return <p className="exhibition-list__status">No hay exposiciones disponibles.</p>
+  if (sorted.length === 0) {
+    return <EmptyState message="No hay exposiciones disponibles." />
   }
 
   return (
     <ul className="exhibition-list">
-      {exhibitions.map((exhibition) => (
+      {sorted.map((exhibition) => (
         <li key={exhibition.id} className="exhibition-list__item">
           <h3 className="exhibition-list__title">{exhibition.title}</h3>
           <p className="exhibition-list__date">{formatDate(exhibition.date)}</p>

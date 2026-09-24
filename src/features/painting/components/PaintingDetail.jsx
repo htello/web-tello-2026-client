@@ -1,39 +1,25 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
+import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { getTechnicalDetails } from '@/utils/getTechnicalDetails.js'
+import { isNotFound } from '@/constants/businessRules.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import './PaintingDetail.scss'
 
 const PaintingDetail = ({ paintingId }) => {
-  const [painting, setPainting] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { data: painting, loading, error } = useAsyncData(
+    async (signal) => {
+      const res = await api.get(`/paintings/${paintingId}`, { signal })
+      return res.data
+    },
+    [paintingId],
+  )
 
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      try {
-        const { data } = await api.get(`/paintings/${paintingId}`)
-        if (!cancelled) setPainting(data)
-      } catch (err) {
-        if (!cancelled) setError(err)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [paintingId])
-
-  if (loading) return <p className="painting-detail__status">Cargando…</p>
-
-  const isNotFound = error && (error.status === 404 || error.code === 'NOT_FOUND')
-  if (isNotFound) return <p className="painting-detail__status">No encontrada</p>
-  if (error) return <p className="painting-detail__status">No se pudo cargar la pintura.</p>
+  if (loading) return <LoadingState />
+  if (isNotFound(error)) return <EmptyState message="No encontrada" />
+  if (error) return <ErrorState message="No se pudo cargar la pintura." />
 
   const details = getTechnicalDetails(painting)
   const collectionId = painting.collection?.id

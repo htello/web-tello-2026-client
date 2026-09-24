@@ -1,53 +1,35 @@
-import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
+import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
+import LoadingState from '@/components/LoadingState.jsx'
+import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import CollectionCard from './CollectionCard.jsx'
 import './CollectionsSlider.scss'
 
 const CollectionsSlider = () => {
-  const [collections, setCollections] = useState([])
-  const [paintingsByCollection, setPaintingsByCollection] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { data, loading, error } = useAsyncData(async (signal) => {
+    const collectionsRes = await api.get('/collections', { signal })
+    const collections = sortByPosition(collectionsRes.data ?? [])
 
-  useEffect(() => {
-    let cancelled = false
+    const paintingsByCollection = {}
+    await Promise.all(
+      collections.map(async (collection) => {
+        const res = await api.get(`/collections/${collection.id}`, { signal })
+        paintingsByCollection[collection.id] = res.data.paintings ?? []
+      }),
+    )
 
-    async function load() {
-      try {
-        const { data } = await api.get('/collections')
-        const sorted = sortByPosition(data)
-        if (cancelled) return
-        setCollections(sorted)
+    return { collections, paintingsByCollection }
+  })
 
-        const byCollection = {}
-        await Promise.all(
-          sorted.map(async (collection) => {
-            const res = await api.get(`/collections/${collection.id}`)
-            byCollection[collection.id] = res.data.paintings ?? []
-          }),
-        )
-        if (cancelled) return
-        setPaintingsByCollection(byCollection)
-      } catch (err) {
-        if (!cancelled) setError(err)
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
+  if (loading) return <LoadingState />
+  if (error) return <ErrorState message="No se pudieron cargar las colecciones." />
 
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const { collections, paintingsByCollection } = data
 
-  if (loading) return <p className="collection-slider__status">Cargando…</p>
-  if (error) {
-    return <p className="collection-slider__status">No se pudieron cargar las colecciones.</p>
-  }
   if (collections.length === 0) {
-    return <p className="collection-slider__status">No hay colecciones disponibles.</p>
+    return <EmptyState message="No hay colecciones disponibles." />
   }
 
   return (

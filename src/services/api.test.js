@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { api } from './api.js'
+import { api, setAuthToken } from './api.js'
 
 const BASE = 'http://localhost:3000/api/v1'
 
@@ -16,6 +16,7 @@ describe('api', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
     vi.useRealTimers()
+    setAuthToken(null)
   })
 
   it('hace GET y devuelve el envelope { data, meta }', async () => {
@@ -177,5 +178,26 @@ describe('api', () => {
 
     const result = await api.del('/collections/1')
     expect(result).toBeNull()
+  })
+
+  it('adjunta Authorization Bearer cuando hay token', async () => {
+    setAuthToken('mi-token')
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: {} }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await api.get('/admin/collections')
+
+    const [, options] = fetchMock.mock.calls[0]
+    expect(options.headers['Authorization']).toBe('Bearer mi-token')
+  })
+
+  it('no adjunta Authorization sin token', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: {} }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await api.get('/collections')
+
+    const [, options] = fetchMock.mock.calls[0]
+    expect(options.headers['Authorization']).toBeUndefined()
   })
 })

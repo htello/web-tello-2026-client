@@ -1,4 +1,4 @@
-import { getImageProtectionProps } from '@/utils/getImageProtectionProps.js'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './IllustrationCard.scss'
 
 const IllustrationCard = ({ illustration, onOpen }) => {
@@ -11,12 +11,7 @@ const IllustrationCard = ({ illustration, onOpen }) => {
         className="illustration-card__button"
         onClick={() => onOpen(id)}
       >
-        <img
-          className="illustration-card__image"
-          {...getImageProtectionProps(title)}
-          src={imageUrl}
-          loading="lazy"
-        />
+        <ProtectedArtworkImage className="illustration-card__image" src={imageUrl} alt={title} />
       </button>
       <h3 className="illustration-card__title">{title}</h3>
       {illustration.description && (

@@ -1,4 +1,5 @@
 import { getTechnicalDetails } from '@/utils/getTechnicalDetails.js'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './PaintingCard.scss'
 
 const PaintingCard = ({ painting, onOpen }) => {
@@ -13,12 +14,7 @@ const PaintingCard = ({ painting, onOpen }) => {
         className="painting-card__button"
         onClick={() => onOpen(id)}
       >
-        <img
-          className="painting-card__image"
-          src={imageUrl}
-          alt={title}
-          loading="lazy"
-        />
+        <ProtectedArtworkImage className="painting-card__image" src={imageUrl} alt={title} />
       </button>
       <div className="painting-card__body">
         <h3 className="painting-card__title">{title}</h3>
