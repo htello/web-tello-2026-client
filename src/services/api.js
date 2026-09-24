@@ -51,13 +51,11 @@ async function request(method, path, { body, timeout = API_TIMEOUT_MS, signal } 
 
   const options = { method, signal: controller.signal, headers }
 
-  if (body !== undefined) {
-    if (body instanceof FormData) {
-      options.body = body
-    } else {
-      options.headers['Content-Type'] = 'application/json'
-      options.body = JSON.stringify(body)
-    }
+  if (body instanceof FormData) {
+    options.body = body
+  } else if (body !== undefined) {
+    options.headers['Content-Type'] = 'application/json'
+    options.body = JSON.stringify(body)
   }
 
   try {
