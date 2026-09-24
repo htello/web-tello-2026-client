@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { PortfolioProvider } from '@/context/PortfolioProvider.jsx'
 import CollectionsSlider from './CollectionsSlider.jsx'
 
 const collections = [
@@ -13,10 +14,10 @@ const paintingsByCollection = {
   2: [{ id: 20, title: 'Rojo apagado', imageUrl: 'https://example.com/p20.jpg', isFeatured: false }],
 }
 
-function jsonResponse(data) {
+function jsonResponse(data, ok = true, status = 200) {
   return {
-    ok: true,
-    status: 200,
+    ok,
+    status,
     headers: { get: () => 'application/json' },
     json: async () => data,
   }
@@ -24,9 +25,12 @@ function jsonResponse(data) {
 
 function mockApi({ collectionsData = collections, paintings = paintingsByCollection } = {}) {
   return vi.fn((url) => {
-    if (url.endsWith('/collections')) {
-      return Promise.resolve(jsonResponse({ data: collectionsData }))
+    if (url.endsWith('/paintings/featured')) return Promise.resolve(jsonResponse({ data: [] }))
+    if (url.endsWith('/exhibitions')) return Promise.resolve(jsonResponse({ data: [] }))
+    if (url.endsWith('/biography')) {
+      return Promise.resolve(jsonResponse({ error: 'No existe', code: 'NOT_FOUND' }, false, 404))
     }
+    if (url.endsWith('/collections')) return Promise.resolve(jsonResponse({ data: collectionsData }))
     const match = url.match(/\/collections\/(\d+)$/)
     if (match) {
       const id = Number(match[1])
@@ -40,7 +44,9 @@ function mockApi({ collectionsData = collections, paintings = paintingsByCollect
 const renderSlider = () =>
   render(
     <MemoryRouter>
-      <CollectionsSlider />
+      <PortfolioProvider>
+        <CollectionsSlider />
+      </PortfolioProvider>
     </MemoryRouter>,
   )
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '@/services/api.js'
+import { usePortfolioContext } from '@/context/PortfolioContext.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
@@ -8,34 +9,31 @@ import CollectionCard from './CollectionCard.jsx'
 import './CollectionsSlider.scss'
 
 const CollectionsSlider = () => {
-  const [collections, setCollections] = useState([])
-  const [paintingsByCollection, setPaintingsByCollection] = useState({})
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const {
+    collections,
+    loading: collectionsLoading,
+    error: collectionsError,
+  } = usePortfolioContext()
+  const [paintingsByCollection, setPaintingsByCollection] = useState(null)
+  const [errorPaintings, setErrorPaintings] = useState(null)
 
   useEffect(() => {
+    if (collections.length === 0) return undefined
+
     let cancelled = false
 
     async function load() {
       try {
-        const { data } = await api.get('/collections')
-        const sorted = sortByPosition(data)
-        if (cancelled) return
-        setCollections(sorted)
-
         const byCollection = {}
         await Promise.all(
-          sorted.map(async (collection) => {
+          sortByPosition(collections).map(async (collection) => {
             const res = await api.get(`/collections/${collection.id}`)
             byCollection[collection.id] = res.data.paintings ?? []
           }),
         )
-        if (cancelled) return
-        setPaintingsByCollection(byCollection)
+        if (!cancelled) setPaintingsByCollection(byCollection)
       } catch (err) {
-        if (!cancelled) setError(err)
-      } finally {
-        if (!cancelled) setLoading(false)
+        if (!cancelled) setErrorPaintings(err)
       }
     }
 
@@ -43,17 +41,19 @@ const CollectionsSlider = () => {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [collections])
 
-  if (loading) return <LoadingState />
-  if (error) return <ErrorState message="No se pudieron cargar las colecciones." />
+  if (collectionsLoading) return <LoadingState />
+  if (collectionsError) return <ErrorState message="No se pudieron cargar las colecciones." />
   if (collections.length === 0) {
     return <EmptyState message="No hay colecciones disponibles." />
   }
+  if (paintingsByCollection === null) return <LoadingState />
+  if (errorPaintings) return <ErrorState message="No se pudieron cargar las colecciones." />
 
   return (
     <div className="collection-slider">
-      {collections.map((collection) => (
+      {sortByPosition(collections).map((collection) => (
         <CollectionCard
           key={collection.id}
           collection={collection}
