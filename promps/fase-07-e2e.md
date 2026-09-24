@@ -25,8 +25,8 @@ Configura playwright.config.js.
 
 Crea:
 - `e2e/pages/PortfolioHomePage.js`: hero de fondo, menú y navegación.
-- `e2e/pages/PaintingPage.js`: slider de colecciones, enlace de Exhibiciones, galería de colección y lightbox.
-- `e2e/pages/DesignPage.js`: slider de subcategorías y galería seleccionada.
+- `e2e/pages/PaintingPage.js`: sliders por colección, enlace de Exhibiciones, galería de colección y lightbox.
+- `e2e/pages/DesignPage.js`: sliders por subcategoría y galería seleccionada.
 - `e2e/pages/IllustrationPage.js`: galería directa de ilustraciones.
 - `e2e/pages/ContactPage.js`: campos, submit y alertas.
 
@@ -38,7 +38,7 @@ Usa `getByRole`, `getByLabel` y `data-testid` solo cuando no exista un selector 
 ```
 Crea e2e/portfolio-journey.spec.js con estos escenarios:
 1. La portada muestra una única imagen de fondo a pantalla completa y el menú.
-2. El visitante entra en Pintura y ve un slider de colecciones.
+2. El visitante entra en Pintura y ve un slider por cada colección, uno debajo del otro.
 3. Al seleccionar una colección ve únicamente su galería.
 4. El enlace Exhibiciones abre la página de exposiciones.
 5. El visitante entra en Diseño, selecciona una subcategoría y ve su galería.

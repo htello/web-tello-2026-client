@@ -1,15 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import CollectionsSlider from './CollectionsSlider.jsx'
-
-const renderSlider = () =>
-  render(
-    <MemoryRouter>
-      <CollectionsSlider />
-    </MemoryRouter>,
-  )
 
 const collections = [
   { id: 1, title: 'Serie Azul', description: 'Obras en azul', coverImage: 'https://example.com/azul.jpg', position: 1, isPublished: true, paintingsCount: 1 },
@@ -45,6 +37,13 @@ function mockApi({ collectionsData = collections, paintings = paintingsByCollect
   })
 }
 
+const renderSlider = () =>
+  render(
+    <MemoryRouter>
+      <CollectionsSlider />
+    </MemoryRouter>,
+  )
+
 describe('CollectionsSlider', () => {
   beforeEach(() => {
     vi.stubGlobal('fetch', mockApi())
@@ -55,30 +54,21 @@ describe('CollectionsSlider', () => {
     vi.unstubAllGlobals()
   })
 
-  it('muestra la colección activa con título, descripción y pintura destacada', async () => {
+  it('muestra todas las colecciones una debajo de la otra', async () => {
     renderSlider()
 
     expect(await screen.findByRole('heading', { name: 'Serie Azul' })).toBeInTheDocument()
-    expect(screen.getByText('Obras en azul')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'Atardecer azul' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Serie Roja' })).toBeInTheDocument()
   })
 
-  it('permite avanzar entre colecciones con controles accesibles', async () => {
-    const user = userEvent.setup()
+  it('muestra las pinturas destacadas de cada colección', async () => {
     renderSlider()
 
-    await screen.findByRole('heading', { name: 'Serie Azul' })
-    await user.click(screen.getByRole('button', { name: 'Colección siguiente' }))
-
-    expect(await screen.findByRole('heading', { name: 'Serie Roja' })).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: 'Atardecer azul' })).toBeInTheDocument()
   })
 
-  it('usa la portada como fallback cuando no hay pinturas destacadas', async () => {
-    const user = userEvent.setup()
+  it('usa la portada como fallback cuando no hay destacadas', async () => {
     renderSlider()
-
-    await screen.findByRole('heading', { name: 'Serie Azul' })
-    await user.click(screen.getByRole('button', { name: 'Colección siguiente' }))
 
     expect(await screen.findByRole('img', { name: 'Serie Roja' })).toBeInTheDocument()
   })
@@ -86,11 +76,10 @@ describe('CollectionsSlider', () => {
   it('enlaza cada colección a su galería', async () => {
     renderSlider()
 
-    const link = await screen.findByRole('link', { name: 'Serie Azul' })
-    expect(link).toHaveAttribute('href', '/painting/collections/1')
+    expect(await screen.findByRole('link', { name: 'Serie Azul' })).toHaveAttribute('href', '/painting/collections/1')
   })
 
-  it('muestra un estado vacío cuando no hay colecciones', async () => {
+  it('muestra un estado vacío sin colecciones', async () => {
     vi.stubGlobal('fetch', mockApi({ collectionsData: [] }))
     renderSlider()
 

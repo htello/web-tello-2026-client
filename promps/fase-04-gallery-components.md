@@ -1,7 +1,7 @@
 # Fase 4: Componentes de Galería, Ficha y Lightbox (15 min)
 
 ## Resultado Final
-Pintura muestra un slider por colección, cada colección abre su galería y existe un acceso independiente a Exhibiciones.
+Pintura muestra un slider por cada colección (uno debajo del otro), cada colección abre su galería y existe un acceso independiente a Exhibiciones.
 
 ## Paso 1: TDD - CollectionsSlider
 
@@ -10,17 +10,17 @@ Pintura muestra un slider por colección, cada colección abre su galería y exi
 Genera SOLO CollectionsSlider.test.jsx.
 Mockea GET /api/v1/collections con varias colecciones públicas ordenadas por position
 y GET /api/v1/collections/:id con las pinturas de cada colección.
-Verifica que muestra un slider por colección con coverImage, title, description opcional
-e imágenes destacadas de las pinturas de esa colección.
+Verifica que muestra un slider por cada colección (uno debajo del otro), cada uno con coverImage,
+title, description opcional e imágenes destacadas de las pinturas de esa colección.
 Al seleccionar una colección debe navegar a /painting/collections/:id.
-Debe incluir controles accesibles y estado vacío.
+Debe incluir estado vacío.
 Usa queries accesibles.
 ```
 
 **Prompt GREEN:**
 ```
 Implementa CollectionsSlider.jsx y CollectionCard.jsx con clases Sass collection-slider y collection-card.
-Cada colección es una entrada del slider y debe mostrar sus pinturas destacadas.
+Cada colección es un slider independiente que muestra sus pinturas destacadas, y los sliders se muestran uno debajo del otro.
 Usa `isFeatured` para seleccionar esas imágenes; si no hay destacadas, usa la portada de la colección.
 No conviertas el slider en una única galería plana.
 ```

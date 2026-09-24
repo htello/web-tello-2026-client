@@ -19,15 +19,19 @@
     color: $color-text-muted;
   }
 
-  &__images {
+  &__slider {
     display: flex;
-    flex-wrap: wrap;
     gap: $space-3;
+    overflow-x: auto;
+    padding-bottom: $space-2;
+    scroll-snap-type: x mandatory;
   }
 
   &__image {
+    flex: 0 0 auto;
     width: 10rem;
     aspect-ratio: 3 / 4;
     object-fit: cover;
+    scroll-snap-align: start;
   }
 }

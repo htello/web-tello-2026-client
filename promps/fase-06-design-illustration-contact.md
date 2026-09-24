@@ -1,7 +1,7 @@
 # Fase 6: Diseño, Ilustración y Contacto (15 min)
 
 ## Resultado Final
-Diseño muestra un slider de subcategorías que abre la galería seleccionada; Ilustración muestra directamente todas sus obras y Contacto envía mensajes.
+Diseño muestra un slider por cada subcategoría (uno debajo del otro) que abre la galería seleccionada; Ilustración muestra directamente todas sus obras y Contacto envía mensajes.
 
 ## Paso 1: Slider de subcategorías de Diseño
 
@@ -19,7 +19,7 @@ Cada subcategoría debe mostrar sus proyectos destacados y poder seleccionarse p
 
 **Prompt GREEN:**
 ```
-Implementa DesignSubcategorySlider.jsx con controles accesibles y Sass.
+Implementa DesignSubcategorySlider.jsx con Sass (sliders en scroll horizontal, uno debajo del otro).
 La subcategoría packaging-expositores es una sola categoría de la API.
 Para cada subcategoría consume sus proyectos y utiliza `isFeatured` para las imágenes del slider.
 Si una subcategoría no tiene proyectos destacados, utiliza la primera imagen disponible como fallback.

@@ -12,8 +12,8 @@
 
 - Menú: Pintura, Ilustración, Diseño, Biografía y Contacto.
 - Home: una única imagen grande de fondo a pantalla completa con el menú superpuesto.
-- Pintura: slider de colecciones, galería de colección y acceso a Exhibiciones.
-- Diseño: slider de subcategorías y galería de la subcategoría seleccionada.
+- Pintura: un slider por colección (uno debajo del otro), galería de colección y acceso a Exhibiciones.
+- Diseño: un slider por subcategoría (uno debajo del otro) y galería de la subcategoría seleccionada.
 - Ilustración: galería directa con todas las ilustraciones.
 - Biografía: texto plano y fotografía del artista.
 - Contacto: formulario de nombre, email, asunto y mensaje.

@@ -9,14 +9,14 @@ const CollectionCard = ({ collection, paintings }) => {
       : [{ title: collection.title, imageUrl: collection.coverImage }]
 
   return (
-    <article className="collection-card">
+    <section className="collection-card">
       <h3 className="collection-card__title">
         <Link to={`/painting/collections/${collection.id}`}>{collection.title}</Link>
       </h3>
       {collection.description && (
         <p className="collection-card__description">{collection.description}</p>
       )}
-      <div className="collection-card__images">
+      <div className="collection-card__slider" aria-label={`Obras de ${collection.title}`}>
         {images.map((image) => (
           <img
             key={image.imageUrl}
@@ -27,7 +27,7 @@ const CollectionCard = ({ collection, paintings }) => {
           />
         ))}
       </div>
-    </article>
+    </section>
   )
 }
 

@@ -48,18 +48,18 @@ const DesignSubcategorySlider = () => {
   }
 
   return (
-    <section className="design-subcategory-slider">
+    <div className="design-subcategory-slider">
       {SUBCATEGORIES.map(({ key, label }) => {
         const projects = projectsBySubcategory[key] ?? []
         const featured = projects.filter((p) => p.isFeatured)
         const images = featured.length > 0 ? featured : projects.slice(0, 1)
 
         return (
-          <article key={key} className="design-subcategory-slider__item">
+          <section key={key} className="design-subcategory-slider__item">
             <h3 className="design-subcategory-slider__title">
               <Link to={`/design/${key}`}>{label}</Link>
             </h3>
-            <div className="design-subcategory-slider__images">
+            <div className="design-subcategory-slider__slider" aria-label={`Proyectos de ${label}`}>
               {images.map((project) => (
                 <img
                   key={project.id}
@@ -70,10 +70,10 @@ const DesignSubcategorySlider = () => {
                 />
               ))}
             </div>
-          </article>
+          </section>
         )
       })}
-    </section>
+    </div>
   )
 }
 

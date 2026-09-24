@@ -1,8 +1,8 @@
 # Fase 5: Estado Público + Biografía (15 min)
 
 ## Resultado Final
-La aplicación tiene estado global de contenido público y muestra HomeHero, el slider de colecciones de Pintura,
-el slider de subcategorías de Diseño, galerías, exposiciones y la biografía con foto.
+La aplicación tiene estado global de contenido público y muestra HomeHero, los sliders por colección de Pintura,
+los sliders por subcategoría de Diseño, galerías, exposiciones y la biografía con foto.
 
 ## Paso 1: TDD - usePortfolio
 
