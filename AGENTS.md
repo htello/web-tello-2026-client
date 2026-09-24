@@ -1,96 +1,195 @@
-# Portfolio Antonio Tello
+# AGENTS.md — Client (Frontend)
 
-## Contexto
+## Estado
 
-Frontend de un portfolio artístico con pintura, diseño, ilustración, biografía, contacto y panel admin.
+- Runtime: Node.js >= 22
+- Frontend: React 19 + JavaScript (JSX) — **sin TypeScript**
+- Bundler: Vite 8 (con React Compiler vía Babel)
+- Estilos: **SASS/SCSS** (pendiente de instalar en Fase 01; hoy existen `App.css`/`index.css` de ejemplo de la plantilla Vite)
+- Lint: ESLint 10 (flat config, `eslint.config.js`)
+- Testing: Vitest + React Testing Library (**planificados, aún no instalados**; ver `promps/fase-01-setup.md`). E2E con Playwright en Fase 07
+- Package Manager: pnpm
+- CI/CD: GitHub Actions (hoy: lint + build; añadir tests cuando se instale Vitest)
+- Planificación por fases: carpeta `promps/` (fase-01 → fase-07)
+- Historias: **HU17 Galería Pública** y **HU18 Panel Admin** (Fase 7 del proyecto global)
+- **Backend**: repositorio hermano `../server` — API desplegada y verificada en producción
 
-- Stack: React 19, Vite y JavaScript/JSX.
-- El repositorio está en fase inicial; no asumir que las fases de `promps/` ya están implementadas.
-- El backend no está incluido en este workspace.
-- Nombres de variables, componentes, funciones y archivos en inglés.
+## API del Backend (FUENTE DE VERDAD)
 
-## Reglas de trabajo
+> **La especificación OpenAPI 3.0.3 del server es la fuente de verdad del contrato.**
+> Ruta: `../server/docs/openapi.yaml` — leer SIEMPRE a través de su índice `../server/docs/openapi-INDEX.md` (mapa ruta→línea); NUNCA leer el yaml completo (2142 líneas).
 
-- El usuario proporcionará manualmente los prompts de `promps/` que guíen cada tarea. No avances otras fases por iniciativa propia.
-- No escribas ni modifiques código sin aprobación explícita del usuario. Primero revisa el prompt y el contexto; espera aprobación antes de implementar.
-- Mantén los cambios pequeños, localizados y compatibles con el código existente.
-- Para lógica o componentes nuevos, sigue TDD cuando el entorno de tests esté configurado: Red, implementación mínima, Green y Refactor.
-- Cubre éxito, carga, vacío y error cuando aplique.
-- Usa HTML semántico, labels explícitos y queries accesibles; prioriza `getByRole` sobre `data-testid`.
-- Usa componentes funcionales y hooks.
-- Usa Sass/SCSS solo cuando esté configurado; no introduzcas una solución de estilos paralela sin necesidad.
-- Código compartido: `src/shared/`. Código específico: `src/features/<feature>/`. Estado global: `src/context/`. Integraciones: `src/infrastructure/`.
-- No edites archivos no relacionados ni hagas refactors oportunistas.
-- Conserva los cambios locales existentes del usuario; inspecciona el estado de Git antes de editar y no los sobrescribas ni los descartes.
-- No añadas dependencias, endpoints o campos sin una necesidad verificable.
+### Bases
 
-## Producto
+| Entorno | Base URL |
+|---|---|
+| Local (server en `../server` con `pnpm dev`) | `http://localhost:3000/api/v1` |
+| Producción (Render free, Frankfurt) | `https://portfolio-api-u5sx.onrender.com/api/v1` |
 
-Las secciones públicas son Pintura, Ilustración, Diseño, Biografía y Contacto.
+Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las variables `VITE_*` se embeben en el bundle: **nunca poner secretos en ellas**.
 
-- Home: una imagen principal de fondo y navegación superpuesta.
-- Pintura: colecciones, obras destacadas, galería, detalle, exposiciones y lightbox.
-- Diseño: solo estas categorías: `imagen-corporativa`, `packaging-expositores`, `carteleria` y `editorial`.
-- Ilustración: galería directa.
-- Biografía: texto plano y fotografía; nunca renderizar HTML no confiable.
-- Contacto: formulario con `name`, `email`, `subject` y `message`; manejar también `429 RATE_LIMITED`.
-- Galerías y peticiones deben contemplar estados de loading, error y vacío.
-- Lightbox: `role="dialog"`, `aria-modal`, cierre con Escape, foco gestionado y alt contextual.
-- La protección visual (`draggable=false`, context menu y overlay) no impide capturas ni herramientas del navegador.
+### Convenciones de respuesta (todos los endpoints)
 
-## API y datos
+- Éxito: `{ "data": ... }` (listados admin de usuarios: `{ "data": [...], "meta": { total, page, limit, pages } }`).
+- Error: `{ "error": "mensaje en español", "code": "CODIGO" }`.
+- Códigos de error: `VALIDATION_ERROR` (400/422), `UNAUTHORIZED` (401), `NOT_FOUND` (404), `DUPLICATE_ERROR` (409/400), `RATE_LIMITED` (429), `EMAIL_ERROR` (502), `INTERNAL_ERROR` (500), `SERVICE_UNAVAILABLE` (503 en `/health/db`).
+- Auth: header `Authorization: Bearer <token>` (JWT, expira a las 24 h). Rutas `/admin/**` exigen rol `ADMIN`.
 
-- Cuando exista, `server/docs/openapi.yaml` es la fuente de verdad para rutas, métodos, esquemas, campos, códigos de error y `multipart/form-data`.
-- No inventes ni deduzcas contratos del backend ausente. Si falta información, deja la decisión explícita y solicita el contrato correspondiente.
-- Usa `VITE_API_URL` para la URL pública de API. No expongas secretos en variables `VITE_*`.
-- Centraliza las peticiones en un cliente API compartido; normaliza errores sin ocultar su `status` o `code`.
-- Para uploads documentados, usa `FormData` con el campo `file`.
-- Evita fetch duplicado y cancela peticiones obsoletas con `AbortController` cuando corresponda.
+### Convención de imágenes (OBLIGATORIA, acordada con el server)
 
-Rutas previstas por los prompts, sujetas al contrato real: `/api/v1/collections`, `/api/v1/paintings`, `/api/v1/paintings/featured`, `/api/v1/exhibitions`, `/api/v1/design`, `/api/v1/illustrations`, `/api/v1/biography`, `/api/v1/contact`, `/api/v1/auth/login`, `/api/v1/admin/*` y `/api/v1/health`.
+- El front usa **siempre raw JSON** (`Content-Type: application/json`) en todos los endpoints.
+- Subida de imágenes en 2 pasos: `POST /admin/upload` (multipart, campo `file`, opcional `section`: pintura|ilustracion|diseno|general) → devuelve `{ url, thumbnail, width, height, format }` → la `url` se envía como `imageUrl`/`coverImage` en el JSON del create/update.
+- NUNCA usar los campos multipart (`image`) de los endpoints de entidades desde el front (existen como capacidad extra del back, no para el front).
 
-## Seguridad y privacidad
+### Endpoints y particularidades del contrato
 
-- Las peticiones admin usan `Authorization: Bearer <JWT>` y requieren rol `ADMIN` según el contrato.
-- No muestres ni registres passwords, JWT, cabeceras `Authorization`, secretos ni datos personales innecesarios.
-- No persistas mensajes del formulario de contacto en `localStorage` ni `sessionStorage`.
-- No envíes datos sensibles a observabilidad o analytics.
-- Distingue `401` y `403` según el contrato real de la API; no los intercambies por conveniencia.
+**Públicos (sin auth):**
+- `GET /collections`, `GET /collections/:id` (incluye pinturas), `GET /paintings`, `GET /paintings/featured`, `GET /paintings/:id`
+- `GET /design?subcategory=<obligatoria>` — **sin `subcategory` devuelve 400**; valores: `imagen-corporativa`, `packaging-expositores`, `carteleria`, `editorial`. Inválida → 404.
+- `GET /design/featured`, `GET /illustrations`, `GET /illustrations/featured`, `GET /exhibitions`
+- `GET /biography` → **404 si aún no existe** (el admin la crea con `POST /admin/biography`); el front debe tratar ese 404 como "sin biografía".
+- `POST /contact` → 201; **502 `EMAIL_ERROR` si falla el envío** (mostrar error, no éxito); rate limit 5/min.
+- `GET /health`, `GET /health/db` (monitorización).
 
-## Flujo Git
+**Auth:**
+- `POST /auth/login` → `{ token, user }`; rate limit 10/min.
+- `POST /auth/forgot-password` → SIEMPRE 200 genérico (no revela si el email existe); el enlace llega por email.
+- `POST /auth/reset-password` → `{ token, password }` (password fuerte: ≥8, mayúscula y símbolo); 400 "Token inválido o expirado"; token de un solo uso, 1 h de validez.
+- Rate limits de recuperación: 5/15 min.
 
-- Nunca trabajes directamente en `main`, ni hagas checkout de trabajo sobre ella.
-- Usa `develop` como rama base. Si no existe, créala desde `main` antes de empezar a desarrollar.
-- Crea una rama nueva para cada feature, bugfix o tarea: `feature/<nombre-corto>`, `fix/<nombre-corto>` o `chore/<nombre-corto>`, siempre partiendo de `develop` actualizado.
-- No hagas `commit`, `push`, `merge`, `rebase`, `reset`, `revert`, `tag` ni borres ramas sin consentimiento explícito y previo del usuario para esa operación concreta.
-- Puedes inspeccionar el estado y el historial con comandos de solo lectura, pero informa de la rama actual antes de modificar archivos.
-- No mezcles tareas distintas en una misma rama ni alteres cambios existentes del usuario.
+**Admin (Bearer ADMIN):**
+- CRUD: `collections`, `paintings`, `exhibitions`, `design`, `illustrations`, `biography` (solo POST/PUT), `users` (+ `PUT /admin/users/:id/password`).
+- `POST /admin/paintings` — **`year` es obligatorio** (1900-2100); `collectionId` obligatorio.
+- PUT de entidades = **actualización parcial** (enviar solo campos a cambiar; mínimo 1 campo).
+- Reorder: `PUT /admin/{collections,paintings,exhibitions,design,illustrations}/reorder` con `{ "orderedIds": [3,1,2] }`. IDs inexistentes → 400. (El openapi documenta `collectionId` en el reorder de paintings, pero el server lo ignora: el front debe enviar solo `orderedIds`.)
+- Listados admin (`GET /admin/...`) devuelven TODO (publicado y no publicado), ordenados por `position asc`.
+- `POST /admin/users/register` crea ADMIN y requiere token de admin existente.
 
-## Documentación
+### Consideraciones de producción (Render free)
 
-- Mantén `README.md` completamente alineado con el estado real del proyecto; no conserves texto genérico de Vite cuando el portfolio tenga documentación propia.
-- El README debe cubrir como mínimo: propósito, funcionalidades implementadas, stack, requisitos, instalación, variables de entorno, scripts disponibles, estructura relevante, integración API, testing, despliegue y troubleshooting.
-- Distingue claramente entre funcionalidades implementadas, en progreso y planificadas. No documentes como disponible ningún script, endpoint o herramienta que no exista en el repositorio.
-- Actualiza `README.md` en la misma feature cuando cambien la instalación, arquitectura, API, scripts, variables de entorno, comportamiento visible o proceso de despliegue.
-- Documenta con JSDoc las APIs exportadas y el código cuyo propósito, contrato o comportamiento no sea evidente.
-- Incluye `@param`, `@returns`, `@throws` y ejemplos cuando aporten información útil; describe los tipos con precisión y evita comentarios que repitan el código.
-- Mantén JSDoc y README sincronizados con la implementación y el contrato OpenAPI. No ocultes decisiones importantes ni errores conocidos.
-- La documentación siempre debe mantenerse actualizada; antes de solicitar o realizar un commit autorizado, comprueba que `README.md` y los JSDoc afectados reflejan todos los cambios.
-- Después de cada commit autorizado, revisa automáticamente la documentación modificada por ese commit y actualiza `README.md` o los JSDoc necesarios antes de continuar con otra tarea.
+- **Cold start**: tras ~15 min de inactividad la primera petición tarda ~50 s (mitigado con ping externo cada 10 min). El front debe tener timeouts generosos y estados de carga claros.
+- Latencia normal: 70-150 ms (Frankfurt).
 
-## Validación
+## Reglas Críticas (NO NEGOCIABLES)
 
-Ejecuta la validación más estrecha posible después de cada cambio. En el estado actual están disponibles:
+> **NUNCA implementar código sin aprobación del usuario. NUNCA ejecutar comandos de Git (commit/push/merge/branch) sin confirmación explícita.**
+
+1. **Aprobación de código**: proponer el código completo en la conversación antes de escribirlo en los archivos.
+2. **Uso estricto de ramas**: antes de empezar cualquier HU/fase, verificar que se está en la rama `hu/XX-nombre`, `feat/descripcion` o `fix/descripcion` (creada desde `develop`). No escribir nada directamente en `develop` ni en `main`.
+3. **Confirmación de Git**:
+   - **NO son confirmaciones:** "ok", "vale", "perfecto", "bien", "sigue".
+   - **SÍ son confirmaciones:** "haz commit", "commit", "push", "sube", "guarda", "mergea", "haz merge".
+4. **Flujo de parada**: Cambios → Tests + Lint + Build (+ Coverage cuando Vitest esté instalado) → **DETENERSE Y ESPERAR CONFIRMACIÓN DEL USUARIO**.
+5. **Inspección de archivos y eficiencia de tokens**:
+   - **NUNCA leer el repositorio entero** por iniciativa propia; si hace falta, pedir confirmación.
+   - **PROHIBIDO PRE-ESCANEAR:** no leer automáticamente `promps/` completos, `README.md`, `dist/` ni ejecutar `git log` al inicio de las peticiones. Leer de `promps/` solo la fase en curso.
+   - **SOLICITUD DE CONFIRMACIÓN** antes de leer documentación del server (`../server/docs/*`) que no sea el INDEX de openapi.
+   - Leer únicamente las secciones/líneas estrictamente necesarias.
+6. **Bloqueo de commit por fallo de calidad**: NUNCA commitear/mergear si `pnpm lint`, `pnpm build` o los tests fallan. Detenerse, informar y arreglar primero.
+7. **Respuestas concisas**: sin saludos ni rodeos; código y resultados directos; proponer diffs/funciones en vez de reimprimir archivos enteros.
+
+## Reglas TDD (cuando Vitest esté instalado — Fase 01)
+
+Resumen: RED → GREEN → REFACTOR.
+- Cobertura objetivo: **100% en `src/api/`, `src/hooks/` y `src/utils/`**; componentes con tests de comportamiento (RTL). Umbral global: mantener ≥90% y no bajarlo.
+- Mockear la red con `vi.stubGlobal('fetch', ...)` (patrón ya usado en `src/App.test.jsx`); NUNCA llamar a la API real en tests unitarios.
+- Cada test independiente; `cleanup()` + `vi.unstubAllGlobals()` en `afterEach`.
+- Queries de RTL por rol/label/texto accesible (`getByRole`, `findByText`); evitar `data-testid` salvo necesidad.
+
+## Eficiencia de Tokens (OBLIGATORIO)
+
+- **API**: leer `../server/docs/openapi-INDEX.md` y abrir `../server/docs/openapi.yaml` con `offset/limit` usando la línea del índice. NUNCA leer el yaml completo.
+- **Fases**: leer solo el archivo de la fase en curso en `promps/` (p. ej. `promps/fase-02-catalog.md`).
+- **Buscar antes que leer**: `grep`/`glob` para localizar; `read` con `offset/limit`; no releer archivos ya vistos en la sesión.
+- **Prohibido en escaneos:** `node_modules/`, `dist/`, `.git/`, `pnpm-lock.yaml`.
+
+## Comandos Útiles
 
 ```bash
-pnpm lint
-pnpm build
-pnpm dev
-pnpm preview
+pnpm install --frozen-lockfile   # dependencias
+pnpm dev                         # servidor de desarrollo Vite
+pnpm build                       # build de producción (dist/)
+pnpm preview                     # servir el build localmente
+pnpm lint                        # ESLint (flat config)
+# Pendientes de instalar en Fase 01:
+# pnpm test                      # Vitest run
+# pnpm run test:coverage         # cobertura
 ```
 
-`pnpm dev` y `pnpm preview` sirven para iniciar servidores de desarrollo y previsualización, no son comprobaciones que terminen por sí solas.
+## Estructura del Proyecto
 
-Usa `pnpm test:run`, `pnpm test:e2e`, `pnpm quality`, `pnpm verify` y coverage solo cuando sus dependencias y scripts existan en `package.json`. No declares un quality gate disponible antes de configurarlo.
+```
+client/
+├── src/
+│   ├── api/            # (planificado) cliente HTTP: fetch wrapper, endpoints por recurso
+│   ├── components/     # (planificado) componentes reutilizables
+│   ├── hooks/          # (planificado) hooks propios (useAuth, useFetch/useCollections...)
+│   ├── pages/          # (planificado) vistas/rutas (públicas + admin)
+│   ├── styles/         # (planificado) SASS: _variables, _mixins, base, layout, componentes
+│   ├── assets/         # imágenes estáticas
+│   ├── App.jsx         # raíz (hoy: plantilla de ejemplo)
+│   └── main.jsx        # entry point
+├── promps/             # planificación por fases (fase-01 → fase-07)
+├── docs/               # documentación del front (vacía por ahora)
+├── .github/workflows/  # CI: lint + build (+ tests cuando existan)
+├── index.html
+├── vite.config.js
+└── AGENTS.md
+```
 
-Antes de cerrar una feature, comprueba que el cambio coincide con el contrato API, no rompe accesibilidad y no introduce secretos. Las guías detalladas por fase permanecen en `promps/`; no las dupliques aquí.
+## Convenciones de Escritura (JavaScript/JSX)
+
+- **Componentes**: function components con arrow functions (`const Card = ({ title }) => {...}`), nunca `class`.
+- **Variables**: `const` por defecto, `let` solo si se reasigna, nunca `var`.
+- **Async**: siempre `async/await`, nunca `.then()`; errores de red capturados y traducidos a estado de UI (error/loading/data).
+- **Templates**: siempre template literals, nunca concatenación `+`.
+- **Imports**: ES Modules; alias `@/` si se configura en Vite (decidir en Fase 01 y mantenerlo).
+- **Naming**: `PascalCase` componentes y tipos; `camelCase` variables/funciones/hooks (`useXxx`); `SCREAMING_SNAKE_CASE` constantes; archivos de componentes en `PascalCase.jsx`.
+- **JSDoc**: obligatorio en `src/api/`, `src/hooks/` y `src/utils/` (`@param`, `@returns`); opcional en componentes simples.
+- **Props**: validar con `propTypes` o destructuración con defaults; documentar props no obvias.
+- Sin `console.log` de datos sensibles (tokens, emails de usuarios) — usar solo en desarrollo y retirar antes de commitear.
+
+## Convenciones de Estilos (SASS)
+
+- **SCSS** (sintaxis de llaves), un archivo por componente/vista + parciales globales.
+- Parciales con prefijo `_` (`_variables.scss`, `_mixins.scss`); importar vía `@use` (no `@import`, que está deprecado en Sass).
+- Metodología **BEM**: `.card`, `.card__title`, `.card--featured`.
+- Variables de diseño (colores, tipografías, espaciado, breakpoints) centralizadas en `src/styles/_variables.scss` — usarlas SIEMPRE, nada de valores mágicos repetidos.
+- Responsive mobile-first; breakpoints definidos como mixins.
+- Accesibilidad: contraste AA, foco visible, HTML semántico (`nav`, `main`, `article`, `figure`), atributos `aria-*` cuando corresponda.
+
+## Convenciones de Git y Workflow
+
+**Branches:** `hu/XX-nombre`, `feat/descripcion`, `fix/descripcion`, `chore/descripcion`, `refactor/descripcion` (desde `develop`).
+
+**Commits:** Conventional Commits (ej. `feat(hu-17): add public gallery grid`).
+
+**Pasos obligatorios por HU/fase:**
+
+1. **Verificar rama** antes de escribir código.
+2. **TDD** cuando aplique (RED → GREEN → REFACTOR).
+3. **Verificación de calidad (OBLIGATORIA)**: `pnpm lint && pnpm build` (+ `pnpm test` cuando exista). Si algo falla, CORREGIR antes de avanzar.
+4. **PAUSA OBLIGATORIA**: presentar resultados y solicitar confirmación explícita antes del flujo de Git.
+5. **Git (solo tras confirmación explícita)**: commit + push en la rama de trabajo → merge `--no-ff` a `develop` + push → borrado de rama. `main` solo para releases (merge `develop` → `main` con confirmación).
+6. Al terminar una fase, actualizar el check correspondiente en `promps/` si aplica y el `README.md` si cambia el estado del proyecto.
+
+## Seguridad (Frontend / OWASP)
+
+- **Secretos**: NUNCA en el repo ni en variables `VITE_*` (todo `VITE_*` es público en el bundle). La única config pública esperada es `VITE_API_URL`.
+- **Token JWT**: guardar en memoria (contexto/estado) y, si se requiere persistencia entre recargas, `sessionStorage` (nunca `localStorage` si hay riesgo XSS asumido); limpiar en logout; no loguearlo.
+- **XSS**: React escapa por defecto; **prohibido `dangerouslySetInnerHTML`** salvo justificación explícita y saneado previo (p. ej. biografía si viniera en HTML).
+- **Validación**: la validación authoritative es la del server (Joi); el front valida para UX (formatos, requeridos) y SIEMPRE maneja los 400/422 mostrando `error` de la respuesta.
+- **Enlaces externos**: `rel="noopener noreferrer"`.
+- **CORS**: el server acepta un único origen (`CORS_ORIGIN`); al desplegar el front, avisar para actualizar esa variable (y `FRONTEND_URL`, usada en los emails de recuperación) en Render.
+
+## Despliegue del Front (planificado)
+
+- Hosting gratuito previsto: Vercel o Netlify (build Vite → `dist/`).
+- Variables: `VITE_API_URL=https://portfolio-api-u5sx.onrender.com/api/v1`.
+- Checklist al desplegar: actualizar en Render `CORS_ORIGIN` y `FRONTEND_URL` con el dominio del front; probar flujo completo (login admin, galerías, contacto, recuperación de contraseña).
+
+## Documentación y Fuente de Verdad
+
+- Contrato de API: `../server/docs/openapi.yaml` (índice: `../server/docs/openapi-INDEX.md`). Si el front necesita un cambio de contrato, se propone en el server (nunca adaptar el front a comportamientos no documentados).
+- Planificación de fases: `promps/` (leer solo la fase en curso).
+- Estado global del proyecto: `../server/SESION.md` (acta de cierre del backend y pendientes que hereda el front).
