@@ -10,8 +10,8 @@
 - Testing: Vitest + React Testing Library (**planificados, aún no instalados**; ver `promps/fase-01-setup.md`). E2E con Playwright en Fase 07
 - Package Manager: pnpm
 - CI/CD: GitHub Actions (hoy: lint + build; añadir tests cuando se instale Vitest)
-- Planificación por fases: carpeta `promps/` (fase-01 → fase-07)
-- Historias: **HU17 Galería Pública** y **HU18 Panel Admin** (Fase 7 del proyecto global)
+- Planificación por fases: carpeta `promps/` (fase-01 → fase-12)
+- Historias: **HU17 Galería Pública** (fases 1–7) y **HU18 Panel Admin** (fases 8–12)
 - **Backend**: repositorio hermano `../server` — API desplegada y verificada en producción
 
 ## API del Backend (FUENTE DE VERDAD)
@@ -135,6 +135,8 @@ client/
 │   │   ├── contact/
 │   │   └── admin/      # login y gestión protegida
 │   ├── hooks/          # hooks transversales (useAuth, useFetch...)
+│   ├── models/         # modelos documentados con JSDoc
+│   ├── context/        # PortfolioContext y AuthContext
 │   ├── utils/
 │   ├── infrastructure/ # Sentry y configuración externa
 │   ├── styles/         # SASS: parciales _variables, _mixins, base, layout, componentes
@@ -143,7 +145,7 @@ client/
 │   ├── index.scss      # entry SASS (importa parciales de styles/)
 │   ├── App.jsx         # raíz (hoy: plantilla de ejemplo)
 │   └── main.jsx        # entry point
-├── promps/             # planificación por fases (fase-01 → fase-07)
+├── promps/             # planificación por fases (fase-01 → fase-12)
 ├── docs/               # documentación del front (vacía por ahora)
 ├── .github/workflows/  # CI: lint + build (+ tests cuando existan)
 ├── index.html

@@ -57,14 +57,17 @@ Permite abrir Lightbox sin duplicar su lógica.
 ```
 Genera ContactForm.test.jsx.
 Campos: name, email, subject y message.
-Casos: campos requeridos, email inválido, submit válido con POST /api/v1/contact, éxito y error 429 RATE_LIMITED.
+Casos: campos requeridos, email inválido, submit válido con POST /api/v1/contact, éxito,
+error 429 RATE_LIMITED y error 502 EMAIL_ERROR (mostrar error, no éxito).
 No guardes mensajes en localStorage ni en la aplicación.
 ```
 
 **Prompt GREEN:**
 ```
 Implementa ContactForm.jsx.
-Envía JSON a POST /api/v1/contact, deshabilita el submit mientras envía, muestra feedback y limpia el formulario solo tras éxito.
+Envía JSON a POST /api/v1/contact, deshabilita el submit mientras envía, muestra feedback
+y limpia el formulario solo tras éxito.
+Trata 502 EMAIL_ERROR como error de envío (mostrar error, nunca éxito), igual que 429.
 Usa Sass/SCSS.
 ```
 

@@ -46,6 +46,8 @@ Crea e2e/portfolio-journey.spec.js con estos escenarios:
 7. Biografía muestra texto y fotografía del artista.
 8. Contacto valida campos y muestra éxito tras POST 201.
 9. Un error de API muestra un estado recuperable.
+10. Contacto con error de envío (502 EMAIL_ERROR) muestra error, no éxito.
+11. Biografía ausente (404) muestra el estado "sin biografía".
 
 Mockea la API cuando el test deba ser determinista y limpia el estado entre tests.
 ```

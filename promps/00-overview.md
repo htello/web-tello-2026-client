@@ -20,6 +20,8 @@
 
 ## Estructura de Fases
 
+> Mapeo de historias: **HU17 Galería Pública = fases 1–7** y **HU18 Panel Admin = fases 8–12**.
+
 | # | Fase | Resultado | TDD |
 |---|---|---|---|
 | 1 | [Setup + Primera Obra](./fase-01-setup.md) | Vite, Sass y PaintingCard | Sí |
@@ -43,10 +45,15 @@
 - Biografía: `/api/v1/biography`
 - Contacto: `POST /api/v1/contact`, rate limit 5 solicitudes/minuto
 - Auth: `/api/v1/auth/login` y rutas admin con `Authorization: Bearer <JWT>`
-- Upload: `POST /api/v1/admin/upload` con `multipart/form-data`, campo `file`
+- Upload: `POST /api/v1/admin/upload` con `multipart/form-data`, campo `file` (subida en 2 pasos: la `url` devuelta se envía como `imageUrl`/`coverImage` en el JSON del create/update; NUNCA campos multipart `image` en entidades)
 - Salud: `/api/v1/health`
 
 La fuente de verdad de rutas y esquemas es `server/docs/openapi.yaml`. No se deben inventar endpoints ni campos.
+
+## Convenciones de calidad (resumen)
+
+- Cobertura: **100% en `src/services/`, `src/hooks/` y `src/utils/`**; umbral global ≥90%.
+- Mocking: `vi.stubGlobal('fetch', ...)`; NUNCA MSW ni llamar a la API real en tests unitarios.
 
 ## Comandos Frecuentes
 
@@ -83,13 +90,17 @@ src/
 ├── services/            # api.js y authApi.js
 ├── utils/               # formatDate, filtros y protección visual
 ├── infrastructure/      # Sentry
+├── styles/              # SASS: _variables, _mixins, _base y parciales
+├── assets/              # imágenes estáticas
 ├── test/                # setup y mocks
 ├── App.jsx
 ├── main.jsx
 └── index.scss
-├── e2e/                 # Page Objects y specs
-├── .husky/
-└── playwright.config.js
+
+e2e/                     # Page Objects y specs
+└── portfolio-journey.spec.js
+
+playwright.config.js
 ```
 
 ## Checklist Final
