@@ -57,18 +57,41 @@ describe('useAsyncData', () => {
     await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2))
   })
 
-  it('no actualiza el estado si se desmonta antes de resolver', async () => {
+  it('aborta la petición al desmontar y no actualiza el estado', async () => {
+    let capturedSignal
     let resolveFn
+    const fetcher = vi.fn((signal) => {
+      capturedSignal = signal
+      return new Promise((resolve) => {
+        resolveFn = resolve
+      })
+    })
+    const { unmount } = renderHook(() => useAsyncData(fetcher))
+
+    expect(capturedSignal.aborted).toBe(false)
+
+    unmount()
+
+    expect(capturedSignal.aborted).toBe(true)
+
+    resolveFn('tarde')
+    await Promise.resolve()
+
+    expect(fetcher).toHaveBeenCalledTimes(1)
+  })
+
+  it('no marca error si el fetcher rechaza tras desmontar', async () => {
+    let rejectFn
     const fetcher = vi.fn(
       () =>
-        new Promise((resolve) => {
-          resolveFn = resolve
+        new Promise((_, reject) => {
+          rejectFn = reject
         }),
     )
     const { unmount } = renderHook(() => useAsyncData(fetcher))
 
     unmount()
-    resolveFn('tarde')
+    rejectFn(new Error('tarde'))
     await Promise.resolve()
 
     expect(fetcher).toHaveBeenCalledTimes(1)
