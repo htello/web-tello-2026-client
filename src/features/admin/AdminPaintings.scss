@@ -1,0 +1,23 @@
+@use '@/styles/variables' as *;
+@use 'admin-crud' as *;
+
+.admin-paintings {
+  @include admin-crud;
+
+  &__filter {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  &__filter-label {
+    font-weight: 600;
+  }
+
+  &__filter-select {
+    padding: $space-2;
+    background: $color-surface;
+    color: $color-text;
+    border: 1px solid $color-border;
+  }
+}

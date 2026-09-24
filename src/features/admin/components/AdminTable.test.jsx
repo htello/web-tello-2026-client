@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import AdminTable from './AdminTable.jsx'
 
@@ -90,5 +90,24 @@ describe('AdminTable', () => {
 
     expect(onMoveDown).toHaveBeenCalledWith(rows[0], 0)
     expect(onMoveUp).toHaveBeenCalledWith(rows[1], 1)
+  })
+
+  it('devuelve el foco al botón de la fila movida tras reordenar', async () => {
+    const user = userEvent.setup()
+    render(
+      <AdminTable
+        columns={columns}
+        rows={rows}
+        rowLabel={rowLabel}
+        onMoveUp={vi.fn()}
+        onMoveDown={vi.fn()}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Bajar Obra A' }))
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Bajar Obra A' })).toHaveFocus(),
+    )
   })
 })

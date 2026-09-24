@@ -1,0 +1,47 @@
+@use '@/styles/variables' as *;
+
+// Estructura común de las secciones CRUD del panel admin.
+// Usar dentro del bloque BEM de cada vista: .admin-xxx { @include admin-crud; }
+@mixin admin-crud {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-4;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-xl;
+  }
+
+  &__new {
+    padding: $space-2 $space-4;
+    background: $color-accent;
+    color: $color-background;
+    border: 0;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      filter: brightness(1.1);
+    }
+  }
+
+  &__form {
+    padding: $space-6;
+    background: $color-surface;
+    border: 1px solid $color-border;
+  }
+
+  &__form-title {
+    margin: 0 0 $space-4;
+    font-size: $font-size-lg;
+    color: $color-accent;
+  }
+}
