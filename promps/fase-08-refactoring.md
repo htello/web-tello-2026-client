@@ -1,4 +1,4 @@
-# Fase 8: Refactoring del Portfolio (15 min)
+# Fase 8: Refactoring del Portfolio 
 
 ## Resultado Final
 Código organizado por dominio, sin duplicación de fetch/UI, con ESLint y SonarJS.

@@ -1,4 +1,4 @@
-# Fase 9: Login Admin + Seguridad (15 min)
+# Fase 9: Login Admin + Seguridad 
 
 ## Resultado Final
 Login real contra `/api/v1/auth/login`, sesión admin y rutas protegidas para el panel.

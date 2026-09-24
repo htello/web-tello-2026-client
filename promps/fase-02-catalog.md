@@ -1,4 +1,4 @@
-# Fase 2: Modelos + Galería Pública (15 min)
+# Fase 2: Modelos + Galería Pública 
 
 ## Resultado Final
 La Home contiene el menú superpuesto sobre una única imagen grande de fondo que cubre toda la pantalla.

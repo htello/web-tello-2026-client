@@ -1,7 +1,7 @@
-# Fase 10: Accesibilidad, UX y SEO (15 min)
+# Fase 16: Accesibilidad, UX y SEO
 
 ## Resultado Final
-Portfolio navegable por teclado, con hero de fondo responsive, carga progresiva, lightbox accesible, protección visual y metadatos SEO.
+Portfolio y panel admin navegables por teclado, con hero de fondo responsive, carga progresiva, lightbox accesible, protección visual y metadatos SEO.
 
 ## Paso 1: A11y
 
@@ -12,7 +12,9 @@ pnpm add -D eslint-plugin-jsx-a11y
 **Prompt para la IA:**
 ```
 Configura eslint-plugin-jsx-a11y en eslint.config.js para flat config.
-Revisa todas las vistas del portfolio.
+Revisa todas las vistas del portfolio Y del panel admin (fases 10-15):
+tablas y paginador accesibles, diálogos con foco atrapado, formularios con labels,
+feedback de mutaciones por aria-live.
 - botones con icono tienen aria-label
 - imágenes tienen alt contextual
 - formularios tienen labels asociados

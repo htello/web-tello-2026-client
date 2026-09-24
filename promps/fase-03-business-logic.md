@@ -1,4 +1,4 @@
-# Fase 3: TDD - Utilidades del Portfolio (15 min)
+# Fase 3: TDD - Utilidades del Portfolio 
 
 ## Resultado Final
 Funciones puras testeadas para fechas, campos opcionales, filtros e imágenes protegidas.

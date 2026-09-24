@@ -1,4 +1,4 @@
-# Fase 6: Diseño, Ilustración y Contacto (15 min)
+# Fase 6: Diseño, Ilustración y Contacto 
 
 ## Resultado Final
 Diseño muestra un slider por cada subcategoría (uno debajo del otro) que abre la galería seleccionada; Ilustración muestra directamente todas sus obras y Contacto envía mensajes.

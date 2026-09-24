@@ -1,4 +1,4 @@
-# Fase 7: E2E del Recorrido del Portfolio (15 min)
+# Fase 7: E2E del Recorrido del Portfolio 
 
 ## Resultado Final
 Playwright cubre el hero de Home, el menú, el recorrido de Pintura, Diseño, Ilustración, Contacto y estados de API.

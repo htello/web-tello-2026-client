@@ -1,4 +1,4 @@
-# Fase 4: Componentes de Galería, Ficha y Lightbox (15 min)
+# Fase 4: Componentes de Galería, Ficha y Lightbox 
 
 ## Resultado Final
 Pintura muestra un slider por cada colección (uno debajo del otro), cada colección abre su galería y existe un acceso independiente a Exhibiciones.

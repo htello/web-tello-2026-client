@@ -78,7 +78,7 @@ src/
 ├── App.jsx         # Rutas (públicas + /admin/*) bajo AuthProvider
 └── main.jsx        # Punto de entrada con BrowserRouter
 e2e/                # Tests E2E de Playwright
-promps/             # Planificación por fases (fase-01 → fase-12)
+promps/             # Planificación por fases (fase-01 → fase-18)
 ```
 
 ## Integración API
