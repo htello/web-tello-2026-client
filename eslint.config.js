@@ -29,4 +29,11 @@ export default defineConfig([
       'sonarjs/no-duplicate-string': 'off',
     },
   },
+  {
+    // Los E2E se ejecutan en Node (Playwright), no en el navegador.
+    files: ['e2e/**/*.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])
