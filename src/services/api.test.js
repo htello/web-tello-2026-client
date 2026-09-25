@@ -15,6 +15,7 @@ function jsonResponse(data, ok = true, status = 200) {
 describe('api', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
+    vi.unstubAllEnvs()
     vi.useRealTimers()
     setAuthToken(null)
     setUnauthorizedHandler(null)
@@ -277,5 +278,22 @@ describe('api', () => {
 
     await expect(api.get('/admin/collections')).rejects.toMatchObject({ status: 403 })
     expect(handler).not.toHaveBeenCalled()
+  })
+
+  it('usa el fallback localhost cuando VITE_API_URL no está definida', async () => {
+    vi.resetModules()
+    vi.stubEnv('VITE_API_URL', undefined)
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: null }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const { api: apiWithoutEnv } = await import('./api.js')
+    await apiWithoutEnv.get('/health')
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/api/v1/health',
+      expect.objectContaining({ method: 'GET' }),
+    )
+    vi.unstubAllEnvs()
+    vi.resetModules()
   })
 })
