@@ -7,6 +7,8 @@ import './AdminTable.scss'
  * Tabla de administración con columnas configurables y acciones por fila.
  *
  * - `loading` muestra LoadingState y `rows` vacío muestra EmptyState.
+ * - `toggles` + `onToggle` añaden columnas de checkbox (p. ej. published/featured)
+ *   que llaman a `onToggle(row, field, nextValue)` al cambiar.
  * - Las acciones (editar/borrar/subir/bajar) solo se renderizan si se pasa su
  *   manejador, con nombres accesibles construidos desde `rowLabel`.
  * - Subir está deshabilitado en la primera fila y Bajar en la última.
@@ -20,6 +22,8 @@ import './AdminTable.scss'
  * @param {boolean} [props.loading]
  * @param {string} [props.emptyMessage]
  * @param {(row: object) => string} [props.rowLabel] etiqueta accesible de la fila
+ * @param {Array<{ field: string, header: string, ariaLabel: string }>} [props.toggles]
+ * @param {(row: object, field: string, nextValue: boolean) => void} [props.onToggle]
  * @param {(row: object, index: number) => void} [props.onEdit]
  * @param {(row: object, index: number) => void} [props.onDelete]
  * @param {(row: object, index: number) => void} [props.onMoveUp]
@@ -31,6 +35,8 @@ const AdminTable = ({
   loading = false,
   emptyMessage = 'No hay elementos.',
   rowLabel = (row) => String(row.id),
+  toggles = [],
+  onToggle,
   onEdit,
   onDelete,
   onMoveUp,
@@ -66,6 +72,7 @@ const AdminTable = ({
   if (rows.length === 0) return <EmptyState message={emptyMessage} />
 
   const hasActions = Boolean(onEdit || onDelete || onMoveUp || onMoveDown)
+  const hasToggles = toggles.length > 0
 
   return (
     <table className="admin-table">
@@ -76,6 +83,12 @@ const AdminTable = ({
               {column.header}
             </th>
           ))}
+          {hasToggles &&
+            toggles.map((toggle) => (
+              <th key={toggle.field} scope="col" className="admin-table__header">
+                {toggle.header}
+              </th>
+            ))}
           {hasActions && (
             <th scope="col" className="admin-table__header">
               Acciones
@@ -91,6 +104,19 @@ const AdminTable = ({
                 {column.render ? column.render(row) : row[column.key]}
               </td>
             ))}
+            {hasToggles &&
+              toggles.map((toggle) => (
+                <td key={toggle.field} className="admin-table__cell admin-table__cell--toggle">
+                  <input
+                    type="checkbox"
+                    className="admin-table__toggle"
+                    checked={Boolean(row[toggle.field])}
+                    aria-label={`${toggle.ariaLabel} ${rowLabel(row)}`}
+                    disabled={!onToggle}
+                    onChange={() => onToggle?.(row, toggle.field, !row[toggle.field])}
+                  />
+                </td>
+              ))}
             {hasActions && (
               <td className="admin-table__cell admin-table__cell--actions">
                 {onMoveUp && (

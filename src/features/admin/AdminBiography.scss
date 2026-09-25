@@ -1,0 +1,13 @@
+@use '@/styles/variables' as *;
+@use 'admin-crud' as *;
+
+.admin-biography {
+  @include admin-crud;
+
+  &__saved {
+    padding: $space-2 $space-3;
+    color: $color-text;
+    border: 1px solid $color-accent;
+    background: rgba($color-accent, 0.08);
+  }
+}

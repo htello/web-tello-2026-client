@@ -72,14 +72,34 @@ describe('AdminPaintings', () => {
     vi.clearAllMocks()
   })
 
-  it('lista las pinturas con su colección, estado y destacada', async () => {
+  it('lista las pinturas con su colección y toggles inline de estado', async () => {
     renderView()
 
     expect(await screen.findByRole('cell', { name: 'Marina' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Retrato' })).toBeInTheDocument()
-    expect(screen.getByText('Publicada · Destacada')).toBeInTheDocument()
-    expect(screen.getByText('Borrador')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Marina' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Destacar Marina' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Retrato' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Destacar Retrato' })).not.toBeChecked()
     expect(screen.getByRole('cell', { name: 'Óleos' })).toBeInTheDocument()
+  })
+
+  it('alterna publicada/destacada inline con PUT parcial', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Marina' })
+
+    await user.click(screen.getByRole('checkbox', { name: 'Publicar Retrato' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('paintings', 11, { isPublished: true }),
+    )
+
+    await user.click(screen.getByRole('checkbox', { name: 'Destacar Marina' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('paintings', 10, { isFeatured: false }),
+    )
   })
 
   it('alimenta el selector de colección con GET /admin/collections', async () => {
