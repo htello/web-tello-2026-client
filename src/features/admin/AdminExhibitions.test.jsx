@@ -12,6 +12,7 @@ vi.mock('@/services/adminApi.js', () => ({
     update: vi.fn(),
     remove: vi.fn(),
     reorder: vi.fn(),
+    upload: vi.fn(),
   },
 }))
 
@@ -24,6 +25,16 @@ const EXHIBITIONS = [
     description: '',
     position: 0,
     isPublished: true,
+    images: [
+      {
+        id: 5,
+        url: 'https://cdn.test/madrid.jpg',
+        thumbnail: 'https://cdn.test/madrid_t.jpg',
+        width: 800,
+        height: 600,
+        position: 0,
+      },
+    ],
   },
   {
     id: 21,
@@ -173,6 +184,52 @@ describe('AdminExhibitions', () => {
 
     await waitFor(() =>
       expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 20, { location: 'Barcelona' }),
+    )
+  })
+
+  it('añade una imagen en edición y envía la lista completa en el PUT', async () => {
+    const user = userEvent.setup()
+    adminApi.upload.mockResolvedValue({
+      data: {
+        url: 'https://cdn.test/nueva.jpg',
+        thumbnail: 'https://cdn.test/nueva_t.jpg',
+        width: 400,
+        height: 300,
+        format: 'jpg',
+      },
+    })
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Editar Expo Madrid' }))
+
+    expect(screen.getByAltText('Imagen 1')).toHaveAttribute('src', 'https://cdn.test/madrid_t.jpg')
+
+    await user.upload(
+      screen.getByLabelText('Añadir imagen'),
+      new File(['img'], 'nueva.jpg', { type: 'image/jpeg' }),
+    )
+    await screen.findByAltText('Imagen 2')
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    expect(adminApi.upload).toHaveBeenCalledWith(expect.any(File), 'general')
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 20, {
+        images: [
+          {
+            url: 'https://cdn.test/madrid.jpg',
+            thumbnail: 'https://cdn.test/madrid_t.jpg',
+            width: 800,
+            height: 600,
+          },
+          {
+            url: 'https://cdn.test/nueva.jpg',
+            thumbnail: 'https://cdn.test/nueva_t.jpg',
+            width: 400,
+            height: 300,
+          },
+        ],
+      }),
     )
   })
 

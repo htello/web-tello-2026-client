@@ -1,5 +1,18 @@
 import { useState } from 'react'
+import ImageUploadField from './ImageUploadField.jsx'
+import ImageUploadListField from './ImageUploadListField.jsx'
 import './EntityForm.scss'
+
+/**
+ * Valor inicial por defecto según el tipo del campo.
+ * @param {object} field
+ * @returns {unknown}
+ */
+const defaultValue = (field) => {
+  if (field.type === 'checkbox') return false
+  if (field.type === 'images') return []
+  return ''
+}
 
 /**
  * Construye el estado inicial de valores a partir de los campos.
@@ -9,10 +22,7 @@ import './EntityForm.scss'
  */
 const buildInitialValues = (fields, initialValues = {}) =>
   Object.fromEntries(
-    fields.map((field) => [
-      field.name,
-      initialValues[field.name] ?? (field.type === 'checkbox' ? false : ''),
-    ]),
+    fields.map((field) => [field.name, initialValues[field.name] ?? defaultValue(field)]),
   )
 
 /**
@@ -40,7 +50,11 @@ const validateNumber = (field, value) => {
  * @returns {string}
  */
 const validateField = (field, value) => {
-  const isEmptyValue = value === '' || value === undefined || value === null
+  const isEmptyValue =
+    value === '' ||
+    value === undefined ||
+    value === null ||
+    (Array.isArray(value) && value.length === 0)
 
   if (field.type === 'checkbox') {
     return field.validate ? (field.validate(value) ?? '') : ''
@@ -68,6 +82,7 @@ const buildPayload = (fields, values) =>
   Object.fromEntries(
     fields.map((field) => {
       const value = values[field.name]
+      if (field.type === 'images') return [field.name, value]
       if (field.type === 'checkbox') return [field.name, Boolean(value)]
       if (field.type === 'number') return [field.name, value === '' ? null : Number(value)]
       if (field.type === 'select') {
@@ -84,10 +99,11 @@ const buildPayload = (fields, values) =>
  * @param {string} id
  * @param {Record<string, unknown>} values
  * @param {Record<string, string>} errors
- * @param {(field: object) => (event: object) => void} onChange
+ * @param {(field: object) => (event: object) => void} onChange handler de eventos DOM
+ * @param {(field: object) => (value: unknown) => void} onValue handler de valores (image/images)
  * @returns {import('react').ReactNode}
  */
-const renderControl = (field, id, values, errors, onChange) => {
+const renderControl = (field, id, values, errors, onChange, onValue) => {
   const shared = {
     id,
     name: field.name,
@@ -98,6 +114,28 @@ const renderControl = (field, id, values, errors, onChange) => {
   }
   const value = values[field.name]
 
+  if (field.type === 'image') {
+    return (
+      <ImageUploadField
+        id={id}
+        label={field.label}
+        value={value ?? ''}
+        section={field.section}
+        onChange={onValue(field)}
+      />
+    )
+  }
+  if (field.type === 'images') {
+    return (
+      <ImageUploadListField
+        id={id}
+        label={field.label}
+        value={Array.isArray(value) ? value : []}
+        section={field.section}
+        onChange={onValue(field)}
+      />
+    )
+  }
   if (field.type === 'textarea') {
     return <textarea {...shared} rows={4} value={value ?? ''} />
   }
@@ -130,7 +168,7 @@ const renderControl = (field, id, values, errors, onChange) => {
  * - Modo edición precargando `initialValues`.
  *
  * @param {object} props
- * @param {Array<{ name: string, label: string, type?: string, required?: boolean, min?: number, max?: number, options?: Array<{ value: unknown, label: string }>, validate?: (value: unknown) => string | null | undefined }>} props.fields
+ * @param {Array<{ name: string, label: string, type?: string, required?: boolean, min?: number, max?: number, options?: Array<{ value: unknown, label: string }>, section?: string, validate?: (value: unknown) => string | null | undefined }>} props.fields
  * @param {object} [props.initialValues] valores precargados (modo edición)
  * @param {(values: Record<string, unknown>) => Promise<{ ok: boolean, data?: unknown, error?: Error }>} props.onSubmit
  * @param {(data: unknown) => void} [props.onSuccess]
@@ -155,6 +193,40 @@ const EntityForm = ({
   const handleChange = (field) => (event) => {
     const value = field.type === 'checkbox' ? event.target.checked : event.target.value
     setValues((current) => ({ ...current, [field.name]: value }))
+  }
+
+  const handleValue = (field) => (value) => {
+    setValues((current) => ({ ...current, [field.name]: value }))
+  }
+
+  /**
+   * Renderiza el campo completo según su tipo: los controles con etiqueta
+   * propia (checkbox, image, images) no duplican el label externo.
+   * @param {object} field
+   * @param {string} id
+   * @returns {import('react').ReactNode}
+   */
+  const renderField = (field, id) => {
+    const control = renderControl(field, id, values, errors, handleChange, handleValue)
+    if (field.type === 'checkbox') {
+      return (
+        <label className="entity-form__checkbox" htmlFor={id}>
+          {control}
+          {field.label}
+        </label>
+      )
+    }
+    if (field.type === 'image' || field.type === 'images') {
+      return control
+    }
+    return (
+      <>
+        <label className="entity-form__label" htmlFor={id}>
+          {field.label}
+        </label>
+        {control}
+      </>
+    )
   }
 
   const handleSubmit = async (event) => {
@@ -190,19 +262,7 @@ const EntityForm = ({
         const id = `entity-form-${field.name}`
         return (
           <div key={field.name} className="entity-form__field">
-            {field.type === 'checkbox' ? (
-              <label className="entity-form__checkbox" htmlFor={id}>
-                {renderControl(field, id, values, errors, handleChange)}
-                {field.label}
-              </label>
-            ) : (
-              <>
-                <label className="entity-form__label" htmlFor={id}>
-                  {field.label}
-                </label>
-                {renderControl(field, id, values, errors, handleChange)}
-              </>
-            )}
+            {renderField(field, id)}
             {errors[field.name] && (
               <p className="entity-form__error" id={`${id}-error`}>
                 {errors[field.name]}

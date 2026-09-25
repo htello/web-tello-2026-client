@@ -24,8 +24,7 @@ const BIOGRAPHY_FIELDS = [
         ? ''
         : `El contenido debe tener al menos ${MIN_CONTENT_LENGTH} caracteres`,
   },
-  // Foto del artista como URL de texto; ImageUploadField llega en la fase 13.
-  { name: 'imageUrl', label: 'Foto del artista (URL)', type: 'text' },
+  { name: 'imageUrl', label: 'Foto del artista', type: 'image', section: 'general' },
 ]
 
 /**

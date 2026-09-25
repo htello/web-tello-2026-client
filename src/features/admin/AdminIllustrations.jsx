@@ -12,8 +12,7 @@ import './AdminIllustrations.scss'
 const ILLUSTRATION_FIELDS = [
   { name: 'title', label: 'Título', type: 'text', required: true },
   { name: 'description', label: 'Descripción', type: 'textarea' },
-  // Campo de imagen como URL de texto; ImageUploadField llega en la fase 13.
-  { name: 'imageUrl', label: 'Imagen (URL)', type: 'text' },
+  { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'ilustracion' },
   { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
   { name: 'isFeatured', label: 'Destacada', type: 'checkbox' },
 ]

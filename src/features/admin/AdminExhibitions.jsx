@@ -15,6 +15,7 @@ const EXHIBITION_FIELDS = [
   { name: 'endDate', label: 'Fecha de fin', type: 'date' },
   { name: 'location', label: 'Localización', type: 'text' },
   { name: 'description', label: 'Descripción', type: 'textarea' },
+  { name: 'images', label: 'Imágenes', type: 'images', section: 'general' },
   { name: 'position', label: 'Posición', type: 'number', min: 0 },
   { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
 ]
@@ -29,7 +30,8 @@ const toggles = [{ field: 'isPublished', header: 'Publicada', ariaLabel: 'Public
 
 /**
  * CRUD de exhibiciones del panel admin: listar, crear, editar (PUT parcial),
- * borrar con confirmación y reordenar.
+ * borrar con confirmación, reordenar y gestionar imágenes múltiples
+ * (el orden de la lista define position; el PUT la reemplaza completa).
  */
 const AdminExhibitions = () => {
   const { items, loading, error, create, update, remove, saveError } =

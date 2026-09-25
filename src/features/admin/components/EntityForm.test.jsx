@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import EntityForm from './EntityForm.jsx'
@@ -235,5 +235,105 @@ describe('EntityForm', () => {
     render(<EntityForm fields={fields} onSubmit={vi.fn()} submitLabel="Crear obra" />)
 
     expect(screen.getByRole('button', { name: 'Crear obra' })).toBeInTheDocument()
+  })
+})
+
+describe('EntityForm campos de imagen', () => {
+  const UPLOAD_DATA = {
+    url: 'https://cdn.test/pintura/abc.jpg',
+    thumbnail: 'https://cdn.test/pintura/abc_t.jpg',
+    width: 800,
+    height: 600,
+    format: 'jpg',
+  }
+  const uploadResponse = {
+    ok: true,
+    status: 200,
+    headers: { get: () => 'application/json' },
+    json: async () => ({ data: UPLOAD_DATA }),
+  }
+  const imageFile = new File(['img'], 'foto.jpg', { type: 'image/jpeg' })
+
+  let user
+
+  beforeEach(() => {
+    user = userEvent.setup()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(uploadResponse))
+  })
+
+  afterEach(() => {
+    cleanup()
+    vi.unstubAllGlobals()
+  })
+
+  it('type image: renderiza campo de archivo e incluye la url subida en el payload', async () => {
+    const onSubmit = vi.fn().mockResolvedValue({ ok: true })
+    render(
+      <EntityForm
+        fields={[
+          { name: 'title', label: 'Título', type: 'text', required: true },
+          { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'pintura' },
+        ]}
+        onSubmit={onSubmit}
+      />,
+    )
+
+    expect(screen.getByLabelText('Imagen')).toHaveAttribute('type', 'file')
+
+    await user.type(screen.getByLabelText('Título'), 'Obra')
+    await user.upload(screen.getByLabelText('Imagen'), imageFile)
+    await screen.findByAltText('Imagen subida')
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    await waitFor(() =>
+      expect(onSubmit).toHaveBeenCalledWith({ title: 'Obra', imageUrl: UPLOAD_DATA.url }),
+    )
+  })
+
+  it('type images: añade la imagen subida y expone la lista normalizada', async () => {
+    const onSubmit = vi.fn().mockResolvedValue({ ok: true })
+    render(
+      <EntityForm
+        fields={[
+          { name: 'title', label: 'Título', type: 'text', required: true },
+          { name: 'images', label: 'Imágenes', type: 'images', section: 'general' },
+        ]}
+        onSubmit={onSubmit}
+      />,
+    )
+
+    await user.type(screen.getByLabelText('Título'), 'Expo')
+    await user.upload(screen.getByLabelText('Añadir imagen'), imageFile)
+    await screen.findByAltText('Imagen 1')
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    await waitFor(() =>
+      expect(onSubmit).toHaveBeenCalledWith({
+        title: 'Expo',
+        images: [
+          {
+            url: UPLOAD_DATA.url,
+            thumbnail: UPLOAD_DATA.thumbnail,
+            width: UPLOAD_DATA.width,
+            height: UPLOAD_DATA.height,
+          },
+        ],
+      }),
+    )
+  })
+
+  it('type images: requerido sin imágenes bloquea el envío', async () => {
+    const onSubmit = vi.fn()
+    render(
+      <EntityForm
+        fields={[{ name: 'images', label: 'Imágenes', type: 'images', required: true }]}
+        onSubmit={onSubmit}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    expect(screen.getByText('Imágenes es obligatorio')).toBeInTheDocument()
+    expect(onSubmit).not.toHaveBeenCalled()
   })
 })

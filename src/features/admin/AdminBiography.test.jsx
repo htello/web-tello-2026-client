@@ -14,8 +14,19 @@ vi.mock('@/services/adminApi.js', () => ({
   adminApi: {
     createBiography: vi.fn(),
     updateBiography: vi.fn(),
+    upload: vi.fn(),
   },
 }))
+
+const UPLOAD_RESPONSE = {
+  data: {
+    url: 'https://cdn.example.com/nueva.jpg',
+    thumbnail: 'https://cdn.example.com/nueva_t.jpg',
+    width: 600,
+    height: 800,
+    format: 'jpg',
+  },
+}
 
 const BIOGRAPHY = {
   id: 1,
@@ -78,12 +89,15 @@ describe('AdminBiography', () => {
       screen.getByLabelText('Contenido'),
       'Nueva biografía del artista Antonio Tello.',
     )
-    await user.type(
+    adminApi.upload.mockResolvedValue(UPLOAD_RESPONSE)
+    await user.upload(
       screen.getByLabelText(/foto del artista/i),
-      'https://cdn.example.com/nueva.jpg',
+      new File(['img'], 'nueva.jpg', { type: 'image/jpeg' }),
     )
+    await screen.findByAltText('Foto del artista subida')
     await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
+    expect(adminApi.upload).toHaveBeenCalledWith(expect.any(File), 'general')
     await waitFor(() =>
       expect(adminApi.createBiography).toHaveBeenCalledWith({
         content: 'Nueva biografía del artista Antonio Tello.',
@@ -100,10 +114,19 @@ describe('AdminBiography', () => {
 
     expect(await screen.findByRole('heading', { name: 'Editar biografía' })).toBeInTheDocument()
     expect(screen.getByLabelText('Contenido')).toHaveValue(BIOGRAPHY.content)
-    expect(screen.getByLabelText(/foto del artista/i)).toHaveValue(BIOGRAPHY.imageUrl)
+    expect(screen.getByAltText('Foto del artista actual')).toHaveAttribute(
+      'src',
+      BIOGRAPHY.imageUrl,
+    )
 
-    await user.clear(screen.getByLabelText(/foto del artista/i))
-    await user.type(screen.getByLabelText(/foto del artista/i), 'https://cdn.example.com/b.jpg')
+    adminApi.upload.mockResolvedValue({
+      data: { ...UPLOAD_RESPONSE.data, url: 'https://cdn.example.com/b.jpg' },
+    })
+    await user.upload(
+      screen.getByLabelText(/foto del artista/i),
+      new File(['img'], 'b.jpg', { type: 'image/jpeg' }),
+    )
+    await screen.findByAltText('Foto del artista subida')
     await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
     await waitFor(() =>
