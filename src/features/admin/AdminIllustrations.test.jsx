@@ -106,7 +106,7 @@ describe('AdminIllustrations', () => {
 
     await user.click(screen.getByRole('button', { name: 'Nueva ilustración' }))
     expect(screen.getByLabelText('Descripción')).toBeInTheDocument()
-    expect(screen.getByLabelText(/imagen \(url\)/i)).toBeInTheDocument()
+    expect(screen.getByLabelText('Imagen')).toHaveAttribute('type', 'file')
 
     await user.type(screen.getByLabelText('Título'), 'Bosque')
     await user.click(screen.getByRole('checkbox', { name: 'Publicada' }))

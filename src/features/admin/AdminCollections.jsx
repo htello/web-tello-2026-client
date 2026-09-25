@@ -12,7 +12,7 @@ import './AdminCollections.scss'
 const COLLECTION_FIELDS = [
   { name: 'title', label: 'Título', type: 'text', required: true },
   { name: 'description', label: 'Descripción', type: 'textarea' },
-  { name: 'coverImage', label: 'Imagen de portada (URL)', type: 'text' },
+  { name: 'coverImage', label: 'Imagen de portada', type: 'image', section: 'pintura' },
   { name: 'position', label: 'Posición', type: 'number', min: 0 },
   { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
 ]

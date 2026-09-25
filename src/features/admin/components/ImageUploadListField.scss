@@ -1,0 +1,91 @@
+@use '@/styles/variables' as *;
+
+.image-upload-list {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  &__label {
+    font-weight: 600;
+  }
+
+  &__empty {
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+  }
+
+  &__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    padding: $space-1;
+    border: 1px solid $color-border;
+  }
+
+  &__thumb {
+    width: 8rem;
+    height: 6rem;
+    object-fit: contain;
+    background: $color-surface;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $space-1;
+
+    button {
+      padding: 0 $space-1;
+      background: transparent;
+      color: $color-text;
+      border: 1px solid $color-border;
+      font-size: $font-size-sm;
+      cursor: pointer;
+
+      &:hover {
+        border-color: $color-accent;
+        color: $color-accent;
+      }
+
+      &:focus-visible {
+        outline: 2px solid $color-accent;
+        outline-offset: 1px;
+      }
+    }
+  }
+
+  &__add-label {
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+  }
+
+  &__input {
+    color: $color-text;
+
+    &::file-selector-button {
+      padding: $space-1 $space-2;
+      background: $color-surface;
+      color: $color-text;
+      border: 1px solid $color-border;
+      cursor: pointer;
+    }
+  }
+
+  &__status {
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+  }
+
+  &__error {
+    color: #e57373;
+    font-size: $font-size-sm;
+  }
+}

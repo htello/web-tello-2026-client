@@ -28,8 +28,7 @@ const DESIGN_FIELDS = [
     options: SUBCATEGORY_OPTIONS,
   },
   { name: 'description', label: 'Descripción', type: 'textarea' },
-  // Campo de imagen como URL de texto; ImageUploadField llega en la fase 13.
-  { name: 'imageUrl', label: 'Imagen (URL)', type: 'text' },
+  { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'diseno' },
   { name: 'isPublished', label: 'Publicado', type: 'checkbox' },
   { name: 'isFeatured', label: 'Destacado', type: 'checkbox' },
 ]
@@ -51,7 +50,7 @@ const toggles = [
 /**
  * CRUD de proyectos de diseño del panel admin: subcategoría obligatoria
  * (enum del contrato), filtro del listado por subcategoría, reorder con SOLO
- * orderedIds y campo de imagen como URL de texto (ImageUploadField, fase 13).
+ * orderedIds y subida de imagen en segundo plano (ImageUploadField).
  */
 const AdminDesign = () => {
   const { items, loading, error, create, update, remove, saveError } = useAdminResource('design')
