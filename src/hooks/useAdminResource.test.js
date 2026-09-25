@@ -53,6 +53,65 @@ describe('useAdminResource', () => {
     expect(result.current.items).toEqual([])
   })
 
+  it('envía los params de paginación al listado', async () => {
+    const meta = { total: 40, page: 2, limit: 20, pages: 2 }
+    adminApi.list.mockResolvedValue({ data: [{ id: 21 }], meta })
+    const { result } = renderHook(() =>
+      useAdminResource('users', { params: { page: 2, limit: 20 } }),
+    )
+
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(adminApi.list).toHaveBeenCalledWith(
+      'users',
+      expect.objectContaining({ params: { page: 2, limit: 20 } }),
+    )
+    expect(result.current.meta).toEqual(meta)
+  })
+
+  it('recarga el listado al cambiar page', async () => {
+    adminApi.list.mockResolvedValue({ data: [], meta: { total: 0, page: 1, limit: 20, pages: 1 } })
+    const { rerender } = renderHook(({ params }) => useAdminResource('users', { params }), {
+      initialProps: { params: { page: 1, limit: 20 } },
+    })
+
+    await waitFor(() => expect(adminApi.list).toHaveBeenCalledTimes(1))
+
+    rerender({ params: { page: 2, limit: 20 } })
+
+    await waitFor(() => expect(adminApi.list).toHaveBeenCalledTimes(2))
+    expect(adminApi.list).toHaveBeenLastCalledWith(
+      'users',
+      expect.objectContaining({ params: { page: 2, limit: 20 } }),
+    )
+  })
+
+  it('no recarga en bucle cuando el objeto params se recrea en cada render', async () => {
+    adminApi.list.mockResolvedValue({ data: [], meta: { total: 0, page: 1, limit: 20, pages: 1 } })
+    const { rerender } = renderHook(({ params }) => useAdminResource('users', { params }), {
+      initialProps: { params: { page: 1, limit: 20 } },
+    })
+
+    await waitFor(() => expect(adminApi.list).toHaveBeenCalledTimes(1))
+
+    rerender({ params: { page: 1, limit: 20 } })
+    rerender({ params: { page: 1, limit: 20 } })
+
+    expect(adminApi.list).toHaveBeenCalledTimes(1)
+  })
+
+  it('list sin options no envía params', async () => {
+    adminApi.list.mockResolvedValue({ data: [] })
+    renderHook(() => useAdminResource('collections'))
+
+    await waitFor(() =>
+      expect(adminApi.list).toHaveBeenCalledWith('collections', {
+        signal: expect.any(AbortSignal),
+        params: undefined,
+      }),
+    )
+  })
+
   it('create: isSaving durante la mutación, devuelve ok y recarga el listado', async () => {
     adminApi.list.mockResolvedValue({ data: [] })
     let resolveCreate

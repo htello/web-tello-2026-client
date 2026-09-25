@@ -108,6 +108,7 @@ const renderControl = (field, id, values, errors, onChange, onValue) => {
     id,
     name: field.name,
     className: 'entity-form__control',
+    autoComplete: field.autoComplete,
     'aria-invalid': errors[field.name] ? 'true' : undefined,
     'aria-describedby': errors[field.name] ? `${id}-error` : undefined,
     onChange: onChange(field),
@@ -168,7 +169,7 @@ const renderControl = (field, id, values, errors, onChange, onValue) => {
  * - Modo edición precargando `initialValues`.
  *
  * @param {object} props
- * @param {Array<{ name: string, label: string, type?: string, required?: boolean, min?: number, max?: number, options?: Array<{ value: unknown, label: string }>, section?: string, validate?: (value: unknown) => string | null | undefined }>} props.fields
+ * @param {Array<{ name: string, label: string, type?: string, required?: boolean, min?: number, max?: number, options?: Array<{ value: unknown, label: string }>, section?: string, autoComplete?: string, validate?: (value: unknown) => string | null | undefined }>} props.fields
  * @param {object} [props.initialValues] valores precargados (modo edición)
  * @param {(values: Record<string, unknown>) => Promise<{ ok: boolean, data?: unknown, error?: Error }>} props.onSubmit
  * @param {(data: unknown) => void} [props.onSuccess]

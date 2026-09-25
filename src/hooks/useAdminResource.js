@@ -19,6 +19,9 @@ const EMPTY_ITEMS = []
  *   al terminar con éxito y exponen `isSaving`/`saveError` para la UI.
  *
  * @param {string} resource uno de ADMIN_RESOURCES (p. ej. 'collections')
+ * @param {{ params?: Record<string, string | number> }} [options] `params` de
+ *   query para los listados paginados (`users`: `{ page, limit }`). Solo se
+ *   recarga cuando cambian los valores primitivos, no la identidad del objeto.
  * @returns {{
  *   items: unknown[],
  *   meta: { total: number, page: number, limit: number, pages: number } | null,
@@ -32,10 +35,10 @@ const EMPTY_ITEMS = []
  *   saveError: Error | null,
  * }}
  */
-export function useAdminResource(resource) {
+export function useAdminResource(resource, { params } = {}) {
   const { data, loading, error, reload } = useAsyncData(
-    (signal) => adminApi.list(resource, { signal }),
-    [resource],
+    (signal) => adminApi.list(resource, { signal, params }),
+    [resource, JSON.stringify(params ?? null)],
   )
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState(null)
