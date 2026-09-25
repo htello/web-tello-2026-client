@@ -1,0 +1,6 @@
+@use '@/styles/variables' as *;
+@use 'admin-crud' as *;
+
+.admin-illustrations {
+  @include admin-crud;
+}

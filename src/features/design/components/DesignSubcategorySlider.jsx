@@ -4,6 +4,7 @@ import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { DESIGN_SUBCATEGORIES } from '@/constants/businessRules.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
+import EmptyState from '@/components/EmptyState.jsx'
 import './DesignSubcategorySlider.scss'
 
 const DesignSubcategorySlider = () => {
@@ -21,9 +22,18 @@ const DesignSubcategorySlider = () => {
   if (loading) return <LoadingState />
   if (error) return <ErrorState message="No se pudieron cargar los proyectos." />
 
+  // Solo se muestran las subcategorías con proyectos publicados.
+  const visibleSubcategories = DESIGN_SUBCATEGORIES.filter(
+    ({ key }) => (projectsBySubcategory[key] ?? []).length > 0,
+  )
+
+  if (visibleSubcategories.length === 0) {
+    return <EmptyState message="No hay proyectos de diseño disponibles." />
+  }
+
   return (
     <div className="design-subcategory-slider">
-      {DESIGN_SUBCATEGORIES.map(({ key, label }) => {
+      {visibleSubcategories.map(({ key, label }) => {
         const projects = projectsBySubcategory[key] ?? []
         const featured = projects.filter((p) => p.isFeatured)
         const images = featured.length > 0 ? featured : projects.slice(0, 1)

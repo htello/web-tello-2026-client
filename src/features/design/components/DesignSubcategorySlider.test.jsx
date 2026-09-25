@@ -45,13 +45,20 @@ describe('DesignSubcategorySlider', () => {
     vi.unstubAllGlobals()
   })
 
-  it('muestra las cuatro subcategorías con sus labels', async () => {
+  it('muestra solo las subcategorías con proyectos publicados', async () => {
     renderSlider()
 
     expect(await screen.findByText('Imagen corporativa')).toBeInTheDocument()
     expect(screen.getByText('Packaging y Expositores')).toBeInTheDocument()
-    expect(screen.getByText('Cartelería')).toBeInTheDocument()
-    expect(screen.getByText('Editorial')).toBeInTheDocument()
+    expect(screen.queryByText('Cartelería')).not.toBeInTheDocument()
+    expect(screen.queryByText('Editorial')).not.toBeInTheDocument()
+  })
+
+  it('muestra un estado vacío si ninguna subcategoría tiene proyectos', async () => {
+    vi.stubGlobal('fetch', buildFetch({}))
+    renderSlider()
+
+    expect(await screen.findByText(/no hay proyectos/i)).toBeInTheDocument()
   })
 
   it('muestra los proyectos destacados de cada subcategoría', async () => {

@@ -12,8 +12,8 @@ function jsonResponse(data) {
 }
 
 const exhibitions = [
-  { id: 1, title: 'Expo B', date: '2024-06-10', location: 'Madrid', position: 2, isPublished: true },
-  { id: 2, title: 'Expo A', date: '2023-03-05', location: 'Valencia', description: 'Retrospectiva', position: 1, isPublished: true },
+  { id: 1, title: 'Expo B', date: '2024-06-10', endDate: '2024-06-30', location: 'Madrid', position: 2, isPublished: true },
+  { id: 2, title: 'Expo A', date: '2023-03-05', endDate: null, location: 'Valencia', description: 'Retrospectiva', position: 1, isPublished: true },
 ]
 
 function mockExhibitions({ exhibitionsData = exhibitions } = {}) {
@@ -43,6 +43,14 @@ describe('ExhibitionList', () => {
     render(<ExhibitionList />)
 
     expect(await screen.findByText(/5 de marzo de 2023/)).toBeInTheDocument()
+  })
+
+  it('muestra el rango "Del X al Y" cuando hay endDate', async () => {
+    render(<ExhibitionList />)
+
+    expect(
+      await screen.findByText('Del 10 de junio de 2024 al 30 de junio de 2024'),
+    ).toBeInTheDocument()
   })
 
   it('muestra un estado vacío sin exposiciones', async () => {

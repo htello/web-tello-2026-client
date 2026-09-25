@@ -20,6 +20,9 @@ import AdminSectionPlaceholder from './features/admin/AdminSectionPlaceholder.js
 import AdminCollections from './features/admin/AdminCollections.jsx'
 import AdminPaintings from './features/admin/AdminPaintings.jsx'
 import AdminExhibitions from './features/admin/AdminExhibitions.jsx'
+import AdminDesign from './features/admin/AdminDesign.jsx'
+import AdminIllustrations from './features/admin/AdminIllustrations.jsx'
+import AdminBiography from './features/admin/AdminBiography.jsx'
 import heroImage from './assets/prueba-camisa-1200.jpg'
 
 function CollectionGalleryRoute() {
@@ -56,9 +59,9 @@ function App() {
             <Route path="collections" element={<AdminCollections />} />
             <Route path="paintings" element={<AdminPaintings />} />
             <Route path="exhibitions" element={<AdminExhibitions />} />
-            <Route path="design" element={<AdminSectionPlaceholder title="Diseño" />} />
-            <Route path="illustrations" element={<AdminSectionPlaceholder title="Ilustración" />} />
-            <Route path="biography" element={<AdminSectionPlaceholder title="Biografía" />} />
+            <Route path="design" element={<AdminDesign />} />
+            <Route path="illustrations" element={<AdminIllustrations />} />
+            <Route path="biography" element={<AdminBiography />} />
             <Route path="users" element={<AdminSectionPlaceholder title="Usuarios" />} />
           </Route>
         </Route>

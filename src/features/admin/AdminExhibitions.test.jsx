@@ -58,13 +58,25 @@ describe('AdminExhibitions', () => {
     vi.clearAllMocks()
   })
 
-  it('lista las exhibiciones con fecha y estado', async () => {
+  it('lista las exhibiciones con fecha y toggle inline de estado', async () => {
     renderView()
 
     expect(await screen.findByRole('cell', { name: 'Expo Madrid' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: '2024-05-01' })).toBeInTheDocument()
-    expect(screen.getByText('Publicada')).toBeInTheDocument()
-    expect(screen.getByText('Borrador')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Expo Madrid' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Expo Sevilla' })).not.toBeChecked()
+  })
+
+  it('alterna publicada inline con PUT parcial', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('checkbox', { name: 'Publicar Expo Sevilla' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 21, { isPublished: true }),
+    )
   })
 
   it('valida título y fecha obligatorios antes de crear', async () => {
@@ -91,6 +103,9 @@ describe('AdminExhibitions', () => {
 
     await user.type(screen.getByLabelText('Título'), 'Expo Bilbao')
     fireEvent.change(screen.getByLabelText('Fecha'), { target: { value: '2025-01-15' } })
+    fireEvent.change(screen.getByLabelText('Fecha de fin'), {
+      target: { value: '2025-02-15' },
+    })
     await user.type(screen.getByLabelText('Localización'), 'Bilbao')
     await user.click(screen.getByRole('checkbox', { name: 'Publicada' }))
     await user.click(screen.getByRole('button', { name: 'Guardar' }))
@@ -99,8 +114,45 @@ describe('AdminExhibitions', () => {
       expect(adminApi.create).toHaveBeenCalledWith('exhibitions', {
         title: 'Expo Bilbao',
         date: '2025-01-15',
+        endDate: '2025-02-15',
         location: 'Bilbao',
         isPublished: true,
+      }),
+    )
+  })
+
+  it('edita precargando la fecha de fin y permite cambiarla', async () => {
+    const user = userEvent.setup()
+    adminApi.list.mockResolvedValue({
+      data: [
+        {
+          id: 30,
+          title: 'Expo Rango',
+          date: '2025-01-15',
+          endDate: '2025-02-15',
+          location: null,
+          description: '',
+          position: 0,
+          isPublished: true,
+        },
+      ],
+    })
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Rango' })
+
+    await user.click(screen.getByRole('button', { name: 'Editar Expo Rango' }))
+
+    expect(screen.getByLabelText('Fecha')).toHaveValue('2025-01-15')
+    expect(screen.getByLabelText('Fecha de fin')).toHaveValue('2025-02-15')
+
+    fireEvent.change(screen.getByLabelText('Fecha de fin'), {
+      target: { value: '2025-03-01' },
+    })
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 30, {
+        endDate: '2025-03-01',
       }),
     )
   })

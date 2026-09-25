@@ -6,36 +6,42 @@ import { getChangedFields, stripEmptyFields } from '@/utils/formPayload.js'
 import AdminTable from './components/AdminTable.jsx'
 import ConfirmDialog from './components/ConfirmDialog.jsx'
 import EntityForm from './components/EntityForm.jsx'
-import './AdminExhibitions.scss'
+import './AdminIllustrations.scss'
 
-/** Campos del formulario según el schema ExhibitionRequest del openapi. */
-const EXHIBITION_FIELDS = [
+/** Campos del formulario según el schema IllustrationRequest del openapi. */
+const ILLUSTRATION_FIELDS = [
   { name: 'title', label: 'Título', type: 'text', required: true },
-  { name: 'date', label: 'Fecha', type: 'date', required: true },
-  { name: 'endDate', label: 'Fecha de fin', type: 'date' },
-  { name: 'location', label: 'Localización', type: 'text' },
   { name: 'description', label: 'Descripción', type: 'textarea' },
-  { name: 'position', label: 'Posición', type: 'number', min: 0 },
+  // Campo de imagen como URL de texto; ImageUploadField llega en la fase 13.
+  { name: 'imageUrl', label: 'Imagen (URL)', type: 'text' },
   { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
+  { name: 'isFeatured', label: 'Destacada', type: 'checkbox' },
 ]
 
 const columns = [
   { key: 'title', header: 'Título' },
-  { key: 'date', header: 'Fecha' },
-  { key: 'location', header: 'Localización', render: (row) => row.location ?? '—' },
+  {
+    key: 'description',
+    header: 'Descripción',
+    render: (row) => row.description || '—',
+  },
 ]
 
-const toggles = [{ field: 'isPublished', header: 'Publicada', ariaLabel: 'Publicar' }]
+const toggles = [
+  { field: 'isPublished', header: 'Publicada', ariaLabel: 'Publicar' },
+  { field: 'isFeatured', header: 'Destacada', ariaLabel: 'Destacar' },
+]
 
 /**
- * CRUD de exhibiciones del panel admin: listar, crear, editar (PUT parcial),
- * borrar con confirmación y reordenar.
+ * CRUD de ilustraciones del panel admin: listar todo (publicado y no),
+ * crear/editar (PUT parcial), toggles inline de published/featured, borrado
+ * con confirmación y reorder con SOLO orderedIds.
  */
-const AdminExhibitions = () => {
+const AdminIllustrations = () => {
   const { items, loading, error, create, update, remove, saveError } =
-    useAdminResource('exhibitions')
+    useAdminResource('illustrations')
   const { items: ordered, moveUp, moveDown, error: reorderError } = useReorder(
-    'exhibitions',
+    'illustrations',
     items,
   )
   const [formOpen, setFormOpen] = useState(false)
@@ -74,11 +80,11 @@ const AdminExhibitions = () => {
   const handleToggle = (row, field, nextValue) => update(row.id, { [field]: nextValue })
 
   return (
-    <section className="admin-exhibitions">
-      <header className="admin-exhibitions__header">
-        <h1 className="admin-exhibitions__title">Exhibiciones</h1>
-        <button type="button" className="admin-exhibitions__new" onClick={openCreate}>
-          Nueva exhibición
+    <section className="admin-illustrations">
+      <header className="admin-illustrations__header">
+        <h1 className="admin-illustrations__title">Ilustraciones</h1>
+        <button type="button" className="admin-illustrations__new" onClick={openCreate}>
+          Nueva ilustración
         </button>
       </header>
 
@@ -87,13 +93,16 @@ const AdminExhibitions = () => {
       {saveError && !formOpen && <ErrorState message={saveError.message} />}
 
       {formOpen && (
-        <section className="admin-exhibitions__form" aria-labelledby="exhibitions-form-title">
-          <h2 id="exhibitions-form-title" className="admin-exhibitions__form-title">
-            {editing ? 'Editar exhibición' : 'Crear exhibición'}
+        <section
+          className="admin-illustrations__form"
+          aria-labelledby="illustrations-form-title"
+        >
+          <h2 id="illustrations-form-title" className="admin-illustrations__form-title">
+            {editing ? 'Editar ilustración' : 'Crear ilustración'}
           </h2>
           <EntityForm
             key={editing?.id ?? 'new'}
-            fields={EXHIBITION_FIELDS}
+            fields={ILLUSTRATION_FIELDS}
             initialValues={editing ?? undefined}
             onSubmit={handleSubmit}
             onSuccess={closeForm}
@@ -106,7 +115,7 @@ const AdminExhibitions = () => {
         columns={columns}
         rows={ordered}
         loading={loading}
-        emptyMessage="No hay exhibiciones."
+        emptyMessage="No hay ilustraciones."
         rowLabel={(row) => row.title}
         toggles={toggles}
         onToggle={handleToggle}
@@ -118,7 +127,7 @@ const AdminExhibitions = () => {
 
       <ConfirmDialog
         open={deleteTarget !== null}
-        title={`¿Borrar la exhibición «${deleteTarget?.title ?? ''}»?`}
+        title={`¿Borrar la ilustración «${deleteTarget?.title ?? ''}»?`}
         message="Esta acción no se puede deshacer."
         confirmLabel="Borrar"
         danger
@@ -129,4 +138,4 @@ const AdminExhibitions = () => {
   )
 }
 
-export default AdminExhibitions
+export default AdminIllustrations

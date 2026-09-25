@@ -17,14 +17,9 @@ const COLLECTION_FIELDS = [
   { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
 ]
 
-const columns = [
-  { key: 'title', header: 'Título' },
-  {
-    key: 'status',
-    header: 'Estado',
-    render: (row) => (row.isPublished ? 'Publicada' : 'Borrador'),
-  },
-]
+const columns = [{ key: 'title', header: 'Título' }]
+
+const toggles = [{ field: 'isPublished', header: 'Publicada', ariaLabel: 'Publicar' }]
 
 /**
  * CRUD de colecciones del panel admin: listar (publicadas y no), crear,
@@ -72,6 +67,11 @@ const AdminCollections = () => {
     await remove(target.id)
   }
 
+  // PUT /admin/collections/:id valida con CollectionRequest: `title` es
+  // obligatorio en cada envío, también al alternar solo isPublished.
+  const handleToggle = (row, field, nextValue) =>
+    update(row.id, { title: row.title, [field]: nextValue })
+
   return (
     <section className="admin-collections">
       <header className="admin-collections__header">
@@ -107,6 +107,8 @@ const AdminCollections = () => {
         loading={loading}
         emptyMessage="No hay colecciones."
         rowLabel={(row) => row.title}
+        toggles={toggles}
+        onToggle={handleToggle}
         onEdit={openEdit}
         onDelete={(row) => setDeleteTarget(row)}
         onMoveUp={(row, index) => moveUp(index)}

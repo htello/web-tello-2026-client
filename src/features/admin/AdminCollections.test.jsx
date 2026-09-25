@@ -44,13 +44,28 @@ describe('AdminCollections', () => {
     vi.clearAllMocks()
   })
 
-  it('lista todas las colecciones con indicador de estado', async () => {
+  it('lista todas las colecciones con toggle inline de estado', async () => {
     renderView()
 
     expect(await screen.findByRole('cell', { name: 'Óleos' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Bocetos' })).toBeInTheDocument()
-    expect(screen.getByText('Publicada')).toBeInTheDocument()
-    expect(screen.getByText('Borrador')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Óleos' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Bocetos' })).not.toBeChecked()
+  })
+
+  it('alterna publicada inline enviando también title (exigido por CollectionRequest)', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Óleos' })
+
+    await user.click(screen.getByRole('checkbox', { name: 'Publicar Bocetos' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('collections', 2, {
+        title: 'Bocetos',
+        isPublished: true,
+      }),
+    )
   })
 
   it('muestra el estado de carga', () => {

@@ -92,6 +92,70 @@ describe('AdminTable', () => {
     expect(onMoveUp).toHaveBeenCalledWith(rows[1], 1)
   })
 
+  it('renderiza un checkbox accesible por toggle que refleja el estado de la fila', () => {
+    const toggleRows = [
+      { id: 1, title: 'Obra A', isPublished: true, isFeatured: false },
+      { id: 2, title: 'Obra B', isPublished: false, isFeatured: true },
+    ]
+    const toggles = [
+      { field: 'isPublished', header: 'Publicada', ariaLabel: 'Publicar' },
+      { field: 'isFeatured', header: 'Destacada', ariaLabel: 'Destacar' },
+    ]
+    render(
+      <AdminTable
+        columns={columns}
+        rows={toggleRows}
+        rowLabel={rowLabel}
+        toggles={toggles}
+        onToggle={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByRole('columnheader', { name: 'Publicada' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Destacada' })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Obra A' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Destacar Obra A' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Obra B' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Destacar Obra B' })).toBeChecked()
+  })
+
+  it('llama a onToggle con la fila, el campo y el siguiente valor', async () => {
+    const user = userEvent.setup()
+    const onToggle = vi.fn()
+    const toggleRows = [{ id: 2, title: 'Obra B', isPublished: false }]
+    render(
+      <AdminTable
+        columns={columns}
+        rows={toggleRows}
+        rowLabel={rowLabel}
+        toggles={[{ field: 'isPublished', header: 'Publicada', ariaLabel: 'Publicar' }]}
+        onToggle={onToggle}
+      />,
+    )
+
+    await user.click(screen.getByRole('checkbox', { name: 'Publicar Obra B' }))
+
+    expect(onToggle).toHaveBeenCalledWith(toggleRows[0], 'isPublished', true)
+  })
+
+  it('deshabilita los toggles sin onToggle y usa el rowLabel por defecto', () => {
+    render(
+      <AdminTable
+        columns={columns}
+        rows={[{ id: 5, title: 'Obra C' }]}
+        toggles={[{ field: 'isPublished', header: 'Publicada', ariaLabel: 'Publicar' }]}
+      />,
+    )
+
+    expect(screen.getByRole('checkbox', { name: 'Publicar 5' })).toBeDisabled()
+  })
+
+  it('no renderiza checkboxes sin la prop toggles', () => {
+    render(<AdminTable columns={columns} rows={rows} rowLabel={rowLabel} onEdit={vi.fn()} />)
+
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+  })
+
   it('devuelve el foco al botón de la fila movida tras reordenar', async () => {
     const user = userEvent.setup()
     render(

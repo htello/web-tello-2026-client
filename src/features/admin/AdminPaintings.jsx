@@ -12,12 +12,11 @@ const columns = [
   { key: 'title', header: 'Título' },
   { key: 'collection', header: 'Colección', render: (row) => row.collection?.title ?? '—' },
   { key: 'year', header: 'Año' },
-  {
-    key: 'status',
-    header: 'Estado',
-    render: (row) =>
-      `${row.isPublished ? 'Publicada' : 'Borrador'}${row.isFeatured ? ' · Destacada' : ''}`,
-  },
+]
+
+const toggles = [
+  { field: 'isPublished', header: 'Publicada', ariaLabel: 'Publicar' },
+  { field: 'isFeatured', header: 'Destacada', ariaLabel: 'Destacar' },
 ]
 
 /**
@@ -90,6 +89,8 @@ const AdminPaintings = () => {
     await remove(target.id)
   }
 
+  const handleToggle = (row, field, nextValue) => update(row.id, { [field]: nextValue })
+
   return (
     <section className="admin-paintings">
       <header className="admin-paintings__header">
@@ -144,6 +145,8 @@ const AdminPaintings = () => {
         loading={loading}
         emptyMessage={isFiltered ? 'No hay pinturas para este filtro.' : 'No hay pinturas.'}
         rowLabel={(row) => row.title}
+        toggles={toggles}
+        onToggle={handleToggle}
         onEdit={openEdit}
         onDelete={(row) => setDeleteTarget(row)}
         onMoveUp={isFiltered ? undefined : (row, index) => moveUp(index)}

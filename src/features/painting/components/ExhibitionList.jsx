@@ -1,6 +1,6 @@
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
-import { formatDate } from '@/utils/formatDate.js'
+import { formatDateRange } from '@/utils/formatDate.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
@@ -27,7 +27,9 @@ const ExhibitionList = () => {
       {sorted.map((exhibition) => (
         <li key={exhibition.id} className="exhibition-list__item">
           <h3 className="exhibition-list__title">{exhibition.title}</h3>
-          <p className="exhibition-list__date">{formatDate(exhibition.date)}</p>
+          <p className="exhibition-list__date">
+            {formatDateRange(exhibition.date, exhibition.endDate)}
+          </p>
           <p className="exhibition-list__location">{exhibition.location}</p>
           {exhibition.description && (
             <p className="exhibition-list__description">{exhibition.description}</p>
