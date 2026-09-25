@@ -16,7 +16,7 @@ import ResetPasswordForm from './features/admin/components/ResetPasswordForm.jsx
 import ProtectedRoute from './features/admin/components/ProtectedRoute.jsx'
 import AdminLayout from './features/admin/AdminLayout.jsx'
 import AdminDashboard from './features/admin/AdminDashboard.jsx'
-import AdminSectionPlaceholder from './features/admin/AdminSectionPlaceholder.jsx'
+import AdminUsers from './features/admin/AdminUsers.jsx'
 import AdminCollections from './features/admin/AdminCollections.jsx'
 import AdminPaintings from './features/admin/AdminPaintings.jsx'
 import AdminExhibitions from './features/admin/AdminExhibitions.jsx'
@@ -62,7 +62,7 @@ function App() {
             <Route path="design" element={<AdminDesign />} />
             <Route path="illustrations" element={<AdminIllustrations />} />
             <Route path="biography" element={<AdminBiography />} />
-            <Route path="users" element={<AdminSectionPlaceholder title="Usuarios" />} />
+            <Route path="users" element={<AdminUsers />} />
           </Route>
         </Route>
       </Routes>
