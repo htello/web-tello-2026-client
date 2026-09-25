@@ -226,4 +226,29 @@ describe('AdminCollections', () => {
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent('No se puede borrar')
   })
+
+  it('anuncia con un toast de éxito la creación', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Óleos' })
+
+    await user.click(screen.getByRole('button', { name: 'Nueva colección' }))
+    await user.type(screen.getByLabelText('Título'), 'Acuarelas')
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    const toast = await screen.findByText('Colección creada')
+    expect(toast.closest('.toast')).toHaveAttribute('role', 'status')
+  })
+
+  it('anuncia con un toast de éxito el borrado', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Óleos' })
+
+    await user.click(screen.getByRole('button', { name: 'Borrar Óleos' }))
+    await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Borrar' }))
+
+    const toast = await screen.findByText('Colección borrada')
+    expect(toast.closest('.toast')).toHaveAttribute('role', 'status')
+  })
 })

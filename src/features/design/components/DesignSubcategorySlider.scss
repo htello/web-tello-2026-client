@@ -5,6 +5,11 @@
   flex-direction: column;
   gap: $space-8;
 
+  &__heading {
+    margin: 0;
+    font-size: $font-size-2xl;
+  }
+
   &__title {
     margin: 0 0 $space-2;
     font-size: $font-size-lg;

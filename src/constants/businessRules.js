@@ -1,6 +1,10 @@
 /** Nombre del artista, usado en la identidad visual y textos. */
 export const ARTIST_NAME = 'Antonio Tello'
 
+/** Descripción por defecto para SEO y Open Graph. */
+export const SITE_DESCRIPTION =
+  'Pintura, ilustración y diseño de Antonio Tello: colecciones, exposiciones y proyectos.'
+
 /** Subcategorías de diseño aceptadas por la API (GET /design?subcategory=). */
 export const DESIGN_SUBCATEGORIES = [
   { key: 'imagen-corporativa', label: 'Imagen corporativa' },

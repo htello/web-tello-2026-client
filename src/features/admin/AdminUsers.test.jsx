@@ -493,4 +493,28 @@ describe('AdminUsers', () => {
     expect(container.innerHTML).not.toContain(NUEVA_CLAVE)
     expect(container.innerHTML).not.toContain('token-secreto')
   })
+
+  it('anuncia con un toast el registro exitoso', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await openRegister(user)
+
+    await user.type(screen.getByLabelText('Contraseña'), NUEVA_CLAVE)
+    await user.click(screen.getByRole('button', { name: 'Registrar' }))
+
+    const toast = await screen.findByText('Administrador registrado')
+    expect(toast.closest('.toast')).toHaveAttribute('role', 'status')
+  })
+
+  it('anuncia con un toast el borrado exitoso', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'lucia@test.com' })
+
+    await user.click(screen.getByRole('button', { name: 'Borrar lucia@test.com' }))
+    await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Borrar' }))
+
+    const toast = await screen.findByText('Usuario borrado')
+    expect(toast.closest('.toast')).toHaveAttribute('role', 'status')
+  })
 })

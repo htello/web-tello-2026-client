@@ -35,37 +35,52 @@ const ConfirmDialog = ({
   const titleId = `confirm-dialog-title-${id}`
   const messageId = `confirm-dialog-message-${id}`
 
-  // El foco es un sistema externo (DOM): entrar al diálogo al abrirlo es un
-  // uso legítimo de un efecto.
+  // El foco y el teclado son sistemas externos (DOM/document): entrar al
+  // diálogo al abrirlo y escuchar Escape/Tab en document son usos legítimos
+  // de un efecto.
   useEffect(() => {
-    if (open) confirmRef.current?.focus()
-  }, [open])
+    if (!open) return undefined
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    confirmRef.current?.focus()
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        onCancel()
+        return
+      }
+      if (event.key !== 'Tab') return
+
+      const focusables = dialogRef.current?.querySelectorAll('button:not([disabled])') ?? []
+      if (focusables.length === 0) return
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      opener?.focus()
+    }
+  }, [open, onCancel])
 
   if (!open) return null
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      onCancel()
-      return
-    }
-    if (event.key !== 'Tab') return
-
-    const focusables = dialogRef.current?.querySelectorAll('button:not([disabled])') ?? []
-    if (focusables.length === 0) return
-    const first = focusables[0]
-    const last = focusables[focusables.length - 1]
-
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault()
-      last.focus()
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault()
-      first.focus()
-    }
-  }
-
   return (
-    <div className="confirm-dialog__backdrop" onClick={onCancel}>
+    <div
+      className="confirm-dialog__backdrop"
+      role="presentation"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onCancel()
+      }}
+    >
       <div
         ref={dialogRef}
         role="dialog"
@@ -73,8 +88,6 @@ const ConfirmDialog = ({
         aria-labelledby={titleId}
         aria-describedby={message ? messageId : undefined}
         className="confirm-dialog"
-        onClick={(event) => event.stopPropagation()}
-        onKeyDown={handleKeyDown}
       >
         <h2 id={titleId} className="confirm-dialog__title">
           {title}

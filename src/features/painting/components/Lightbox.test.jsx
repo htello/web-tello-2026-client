@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Lightbox from './Lightbox.jsx'
 
@@ -46,5 +47,43 @@ describe('Lightbox', () => {
     render(<Lightbox isOpen image={{ src: 'https://example.com/x.jpg', alt: 'Obra X' }} onClose={() => {}} />)
 
     expect(screen.getByRole('dialog')).toHaveFocus()
+  })
+
+  it('mantiene el foco atrapado al pulsar Tab', async () => {
+    const user = userEvent.setup()
+    render(<Lightbox isOpen image={{ src: 'https://example.com/x.jpg', alt: 'Obra X' }} onClose={() => {}} />)
+
+    const close = screen.getByRole('button', { name: /cerrar/i })
+    close.focus()
+    await user.tab()
+
+    expect(close).toHaveFocus()
+  })
+
+  it('devuelve el foco al botón que lo abrió al cerrarse', async () => {
+    const user = userEvent.setup()
+    const Harness = () => {
+      const [open, setOpen] = useState(false)
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>
+            Abrir obra
+          </button>
+          <Lightbox
+            isOpen={open}
+            image={{ src: 'https://example.com/x.jpg', alt: 'Obra X' }}
+            onClose={() => setOpen(false)}
+          />
+        </>
+      )
+    }
+    render(<Harness />)
+
+    await user.click(screen.getByRole('button', { name: 'Abrir obra' }))
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+
+    await user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'Abrir obra' })).toHaveFocus()
   })
 })

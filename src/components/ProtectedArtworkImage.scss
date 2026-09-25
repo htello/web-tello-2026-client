@@ -1,3 +1,5 @@
+@use '@/styles/variables' as *;
+
 .protected-artwork {
   position: relative;
   display: block;
@@ -6,6 +8,19 @@
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  &__fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-2;
+    background: $color-surface;
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+    text-align: center;
   }
 
   &__overlay {

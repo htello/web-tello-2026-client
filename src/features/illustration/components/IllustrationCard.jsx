@@ -13,7 +13,7 @@ const IllustrationCard = ({ illustration, onOpen }) => {
       >
         <ProtectedArtworkImage className="illustration-card__image" src={imageUrl} alt={title} />
       </button>
-      <h3 className="illustration-card__title">{title}</h3>
+      <h2 className="illustration-card__title">{title}</h2>
       {illustration.description && (
         <p className="illustration-card__description">{illustration.description}</p>
       )}

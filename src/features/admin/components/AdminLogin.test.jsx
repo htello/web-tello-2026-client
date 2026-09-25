@@ -195,4 +195,12 @@ describe('AdminLogin', () => {
       screen.getByRole('link', { name: /olvidado mi contraseña/i }),
     ).toHaveAttribute('href', '/admin/forgot-password')
   })
+
+  it('marca el acceso como noindex para los buscadores', () => {
+    renderLogin()
+
+    const robots = document.head.querySelector('meta[name="robots"]')
+    expect(robots).toHaveAttribute('content', 'noindex, nofollow')
+    robots.remove()
+  })
 })

@@ -1,7 +1,7 @@
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
-import LoadingState from '@/components/LoadingState.jsx'
+import GallerySkeleton from '@/components/GallerySkeleton.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import CollectionCard from './CollectionCard.jsx'
@@ -23,7 +23,7 @@ const CollectionsSlider = () => {
     return { collections, paintingsByCollection }
   })
 
-  if (loading) return <LoadingState />
+  if (loading) return <GallerySkeleton count={3} />
   if (error) return <ErrorState message="No se pudieron cargar las colecciones." />
 
   const { collections, paintingsByCollection } = data
@@ -34,11 +34,13 @@ const CollectionsSlider = () => {
 
   return (
     <div className="collection-slider">
-      {collections.map((collection) => (
+      <h2 className="collection-slider__title">Colecciones</h2>
+      {collections.map((collection, index) => (
         <CollectionCard
           key={collection.id}
           collection={collection}
           paintings={paintingsByCollection[collection.id] ?? []}
+          priority={index === 0}
         />
       ))}
     </div>

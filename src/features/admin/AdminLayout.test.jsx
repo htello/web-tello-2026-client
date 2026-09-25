@@ -117,4 +117,13 @@ describe('AdminLayout', () => {
     expect(screen.getByRole('heading', { name: 'Acceso administración' })).toBeInTheDocument()
     expect(sessionStorage.getItem('admin_session')).toBeNull()
   })
+
+  it('marca el panel como noindex para los buscadores', () => {
+    renderLayout()
+
+    const robots = document.head.querySelector('meta[name="robots"]')
+    expect(robots).toHaveAttribute('content', 'noindex, nofollow')
+    expect(document.title).toBe('Panel de administración — Antonio Tello')
+    robots.remove()
+  })
 })

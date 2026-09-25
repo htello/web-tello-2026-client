@@ -34,7 +34,7 @@ describe('ExhibitionList', () => {
     render(<ExhibitionList />)
 
     const titles = (await screen.findAllByRole('heading')).map((h) => h.textContent)
-    expect(titles).toEqual(['Expo A', 'Expo B'])
+    expect(titles).toEqual(['Exposiciones', 'Expo A', 'Expo B'])
     expect(screen.getByText('Valencia')).toBeInTheDocument()
     expect(screen.getByText(/retrospectiva/i)).toBeInTheDocument()
   })
