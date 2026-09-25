@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import ErrorState from '@/components/ErrorState.jsx'
+import Toast from '@/components/Toast.jsx'
 import { useAdminCrud } from '@/hooks/useAdminCrud.js'
 import AdminTable from './AdminTable.jsx'
 import ConfirmDialog from './ConfirmDialog.jsx'
@@ -13,6 +14,18 @@ const TOGGLE_LABELS = {
 
 const ARTICLES = { feminine: 'la', masculine: 'el' }
 const NEW_LABELS = { feminine: 'Nueva', masculine: 'Nuevo' }
+
+/** Participios de los mensajes de éxito según el género gramatical. */
+const PARTICIPLES = {
+  feminine: { created: 'creada', updated: 'actualizada', deleted: 'borrada' },
+  masculine: { created: 'creado', updated: 'actualizado', deleted: 'borrado' },
+}
+
+/**
+ * @param {string} text
+ * @returns {string} texto con la primera letra en mayúscula
+ */
+const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
 
 /**
  * Sección CRUD declarativa del panel admin: header con botón de alta, errores,
@@ -81,8 +94,49 @@ const AdminCrudPage = ({
   } = useAdminCrud(resource, { requiredUpdateFields, toFormValues })
 
   const [filterValue, setFilterValue] = useState('all')
+  const [toastMessage, setToastMessage] = useState(null)
   const isFiltered = Boolean(filter) && filterValue !== 'all'
   const visible = isFiltered ? ordered.filter((row) => filter.matches(row, filterValue)) : ordered
+
+  /**
+   * @param {Record<string, unknown>} values
+   * @returns {Promise<{ ok: boolean, data?: unknown, error?: Error }>}
+   */
+  const handleSubmitWithToast = async (values) => {
+    const wasEditing = Boolean(editing)
+    const result = await handleSubmit(values)
+    if (result.ok) {
+      setToastMessage(
+        `${capitalize(entityLabel)} ${wasEditing ? PARTICIPLES[gender].updated : PARTICIPLES[gender].created}`,
+      )
+    }
+    return result
+  }
+
+  /**
+   * @returns {Promise<{ ok: boolean, data?: unknown, error?: Error }>}
+   */
+  const handleDeleteWithToast = async () => {
+    const result = await handleDelete()
+    if (result.ok) {
+      setToastMessage(`${capitalize(entityLabel)} ${PARTICIPLES[gender].deleted}`)
+    }
+    return result
+  }
+
+  /**
+   * @param {object} row
+   * @param {string} field
+   * @param {boolean} nextValue
+   * @returns {Promise<{ ok: boolean, data?: unknown, error?: Error }>}
+   */
+  const handleToggleWithToast = async (row, field, nextValue) => {
+    const result = await handleToggle(row, field, nextValue)
+    if (result.ok) {
+      setToastMessage(`«${rowLabel(row)}» ${PARTICIPLES[gender].updated}`)
+    }
+    return result
+  }
 
   const toggles = toggleFields.map((field) => ({
     field,
@@ -112,7 +166,7 @@ const AdminCrudPage = ({
             key={editing?.id ?? 'new'}
             fields={fields}
             initialValues={editing ?? undefined}
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmitWithToast}
             onSuccess={closeForm}
             onCancel={closeForm}
           />
@@ -147,7 +201,7 @@ const AdminCrudPage = ({
         emptyMessage={isFiltered ? filter.emptyMessage : emptyMessage}
         rowLabel={rowLabel}
         toggles={toggles}
-        onToggle={handleToggle}
+        onToggle={handleToggleWithToast}
         onEdit={openEdit}
         onDelete={requestDelete}
         onMoveUp={isFiltered ? undefined : (row, index) => moveUp(index)}
@@ -160,9 +214,13 @@ const AdminCrudPage = ({
         message="Esta acción no se puede deshacer."
         confirmLabel="Borrar"
         danger
-        onConfirm={handleDelete}
+        onConfirm={handleDeleteWithToast}
         onCancel={cancelDelete}
       />
+
+      {toastMessage && (
+        <Toast variant="success" message={toastMessage} onClose={() => setToastMessage(null)} />
+      )}
     </section>
   )
 }

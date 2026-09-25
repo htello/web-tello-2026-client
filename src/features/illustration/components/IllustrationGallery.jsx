@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
-import LoadingState from '@/components/LoadingState.jsx'
+import { ARTIST_NAME } from '@/constants/businessRules.js'
+import GallerySkeleton from '@/components/GallerySkeleton.jsx'
+import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import IllustrationCard from './IllustrationCard.jsx'
@@ -16,7 +18,7 @@ const IllustrationGallery = () => {
     return sortByPosition(res.data ?? [])
   })
 
-  if (loading) return <LoadingState />
+  if (loading) return <GallerySkeleton />
   if (error) return <ErrorState message="No se pudieron cargar las ilustraciones." />
   if (illustrations.length === 0) {
     return <EmptyState message="No hay ilustraciones disponibles." />
@@ -24,6 +26,8 @@ const IllustrationGallery = () => {
 
   return (
     <section className="illustration-gallery">
+      <SeoMeta title={`Ilustración — ${ARTIST_NAME}`} path="/illustration" />
+      <h1 className="illustration-gallery__title">Ilustración</h1>
       <div className="illustration-gallery__grid">
         {illustrations.map((illustration) => (
           <IllustrationCard

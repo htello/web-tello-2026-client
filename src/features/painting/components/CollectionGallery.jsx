@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
-import LoadingState from '@/components/LoadingState.jsx'
+import { ARTIST_NAME } from '@/constants/businessRules.js'
+import CollectionSkeleton from '@/components/CollectionSkeleton.jsx'
+import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import PaintingCard from './PaintingCard.jsx'
@@ -19,7 +21,7 @@ const CollectionGallery = ({ collectionId }) => {
     [collectionId],
   )
 
-  if (loading) return <LoadingState />
+  if (loading) return <CollectionSkeleton />
   if (error) return <ErrorState message="No se pudo cargar la colección." />
 
   const paintings = sortByPosition(collection.paintings ?? [])
@@ -30,7 +32,13 @@ const CollectionGallery = ({ collectionId }) => {
 
   return (
     <section className="collection-gallery">
-      <h2 className="collection-gallery__title">{collection.title}</h2>
+      <SeoMeta
+        title={`${collection.title} — ${ARTIST_NAME}`}
+        description={collection.description || undefined}
+        path={`/painting/collections/${collectionId}`}
+        image={collection.coverImage ?? paintings[0]?.imageUrl}
+      />
+      <h1 className="collection-gallery__title">{collection.title}</h1>
       <div className="collection-gallery__grid">
         {paintings.map((painting) => (
           <PaintingCard

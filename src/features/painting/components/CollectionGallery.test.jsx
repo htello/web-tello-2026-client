@@ -35,7 +35,7 @@ describe('CollectionGallery', () => {
     render(<CollectionGallery collectionId={1} />)
 
     await screen.findByRole('heading', { name: 'Serie Azul' })
-    const titles = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+    const titles = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
     expect(titles).toEqual(['Obra A', 'Obra B'])
   })
 
@@ -54,5 +54,28 @@ describe('CollectionGallery', () => {
     render(<CollectionGallery collectionId={2} />)
 
     expect(await screen.findByText(/no hay obras/i)).toBeInTheDocument()
+  })
+
+  it('muestra un skeleton de colección durante la carga', () => {
+    vi.stubGlobal('fetch', vi.fn().mockReturnValue(new Promise(() => {})))
+    render(<CollectionGallery collectionId={1} />)
+
+    expect(screen.getByRole('status', { name: 'Cargando colección…' })).toBeInTheDocument()
+    expect(screen.getByText('Cargando…')).toBeInTheDocument()
+  })
+
+  it('define SEO y Open Graph con los datos de la colección', async () => {
+    render(<CollectionGallery collectionId={1} />)
+    await screen.findByRole('heading', { name: 'Serie Azul' })
+
+    expect(document.title).toBe('Serie Azul — Antonio Tello')
+    expect(document.head.querySelector('meta[property="og:image"]')).toHaveAttribute(
+      'content',
+      'https://example.com/a.jpg',
+    )
+    expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      `${window.location.origin}/painting/collections/1`,
+    )
   })
 })

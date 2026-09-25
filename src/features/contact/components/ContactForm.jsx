@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { api } from '@/services/api.js'
 import { validateContact } from '@/utils/validateContact.js'
+import { ARTIST_NAME } from '@/constants/businessRules.js'
+import SeoMeta from '@/components/SeoMeta.jsx'
 import './ContactForm.scss'
 
 const ContactForm = () => {
@@ -39,6 +41,8 @@ const ContactForm = () => {
 
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
+      <SeoMeta title={`Contacto — ${ARTIST_NAME}`} path="/contact" />
+      <h1 className="contact-form__title">Contacto</h1>
       <div className="contact-form__field">
         <label htmlFor="contact-name">Nombre</label>
         <input
@@ -46,8 +50,14 @@ const ContactForm = () => {
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          aria-invalid={errors.name ? true : undefined}
+          aria-describedby={errors.name ? 'contact-name-error' : undefined}
         />
-        {errors.name && <p className="contact-form__error">{errors.name}</p>}
+        {errors.name && (
+          <p id="contact-name-error" className="contact-form__error" role="alert">
+            {errors.name}
+          </p>
+        )}
       </div>
 
       <div className="contact-form__field">
@@ -57,8 +67,14 @@ const ContactForm = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          aria-invalid={errors.email ? true : undefined}
+          aria-describedby={errors.email ? 'contact-email-error' : undefined}
         />
-        {errors.email && <p className="contact-form__error">{errors.email}</p>}
+        {errors.email && (
+          <p id="contact-email-error" className="contact-form__error" role="alert">
+            {errors.email}
+          </p>
+        )}
       </div>
 
       <div className="contact-form__field">
@@ -68,8 +84,14 @@ const ContactForm = () => {
           type="text"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
+          aria-invalid={errors.subject ? true : undefined}
+          aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
         />
-        {errors.subject && <p className="contact-form__error">{errors.subject}</p>}
+        {errors.subject && (
+          <p id="contact-subject-error" className="contact-form__error" role="alert">
+            {errors.subject}
+          </p>
+        )}
       </div>
 
       <div className="contact-form__field">
@@ -78,8 +100,14 @@ const ContactForm = () => {
           id="contact-message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          aria-invalid={errors.message ? true : undefined}
+          aria-describedby={errors.message ? 'contact-message-error' : undefined}
         />
-        {errors.message && <p className="contact-form__error">{errors.message}</p>}
+        {errors.message && (
+          <p id="contact-message-error" className="contact-form__error" role="alert">
+            {errors.message}
+          </p>
+        )}
       </div>
 
       <button type="submit" className="contact-form__submit" disabled={status === 'loading'}>
@@ -87,9 +115,15 @@ const ContactForm = () => {
       </button>
 
       {status === 'success' && (
-        <p className="contact-form__success">Mensaje enviado. Gracias por escribir.</p>
+        <p className="contact-form__success" role="status">
+          Mensaje enviado. Gracias por escribir.
+        </p>
       )}
-      {status === 'error' && <p className="contact-form__error">{errorMessage}</p>}
+      {status === 'error' && (
+        <p className="contact-form__error" role="alert">
+          {errorMessage}
+        </p>
+      )}
     </form>
   )
 }

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { ADMIN_NAV_SECTIONS } from '@/constants/businessRules.js'
+import { ADMIN_NAV_SECTIONS, ARTIST_NAME } from '@/constants/businessRules.js'
 import { useAuth } from '@/hooks/useAuth.js'
+import SeoMeta from '@/components/SeoMeta.jsx'
 import './AdminLayout.scss'
 
 /**
@@ -24,6 +25,7 @@ const AdminLayout = () => {
 
   return (
     <div className="admin-layout">
+      <SeoMeta title={`Panel de administración — ${ARTIST_NAME}`} noindex />
       <button
         type="button"
         className="admin-layout__toggle"

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth.js'
 import { validateLogin } from '@/utils/validateLogin.js'
+import { ARTIST_NAME } from '@/constants/businessRules.js'
+import SeoMeta from '@/components/SeoMeta.jsx'
 import './AdminLogin.scss'
 
 const ERROR_MESSAGES = {
@@ -43,6 +45,7 @@ const AdminLogin = () => {
 
   return (
     <main className="admin-login">
+      <SeoMeta title={`Acceso administración — ${ARTIST_NAME}`} noindex />
       <h1 className="admin-login__title">Acceso administración</h1>
       <form className="admin-login__form" onSubmit={handleSubmit} noValidate>
         <div className="admin-login__field">
@@ -82,7 +85,11 @@ const AdminLogin = () => {
             {errorMessage}
           </p>
         )}
-        {status === 'success' && <p className="admin-login__success">Sesión iniciada</p>}
+        {status === 'success' && (
+          <p className="admin-login__success" role="status">
+            Sesión iniciada
+          </p>
+        )}
       </form>
       <Link className="admin-login__forgot" to="/admin/forgot-password">
         He olvidado mi contraseña

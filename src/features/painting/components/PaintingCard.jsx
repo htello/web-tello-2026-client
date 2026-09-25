@@ -17,7 +17,7 @@ const PaintingCard = ({ painting, onOpen }) => {
         <ProtectedArtworkImage className="painting-card__image" src={imageUrl} alt={title} />
       </button>
       <div className="painting-card__body">
-        <h3 className="painting-card__title">{title}</h3>
+        <h2 className="painting-card__title">{title}</h2>
         {details.length > 0 && (
           <dl className="painting-card__details">
             {details.map(({ label, value }) => (

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -107,5 +108,33 @@ describe('ConfirmDialog', () => {
     await user.click(screen.getByText('Mensaje'))
 
     expect(onCancel).not.toHaveBeenCalled()
+  })
+
+  it('devuelve el foco al elemento que lo abrió al cerrarse', async () => {
+    const user = userEvent.setup()
+    const Harness = () => {
+      const [open, setOpen] = useState(false)
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>
+            Borrar obra
+          </button>
+          <ConfirmDialog
+            open={open}
+            title="¿Borrar?"
+            onConfirm={() => setOpen(false)}
+            onCancel={() => setOpen(false)}
+          />
+        </>
+      )
+    }
+    render(<Harness />)
+
+    await user.click(screen.getByRole('button', { name: 'Borrar obra' }))
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Confirmar' })).toHaveFocus())
+
+    await user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    expect(screen.getByRole('button', { name: 'Borrar obra' })).toHaveFocus()
   })
 })

@@ -125,5 +125,5 @@ playwright.config.js
 - [x] Panel CRUD y upload de imágenes
 - [x] Sass/SCSS como solución de estilos
 - [x] Vitest + Playwright
-- [ ] ESLint + a11y + Sentry (ESLint activo; a11y fase 16, Sentry fase 17)
+- [ ] ESLint + a11y + Sentry (ESLint activo; a11y y SEO hechos en fase 16; Sentry fase 17)
 - [ ] pnpm verify pasando (fase 18)

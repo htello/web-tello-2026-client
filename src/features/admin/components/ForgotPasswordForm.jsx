@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
-import { EMAIL_REGEX } from '@/constants/businessRules.js'
+import { EMAIL_REGEX, ARTIST_NAME } from '@/constants/businessRules.js'
+import SeoMeta from '@/components/SeoMeta.jsx'
 import './AuthForm.scss'
 
 /**
@@ -51,9 +52,10 @@ const ForgotPasswordForm = () => {
 
   return (
     <main className="auth-form">
+      <SeoMeta title={`Recuperar contraseña — ${ARTIST_NAME}`} noindex />
       <h1 className="auth-form__title">Recuperar contraseña</h1>
       {status === 'success' ? (
-        <p className="auth-form__success">
+        <p className="auth-form__success" role="status">
           Si el email está registrado, recibirás un enlace para restablecer tu contraseña.
         </p>
       ) : (

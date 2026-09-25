@@ -39,4 +39,12 @@ describe('DesignGallery', () => {
 
     expect(await screen.findByText(/no se pudieron cargar/i)).toBeInTheDocument()
   })
+
+  it('muestra un skeleton de galería durante la carga', () => {
+    vi.stubGlobal('fetch', vi.fn().mockReturnValue(new Promise(() => {})))
+    render(<DesignGallery subcategory="editorial" />)
+
+    expect(screen.getByRole('status', { name: 'Cargando galería…' })).toBeInTheDocument()
+    expect(screen.getByText('Cargando…')).toBeInTheDocument()
+  })
 })

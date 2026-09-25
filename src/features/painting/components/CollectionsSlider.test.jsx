@@ -85,4 +85,21 @@ describe('CollectionsSlider', () => {
 
     expect(await screen.findByText(/no hay colecciones/i)).toBeInTheDocument()
   })
+
+  it('precarga solo la primera obra destacada visible', async () => {
+    renderSlider()
+
+    const first = await screen.findByRole('img', { name: 'Atardecer azul' })
+    expect(first).toHaveAttribute('loading', 'eager')
+    expect(first).toHaveAttribute('fetchpriority', 'high')
+    expect(screen.getByRole('img', { name: 'Serie Roja' })).toHaveAttribute('loading', 'lazy')
+  })
+
+  it('muestra un skeleton de galería durante la carga', () => {
+    vi.stubGlobal('fetch', vi.fn().mockReturnValue(new Promise(() => {})))
+    renderSlider()
+
+    expect(screen.getByRole('status', { name: 'Cargando galería…' })).toBeInTheDocument()
+    expect(screen.getByText('Cargando…')).toBeInTheDocument()
+  })
 })

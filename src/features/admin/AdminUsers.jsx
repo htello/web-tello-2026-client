@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth.js'
 import { adminApi } from '@/services/adminApi.js'
 import { getChangedFields, stripEmptyFields } from '@/utils/formPayload.js'
 import { validatePassword } from '@/utils/validatePassword.js'
+import Toast from '@/components/Toast.jsx'
 import AdminTable from './components/AdminTable.jsx'
 import ConfirmDialog from './components/ConfirmDialog.jsx'
 import EntityForm from './components/EntityForm.jsx'
@@ -67,6 +68,13 @@ const FIELDS_BY_MODE = {
 const MESSAGE_SELF_DELETE =
   'Vas a borrar tu propia cuenta: perderás el acceso al panel y esta acción no se puede deshacer.'
 
+/** Mensajes de éxito del toast por modo de formulario. */
+const SUCCESS_MESSAGES = {
+  create: 'Administrador registrado',
+  edit: 'Usuario actualizado',
+  password: 'Contraseña actualizada',
+}
+
 /**
  * CRUD de usuarios del panel admin: listado paginado, registro de
  * administradores, edición parcial, cambio de contraseña y borrado con
@@ -85,6 +93,7 @@ const AdminUsers = () => {
   const [formMode, setFormMode] = useState(null)
   const [target, setTarget] = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
+  const [toastMessage, setToastMessage] = useState(null)
 
   const closeForm = () => {
     setFormMode(null)
@@ -152,10 +161,26 @@ const AdminUsers = () => {
     return handleUpdate(values)
   }
 
+  /**
+   * @param {Record<string, unknown>} values
+   * @returns {Promise<{ ok: boolean, data?: unknown, error?: Error }>}
+   */
+  const handleSubmitWithToast = async (values) => {
+    const mode = formMode
+    const result = await handleSubmit(values)
+    if (result.ok) setToastMessage(SUCCESS_MESSAGES[mode])
+    return result
+  }
+
   const handleDelete = async () => {
     const row = deleteTarget
     setDeleteTarget(null)
-    await remove(row.id)
+    return remove(row.id)
+  }
+
+  const handleDeleteWithToast = async () => {
+    const result = await handleDelete()
+    if (result?.ok) setToastMessage('Usuario borrado')
   }
 
   const isSelf = (row) => row.id === user?.id
@@ -202,7 +227,7 @@ const AdminUsers = () => {
             key={`${formMode}-${target?.id ?? 'new'}`}
             fields={FIELDS_BY_MODE[formMode]}
             initialValues={formMode === 'edit' ? target : undefined}
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmitWithToast}
             onSuccess={closeForm}
             onCancel={closeForm}
             submitLabel={formMode === 'create' ? 'Registrar' : 'Guardar'}
@@ -252,9 +277,13 @@ const AdminUsers = () => {
         }
         confirmLabel="Borrar"
         danger
-        onConfirm={handleDelete}
+        onConfirm={handleDeleteWithToast}
         onCancel={() => setDeleteTarget(null)}
       />
+
+      {toastMessage && (
+        <Toast variant="success" message={toastMessage} onClose={() => setToastMessage(null)} />
+      )}
     </section>
   )
 }

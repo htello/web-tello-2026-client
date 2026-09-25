@@ -78,4 +78,20 @@ describe('DesignSubcategorySlider', () => {
 
     expect(await screen.findByRole('link', { name: 'Packaging y Expositores' })).toHaveAttribute('href', '/design/packaging-expositores')
   })
+
+  it('precarga solo la primera imagen visible', async () => {
+    renderSlider()
+
+    const first = await screen.findByRole('img', { name: 'Logo Empresa' })
+    expect(first).toHaveAttribute('loading', 'eager')
+    expect(first).toHaveAttribute('fetchpriority', 'high')
+    expect(screen.getByRole('img', { name: 'Caja' })).toHaveAttribute('loading', 'lazy')
+  })
+
+  it('muestra un skeleton de galería durante la carga', () => {
+    vi.stubGlobal('fetch', vi.fn().mockReturnValue(new Promise(() => {})))
+    renderSlider()
+
+    expect(screen.getByRole('status', { name: 'Cargando galería…' })).toBeInTheDocument()
+  })
 })

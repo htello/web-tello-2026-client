@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { validatePassword } from '@/utils/validatePassword.js'
+import { ARTIST_NAME } from '@/constants/businessRules.js'
+import SeoMeta from '@/components/SeoMeta.jsx'
 import './AuthForm.scss'
 
 /**
@@ -54,6 +56,7 @@ const ResetPasswordForm = () => {
 
   return (
     <main className="auth-form">
+      <SeoMeta title={`Nueva contraseña — ${ARTIST_NAME}`} noindex />
       <h1 className="auth-form__title">Nueva contraseña</h1>
       {!token && (
         <p className="auth-form__error" role="alert">
@@ -62,7 +65,9 @@ const ResetPasswordForm = () => {
       )}
       {status === 'success' ? (
         <>
-          <p className="auth-form__success">Contraseña actualizada. Ya puedes iniciar sesión.</p>
+          <p className="auth-form__success" role="status">
+            Contraseña actualizada. Ya puedes iniciar sesión.
+          </p>
           <Link className="auth-form__link" to="/admin/login">
             Ir al acceso
           </Link>
