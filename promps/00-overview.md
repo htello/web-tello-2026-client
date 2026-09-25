@@ -38,7 +38,7 @@
 | 12 | [Panel Admin: CRUD Contenido](./fase-12-admin-content-crud.md) | Diseño, ilustración y biografía | Sí | ✅ 2026-09-25 · `a282233` |
 | 13 | [Panel Admin: Upload](./fase-13-admin-upload.md) | Imagen en 2 pasos integrada en los formularios | Sí | ✅ 2026-09-25 · `f5f0ae7` |
 | 14 | [Panel Admin: Usuarios + E2E](./fase-14-admin-users-e2e.md) | Usuarios paginados y journey admin con Playwright | Parcial | ✅ 2026-09-25 · `1d4262d` |
-| 15 | [Refactor del Admin](./fase-15-admin-refactor.md) | Panel DRY, contrato verificado y cobertura | No | ⬜ Pendiente |
+| 15 | [Refactor del Admin](./fase-15-admin-refactor.md) | Panel DRY, contrato verificado y cobertura | No | ✅ 2026-09-25 · `d1e0b58` |
 | 16 | [A11y, UX y SEO](./fase-16-a11y-ux.md) | Portfolio y panel accesibles, protegidos y optimizados | Sí | ⬜ Pendiente |
 | 17 | [Observabilidad con Sentry](./fase-17-sentry.md) | Errores y API monitorizados | No | ⬜ Pendiente |
 | 18 | [Quality Gates + Build Final](./fase-18-quality-gates.md) | Gate de coverage, CI y build de despliegue | No | ⬜ Pendiente |
