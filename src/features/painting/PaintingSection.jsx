@@ -11,6 +11,7 @@ import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import MasonryGrid from '@/components/MasonryGrid.jsx'
 import MasterDetail from '@/components/MasterDetail.jsx'
+import SectionHeader from '@/components/SectionHeader.jsx'
 import ExhibitionLink from './components/ExhibitionLink.jsx'
 import PaintingCard from './components/PaintingCard.jsx'
 import Lightbox from './components/Lightbox.jsx'
@@ -39,12 +40,7 @@ const PaintingSection = () => {
 
   const { collections, paintingsByCollection } = data
 
-  const header = (
-    <div className="painting-section__header">
-      <h1 className="painting-section__heading">Pintura</h1>
-      <ExhibitionLink />
-    </div>
-  )
+  const header = <SectionHeader title="Pintura" action={<ExhibitionLink />} />
 
   if (collections.length === 0) {
     return (

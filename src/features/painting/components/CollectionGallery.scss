@@ -1,8 +1,7 @@
 @use '@/styles/variables' as *;
 
 .collection-gallery {
-  &__title {
-    margin: 0 0 $space-6;
-    font-size: $font-size-2xl;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
 }

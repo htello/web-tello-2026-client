@@ -8,6 +8,7 @@ import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import MasonryGrid from '@/components/MasonryGrid.jsx'
 import MasterDetail from '@/components/MasterDetail.jsx'
+import SectionHeader from '@/components/SectionHeader.jsx'
 import ArtworkCard from '@/components/ArtworkCard.jsx'
 import Lightbox from '@/features/painting/components/Lightbox.jsx'
 import './DesignSection.scss'
@@ -44,7 +45,7 @@ const DesignSection = () => {
   return (
     <section className="design-section">
       <SeoMeta title={`Diseño — ${ARTIST_NAME}`} path="/design" />
-      <h1 className="design-section__heading">Diseño</h1>
+      <SectionHeader title="Diseño" />
       <MasterDetail
         items={visibleSubcategories.map(({ key, label }) => ({ id: key, title: label }))}
         selectedId={current.key}

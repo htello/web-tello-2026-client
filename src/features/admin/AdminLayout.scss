@@ -31,7 +31,7 @@ $topbar-height: 4.625rem;
     align-items: center;
     justify-content: space-between;
     padding: $space-4 $space-6;
-    background: #000000;
+    background: $color-dark;
   }
 
   &__topbar-brand {
@@ -168,7 +168,7 @@ $topbar-height: 4.625rem;
     justify-content: center;
     height: $footer-height;
     padding: 0 $space-4;
-    background: #000000;
+    background: $color-dark;
     text-align: center;
     color: $color-text-inverse;
   }

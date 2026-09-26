@@ -58,7 +58,7 @@
     cursor: pointer;
 
     &--danger {
-      background: #000000;
+      background: $color-dark;
       color: $color-text-inverse;
     }
   }

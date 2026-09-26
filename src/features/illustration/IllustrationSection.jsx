@@ -9,6 +9,7 @@ import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import MasonryGrid from '@/components/MasonryGrid.jsx'
 import MasterDetail from '@/components/MasterDetail.jsx'
+import SectionHeader from '@/components/SectionHeader.jsx'
 import IllustrationCard from './components/IllustrationCard.jsx'
 import Lightbox from '@/features/painting/components/Lightbox.jsx'
 import './IllustrationSection.scss'
@@ -31,7 +32,7 @@ const IllustrationSection = () => {
   return (
     <section className="illustration-section">
       <SeoMeta title={`Ilustración — ${ARTIST_NAME}`} path="/illustration" />
-      <h1 className="illustration-section__heading">{GROUP_LABEL}</h1>
+      <SectionHeader title={GROUP_LABEL} />
       <MasterDetail
         items={[{ id: 'general', title: GROUP_LABEL }]}
         selectedId="general"
