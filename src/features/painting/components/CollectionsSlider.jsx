@@ -1,10 +1,11 @@
+import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
 import GallerySkeleton from '@/components/GallerySkeleton.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
-import CollectionCard from './CollectionCard.jsx'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './CollectionsSlider.scss'
 
 const CollectionsSlider = () => {
@@ -34,15 +35,41 @@ const CollectionsSlider = () => {
 
   return (
     <div className="collection-slider">
-      <h2 className="collection-slider__title">Colecciones</h2>
-      {collections.map((collection, index) => (
-        <CollectionCard
-          key={collection.id}
-          collection={collection}
-          paintings={paintingsByCollection[collection.id] ?? []}
-          priority={index === 0}
-        />
-      ))}
+      {collections.map((collection, sectionIndex) => {
+        const paintings = paintingsByCollection[collection.id] ?? []
+        const featured = paintings.filter((painting) => painting.isFeatured)
+        let images
+        if (featured.length > 0) {
+          images = featured
+        } else if (paintings.length > 0) {
+          images = paintings.slice(0, 1)
+        } else {
+          images = [{ title: collection.title, imageUrl: collection.coverImage }]
+        }
+
+        return (
+          <section key={collection.id} className="collection-slider__item">
+            <h2 className="collection-slider__title">
+              <Link to={`/painting/collections/${collection.id}`}>{collection.title}</Link>
+            </h2>
+            <div className="collection-slider__slider" aria-label={`Obras de ${collection.title}`}>
+              {images.map((painting, imageIndex) => {
+                const isPriority = sectionIndex === 0 && imageIndex === 0
+                return (
+                  <ProtectedArtworkImage
+                    key={painting.id ?? `cover-${collection.id}`}
+                    className="collection-slider__image"
+                    src={painting.imageUrl}
+                    alt={painting.title}
+                    loading={isPriority ? 'eager' : 'lazy'}
+                    fetchPriority={isPriority ? 'high' : undefined}
+                  />
+                )
+              })}
+            </div>
+          </section>
+        )
+      })}
     </div>
   )
 }

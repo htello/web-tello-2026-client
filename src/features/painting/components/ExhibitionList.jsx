@@ -7,6 +7,7 @@ import SeoMeta from '@/components/SeoMeta.jsx'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './ExhibitionList.scss'
 
 const ExhibitionList = () => {
@@ -25,23 +26,44 @@ const ExhibitionList = () => {
   }
 
   return (
-    <section>
+    <section className="exhibition-list">
       <SeoMeta title={`Exposiciones — ${ARTIST_NAME}`} path="/painting/exhibitions" />
       <h1 className="exhibition-list__heading">Exposiciones</h1>
-      <ul className="exhibition-list">
-        {sorted.map((exhibition) => (
-          <li key={exhibition.id} className="exhibition-list__item">
+      {sorted.map((exhibition, sectionIndex) => {
+        const images = exhibition.images ?? []
+        return (
+          <section key={exhibition.id} className="exhibition-list__item">
             <h2 className="exhibition-list__title">{exhibition.title}</h2>
             <p className="exhibition-list__date">
               {formatDateRange(exhibition.date, exhibition.endDate)}
             </p>
             <p className="exhibition-list__location">{exhibition.location}</p>
+            {images.length > 0 && (
+              <div
+                className="exhibition-list__slider"
+                aria-label={`Imágenes de ${exhibition.title}`}
+              >
+                {images.map((image, imageIndex) => {
+                  const isPriority = sectionIndex === 0 && imageIndex === 0
+                  return (
+                    <ProtectedArtworkImage
+                      key={image.id ?? `${exhibition.id}-${imageIndex}`}
+                      className="exhibition-list__image"
+                      src={image.thumbnail ?? image.url}
+                      alt={exhibition.title}
+                      loading={isPriority ? 'eager' : 'lazy'}
+                      fetchPriority={isPriority ? 'high' : undefined}
+                    />
+                  )
+                })}
+              </div>
+            )}
             {exhibition.description && (
               <p className="exhibition-list__description">{exhibition.description}</p>
             )}
-          </li>
-        ))}
-      </ul>
+          </section>
+        )
+      })}
     </section>
   )
 }
