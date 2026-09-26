@@ -28,13 +28,6 @@ $header-height: 3.5rem; // móvil: padding $space-3 + brand
 $header-height-md: 4.625rem; // md+: padding $space-4 + brand $font-size-xl
 $touch-target: 2.75rem; // 44px, área táctil mínima
 
-// Carrusel: imágenes visibles por breakpoint
-$carousel-per-view: (
-  'mobile': 1,
-  'md': 2,
-  'lg': 5,
-);
-
 // Spacing
 $space-1: 0.25rem;
 $space-2: 0.5rem;

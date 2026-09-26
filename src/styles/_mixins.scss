@@ -1,4 +1,3 @@
-@use 'sass:map';
 @use 'variables';
 
 @mixin breakpoint-up($name) {
@@ -10,43 +9,5 @@
     @media (min-width: variables.$breakpoint-lg) { @content; }
   } @else if $name == 'xl' {
     @media (min-width: variables.$breakpoint-xl) { @content; }
-  }
-}
-
-// Carrusel deslizable mobile-first: imágenes por vista según $carousel-per-view
-// (móvil, md y lg). Deslizamiento nativo con scroll-snap; los hijos directos
-// son los elementos del carrusel.
-@mixin carousel {
-  display: flex;
-  gap: variables.$space-4;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: variables.$space-2;
-
-  > * {
-    $per-view: map.get(variables.$carousel-per-view, 'mobile');
-
-    flex: 0 0 calc(100% / $per-view);
-    scroll-snap-align: start;
-  }
-
-  @include breakpoint-up('md') {
-    $per-view: map.get(variables.$carousel-per-view, 'md');
-    $gap: variables.$space-4;
-
-    > * {
-      flex-basis: calc((100% - #{$gap} * #{$per-view - 1}) / $per-view);
-    }
-  }
-
-  @include breakpoint-up('lg') {
-    $per-view: map.get(variables.$carousel-per-view, 'lg');
-    $gap: variables.$space-6;
-
-    gap: $gap;
-
-    > * {
-      flex-basis: calc((100% - #{$gap} * #{$per-view - 1}) / $per-view);
-    }
   }
 }
