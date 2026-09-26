@@ -5,6 +5,9 @@ export const ARTIST_NAME = 'Antonio Tello'
 export const SITE_DESCRIPTION =
   'Pintura, ilustración y diseño de Antonio Tello: colecciones, exposiciones y proyectos.'
 
+/** Mínimo de imágenes por banda de sección en /painting y /design. */
+export const SECTION_MIN_IMAGES = 5
+
 /** Subcategorías de diseño aceptadas por la API (GET /design?subcategory=). */
 export const DESIGN_SUBCATEGORIES = [
   { key: 'imagen-corporativa', label: 'Imagen corporativa' },

@@ -67,6 +67,24 @@ describe('CollectionsSlider', () => {
     expect(await screen.findByRole('img', { name: 'Atardecer azul' })).toBeInTheDocument()
   })
 
+  it('rellena con obras no destacadas hasta cinco imágenes por colección', async () => {
+    const many = [
+      { id: 10, title: 'Destacada 1', imageUrl: 'https://example.com/d1.jpg', isFeatured: true },
+      { id: 11, title: 'Destacada 2', imageUrl: 'https://example.com/d2.jpg', isFeatured: true },
+      { id: 12, title: 'Obra 3', imageUrl: 'https://example.com/o3.jpg', isFeatured: false },
+      { id: 13, title: 'Obra 4', imageUrl: 'https://example.com/o4.jpg', isFeatured: false },
+      { id: 14, title: 'Obra 5', imageUrl: 'https://example.com/o5.jpg', isFeatured: false },
+      { id: 15, title: 'Obra 6', imageUrl: 'https://example.com/o6.jpg', isFeatured: false },
+      { id: 16, title: 'Obra 7', imageUrl: 'https://example.com/o7.jpg', isFeatured: false },
+    ]
+    vi.stubGlobal('fetch', mockApi({ paintings: { 1: many, 2: paintingsByCollection[2] } }))
+    renderSlider()
+
+    expect(await screen.findByRole('img', { name: 'Obra 5' })).toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: 'Obra 6' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: 'Obra 7' })).not.toBeInTheDocument()
+  })
+
   it('usa la portada como fallback cuando la colección no tiene obras', async () => {
     vi.stubGlobal('fetch', mockApi({ paintings: { 1: paintingsByCollection[1], 2: [] } }))
     renderSlider()
