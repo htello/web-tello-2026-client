@@ -9,7 +9,7 @@ export class AdminUsersPage extends AdminCrudPage {
       newLabel: 'Nuevo administrador',
     })
     this.pagination = page.getByRole('navigation', { name: 'Paginación de usuarios' })
-    this.info = this.pagination.locator('.admin-users__info')
+    this.info = this.pagination.locator('.pagination__info')
     this.previousPage = this.pagination.getByRole('button', { name: 'Página anterior' })
     this.nextPage = this.pagination.getByRole('button', { name: 'Página siguiente' })
   }
