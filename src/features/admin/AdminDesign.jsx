@@ -44,6 +44,7 @@ const AdminDesign = () => (
   <AdminCrudPage
     block="admin-design"
     title="Diseño"
+    entityPlural="proyectos"
     resource="design"
     entityLabel="proyecto"
     gender="masculine"

@@ -251,4 +251,30 @@ describe('AdminCollections', () => {
     const toast = await screen.findByText('Colección borrada')
     expect(toast.closest('.toast')).toHaveAttribute('role', 'status')
   })
+
+  it('pide la página 2 al pulsar la paginación del listado', async () => {
+    adminApi.list.mockImplementation((_resource, { params } = {}) =>
+      Promise.resolve(
+        params?.page === 2
+          ? {
+              data: [{ id: 3, title: 'Retratos', description: '', coverImage: null, position: 2, isPublished: true }],
+              meta: { total: 3, page: 2, limit: 20, pages: 2 },
+            }
+          : { data: COLLECTIONS, meta: { total: 3, page: 1, limit: 20, pages: 2 } },
+      ),
+    )
+    const user = userEvent.setup()
+    renderView()
+
+    const nav = await screen.findByRole('navigation', { name: 'Paginación de colecciones' })
+    expect(nav).toHaveTextContent('Página 1 de 2 · 3 colecciones')
+
+    await user.click(within(nav).getByRole('button', { name: 'Página siguiente' }))
+
+    expect(await screen.findByRole('cell', { name: 'Retratos' })).toBeInTheDocument()
+    expect(adminApi.list).toHaveBeenLastCalledWith(
+      'collections',
+      expect.objectContaining({ params: { page: 2, limit: 20 } }),
+    )
+  })
 })

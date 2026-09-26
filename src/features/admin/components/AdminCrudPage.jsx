@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import ErrorState from '@/components/ErrorState.jsx'
+import Pagination from '@/components/Pagination.jsx'
 import Toast from '@/components/Toast.jsx'
 import { useAdminCrud } from '@/hooks/useAdminCrud.js'
 import AdminTable from './AdminTable.jsx'
 import ConfirmDialog from './ConfirmDialog.jsx'
 import EntityForm from './EntityForm.jsx'
+
+/** Entidades por página de los listados admin (el server admite hasta 100). */
+const PAGE_LIMIT = 20
 
 /** Etiquetas de los toggles de tabla por campo y género gramatical. */
 const TOGGLE_LABELS = {
@@ -41,6 +45,8 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
  * @param {string} props.title título de la sección (h1)
  * @param {string} props.resource recurso de adminApi (p. ej. 'collections')
  * @param {string} props.entityLabel sustantivo de la entidad ('colección')
+ * @param {string} [props.entityPlural] plural de la entidad para el resumen de
+ *   la paginación ('colecciones'); por defecto, el título en minúsculas.
  * @param {'feminine' | 'masculine'} [props.gender] género de `entityLabel`
  * @param {Array<object>} props.fields campos del EntityForm
  * @param {Array<object>} props.columns columnas del AdminTable
@@ -63,6 +69,7 @@ const AdminCrudPage = ({
   resource,
   entityLabel,
   gender = 'feminine',
+  entityPlural = title.toLowerCase(),
   fields,
   columns,
   toggleFields = [],
@@ -72,11 +79,13 @@ const AdminCrudPage = ({
   requiredUpdateFields,
   toFormValues,
 }) => {
+  const [page, setPage] = useState(1)
   const {
     loading,
     error,
     saveError,
     ordered,
+    meta,
     moveUp,
     moveDown,
     reorderError,
@@ -91,7 +100,11 @@ const AdminCrudPage = ({
     handleSubmit,
     handleDelete,
     handleToggle,
-  } = useAdminCrud(resource, { requiredUpdateFields, toFormValues })
+  } = useAdminCrud(resource, {
+    params: { page, limit: PAGE_LIMIT },
+    requiredUpdateFields,
+    toFormValues,
+  })
 
   const [filterValue, setFilterValue] = useState('all')
   const [toastMessage, setToastMessage] = useState(null)
@@ -207,6 +220,15 @@ const AdminCrudPage = ({
         onMoveUp={isFiltered ? undefined : (row, index) => moveUp(index)}
         onMoveDown={isFiltered ? undefined : (row, index) => moveDown(index)}
       />
+
+      {meta && (
+        <Pagination
+          meta={meta}
+          label={`Paginación de ${entityPlural}`}
+          noun={entityPlural}
+          onPageChange={setPage}
+        />
+      )}
 
       <ConfirmDialog
         open={deleteTarget !== null}
