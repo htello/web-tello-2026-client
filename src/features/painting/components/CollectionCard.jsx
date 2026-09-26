@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './CollectionCard.scss'
 
 /**
@@ -27,7 +28,7 @@ const CollectionCard = ({ collection, paintings, priority = false }) => {
         {images.map((image, index) => {
           const isPriority = priority && index === 0
           return (
-            <img
+            <ProtectedArtworkImage
               key={image.imageUrl}
               className="collection-card__image"
               src={image.imageUrl}

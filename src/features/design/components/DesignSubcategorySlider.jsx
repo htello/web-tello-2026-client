@@ -6,6 +6,7 @@ import GallerySkeleton from '@/components/GallerySkeleton.jsx'
 import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './DesignSubcategorySlider.scss'
 
 const DesignSubcategorySlider = () => {
@@ -50,7 +51,7 @@ const DesignSubcategorySlider = () => {
               {images.map((project, imageIndex) => {
                 const isPriority = sectionIndex === 0 && imageIndex === 0
                 return (
-                  <img
+                  <ProtectedArtworkImage
                     key={project.id}
                     className="design-subcategory-slider__image"
                     src={project.imageUrl}
