@@ -18,6 +18,8 @@ import { useReorder } from './useReorder.js'
  *
  * @param {string} resource uno de ADMIN_RESOURCES (p. ej. 'collections')
  * @param {object} [options]
+ * @param {Record<string, string | number>} [options.params] query del listado
+ *   paginado (`{ page, limit }` según el contrato de los GET admin).
  * @param {string[]} [options.requiredUpdateFields] campos que el contrato
  *   exige en CADA PUT aunque no cambien (p. ej. `title` en colecciones, ver
  *   CollectionRequest en openapi). En `handleSubmit` se toman de los valores
@@ -29,7 +31,8 @@ import { useReorder } from './useReorder.js'
  *   loading: boolean,
  *   error: Error | null,
  *   saveError: Error | null,
- *   ordered: object[],
+ *   items: object[],
+ *   meta: { total: number, page: number, limit: number, pages: number } | null,
  *   moveUp: (index: number) => void,
  *   moveDown: (index: number) => void,
  *   reorderError: Error | null,
@@ -46,9 +49,9 @@ import { useReorder } from './useReorder.js'
  *   handleToggle: (row: object, field: string, nextValue: boolean) => Promise<{ ok: boolean, data?: unknown, error?: Error }>,
  * }}
  */
-export function useAdminCrud(resource, { requiredUpdateFields = [], toFormValues } = {}) {
-  const { items, loading, error, create, update, remove, saveError } =
-    useAdminResource(resource)
+export function useAdminCrud(resource, { params, requiredUpdateFields = [], toFormValues } = {}) {
+  const { items, meta, loading, error, create, update, remove, saveError } =
+    useAdminResource(resource, { params })
   const { items: ordered, moveUp, moveDown, error: reorderError } = useReorder(resource, items)
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState(null)
@@ -103,6 +106,7 @@ export function useAdminCrud(resource, { requiredUpdateFields = [], toFormValues
     error,
     saveError,
     ordered,
+    meta,
     moveUp,
     moveDown,
     reorderError,

@@ -15,7 +15,7 @@ const columns = [
  * y subida de imagen en segundo plano (ImageUploadField → POST /admin/upload).
  */
 const AdminPaintings = () => {
-  const { items: collections } = useAdminResource('collections')
+  const { items: collections } = useAdminResource('collections', { params: { limit: 100 } })
   const collectionOptions = collections.map((collection) => ({
     value: collection.id,
     label: collection.title,
