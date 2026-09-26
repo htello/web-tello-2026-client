@@ -59,4 +59,45 @@ describe('ExhibitionList', () => {
 
     expect(await screen.findByText(/no hay exposiciones/i)).toBeInTheDocument()
   })
+
+  it('muestra las imágenes de cada exposición en un carrusel con la primera prioritaria', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockExhibitions({
+        exhibitionsData: [
+          {
+            id: 1,
+            title: 'Expo A',
+            date: '2023-03-05',
+            endDate: null,
+            location: 'Valencia',
+            position: 1,
+            isPublished: true,
+            images: [
+              { id: 11, url: 'https://example.com/g1.jpg', thumbnail: 'https://example.com/t1.jpg', position: 1 },
+              { id: 12, url: 'https://example.com/g2.jpg', thumbnail: null, position: 2 },
+            ],
+          },
+        ],
+      }),
+    )
+    render(<ExhibitionList />)
+
+    const images = await screen.findAllByRole('img', { name: 'Expo A' })
+    expect(images).toHaveLength(2)
+    const [first, second] = images
+    expect(first).toHaveAttribute('src', 'https://example.com/t1.jpg')
+    expect(first).toHaveAttribute('loading', 'eager')
+    expect(first).toHaveAttribute('fetchpriority', 'high')
+
+    expect(second).toHaveAttribute('src', 'https://example.com/g2.jpg')
+    expect(second).toHaveAttribute('loading', 'lazy')
+  })
+
+  it('omite el carrusel cuando la exposición no tiene imágenes', async () => {
+    render(<ExhibitionList />)
+
+    expect(await screen.findByRole('heading', { name: 'Expo A' })).toBeInTheDocument()
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+  })
 })
