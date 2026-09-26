@@ -38,7 +38,7 @@ Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las 
 ### Convención de imágenes (OBLIGATORIA, acordada con el server)
 
 - El front usa **siempre raw JSON** (`Content-Type: application/json`) en todos los endpoints.
-- Subida de imágenes en 2 pasos: `POST /admin/upload` (multipart, campo `file`, opcional `section`: pintura|ilustracion|diseno|general) → devuelve `{ url, thumbnail, width, height, format }` → la `url` se envía como `imageUrl`/`coverImage` en el JSON del create/update.
+- Subida de imágenes en 2 pasos: `POST /admin/upload` (multipart, campo `file`, opcional `section`: pintura|ilustracion|diseno|general|exposiciones) → devuelve `{ url, thumbnail, width, height, format }` → la `url` se envía como `imageUrl`/`coverImage`/`images[].url` en el JSON del create/update.
 - NUNCA usar los campos multipart (`image`) de los endpoints de entidades desde el front (existen como capacidad extra del back, no para el front).
 
 ### Endpoints y particularidades del contrato

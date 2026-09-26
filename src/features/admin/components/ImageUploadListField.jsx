@@ -26,7 +26,7 @@ const toInput = ({ url, thumbnail, width, height }) => ({
  * @param {string} props.id id base del campo
  * @param {string} props.label etiqueta del grupo
  * @param {Array<object>} [props.value] imágenes existentes (admiten id/position del server)
- * @param {string} [props.section] pintura | ilustracion | diseno | general
+ * @param {string} [props.section] pintura | ilustracion | diseno | general | exposiciones
  * @param {(images: Array<{ url: string, thumbnail: string | null, width: number | null, height: number | null }>) => void} props.onChange
  */
 const ImageUploadListField = ({ id, label, value = [], section = 'general', onChange }) => {

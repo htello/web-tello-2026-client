@@ -219,6 +219,14 @@ describe('adminApi', () => {
     expect(fetchMock.mock.calls[0][1].body.get('section')).toBe('general')
   })
 
+  it('upload acepta section "exposiciones"', async () => {
+    const fetchMock = mockFetch({ data: {} })
+
+    await adminApi.upload(new File(['img'], 'x.jpg'), 'exposiciones')
+
+    expect(fetchMock.mock.calls[0][1].body.get('section')).toBe('exposiciones')
+  })
+
   it('upload envía FormData con file y section sin forzar Content-Type', async () => {
     const fetchMock = mockFetch({ data: { url: 'https://cdn/x.jpg', thumbnail: 'https://cdn/x_t.jpg' } })
     const file = new File(['img'], 'x.jpg', { type: 'image/jpeg' })

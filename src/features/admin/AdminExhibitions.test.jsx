@@ -212,7 +212,7 @@ describe('AdminExhibitions', () => {
     await screen.findByAltText('Imagen 2')
     await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
-    expect(adminApi.upload).toHaveBeenCalledWith(expect.any(File), 'general')
+    expect(adminApi.upload).toHaveBeenCalledWith(expect.any(File), 'exposiciones')
     await waitFor(() =>
       expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 20, {
         images: [
