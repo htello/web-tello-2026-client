@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { addBreadcrumb } from '@/infrastructure/sentry.js'
@@ -73,7 +74,11 @@ const PaintingSection = () => {
         onSelect={setSelectedId}
         label="Lista de colecciones"
       >
-        <h2 className="master-detail__title">{selected.title}</h2>
+        <h2 className="master-detail__title">
+          <Link className="painting-section__gallery-link" to={`/painting/collections/${selected.id}`}>
+            {selected.title}
+          </Link>
+        </h2>
         {paintings.length === 0 ? (
           <EmptyState message="No hay obras en esta colección." />
         ) : (

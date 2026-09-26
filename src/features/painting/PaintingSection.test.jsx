@@ -84,6 +84,13 @@ describe('PaintingSection', () => {
     expect(await screen.findByRole('dialog', { name: 'Atardecer azul' })).toBeInTheDocument()
   })
 
+  it('enlaza el título del panel a la página de la colección', async () => {
+    renderSection()
+
+    const link = await screen.findByRole('link', { name: 'Serie Azul' })
+    expect(link).toHaveAttribute('href', '/painting/collections/1')
+  })
+
   it('muestra el enlace a exposiciones', async () => {
     renderSection()
 
