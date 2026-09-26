@@ -7,7 +7,6 @@ import CollectionGallery from './features/painting/components/CollectionGallery.
 import ExhibitionList from './features/painting/components/ExhibitionList.jsx'
 import BiographySection from './features/biography/BiographySection.jsx'
 import DesignSection from './features/design/DesignSection.jsx'
-import DesignGallery from './features/design/components/DesignGallery.jsx'
 import IllustrationSection from './features/illustration/IllustrationSection.jsx'
 import ContactForm from './features/contact/components/ContactForm.jsx'
 import AdminLogin from './features/admin/components/AdminLogin.jsx'
@@ -30,11 +29,6 @@ function CollectionGalleryRoute() {
   return <CollectionGallery collectionId={Number(id)} />
 }
 
-function DesignGalleryRoute() {
-  const { subcategory } = useParams()
-  return <DesignGallery subcategory={subcategory} />
-}
-
 function App() {
   return (
     <AuthProvider>
@@ -47,7 +41,6 @@ function App() {
           <Route path="biography" element={<BiographySection />} />
           <Route path="illustration" element={<IllustrationSection />} />
           <Route path="design" element={<DesignSection />} />
-          <Route path="design/:subcategory" element={<DesignGalleryRoute />} />
           <Route path="contact" element={<ContactForm />} />
         </Route>
         <Route path="admin/login" element={<AdminLogin />} />
