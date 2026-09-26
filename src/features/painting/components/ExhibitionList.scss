@@ -6,11 +6,6 @@
   flex-direction: column;
   gap: $space-8;
 
-  &__heading {
-    margin: 0;
-    font-size: $font-size-2xl;
-  }
-
   &__detail {
     gap: $space-2;
   }

@@ -1,0 +1,14 @@
+@use '@/styles/variables' as *;
+
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-2xl;
+  }
+}

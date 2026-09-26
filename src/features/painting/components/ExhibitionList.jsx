@@ -9,6 +9,7 @@ import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import MasterDetail from '@/components/MasterDetail.jsx'
+import SectionHeader from '@/components/SectionHeader.jsx'
 import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './ExhibitionList.scss'
 
@@ -34,7 +35,7 @@ const ExhibitionList = () => {
   return (
     <section className="exhibition-list">
       <SeoMeta title={`Exposiciones — ${ARTIST_NAME}`} path="/painting/exhibitions" />
-      <h1 className="exhibition-list__heading">Exposiciones</h1>
+      <SectionHeader title="Exposiciones" />
       <MasterDetail
         items={sorted.map((exhibition) => ({ id: exhibition.id, title: exhibition.title }))}
         selectedId={selected.id}

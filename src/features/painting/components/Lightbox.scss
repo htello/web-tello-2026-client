@@ -25,9 +25,9 @@
     right: $space-4;
     min-height: $touch-target;
     padding: $space-2 $space-3;
-    background: #000000;
+    background: $color-dark;
     color: $color-text-inverse;
-    border: 1px solid #000000;
+    border: 1px solid $color-dark;
     cursor: pointer;
   }
 
