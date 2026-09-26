@@ -5,17 +5,19 @@ import HomeHero from './HomeHero.jsx'
 describe('HomeHero', () => {
   const backgroundImage = 'https://example.com/portada.jpg'
 
-  it('muestra una única sección hero con la imagen de fondo', () => {
+  it('muestra una única sección hero con la imagen en HTML', () => {
     const { container } = render(<HomeHero backgroundImage={backgroundImage} />)
 
     const heroes = container.querySelectorAll('.home-hero')
     expect(heroes).toHaveLength(1)
-    expect(heroes[0].style.backgroundImage).toContain(backgroundImage)
+    const image = container.querySelector('.home-hero__image')
+    expect(image.tagName).toBe('IMG')
+    expect(image).toHaveAttribute('src', backgroundImage)
   })
 
-  it('muestra la identidad del artista', () => {
+  it('no muestra ningún encabezado', () => {
     render(<HomeHero backgroundImage={backgroundImage} />)
 
-    expect(screen.getByRole('heading', { name: 'Antonio Tello' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
   })
 })
