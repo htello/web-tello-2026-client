@@ -56,9 +56,11 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
  *   id: string,
  *   label: string,
  *   options: Array<{ value: unknown, label: string }>,
- *   matches: (row: object, value: string) => boolean,
+ *   param: string,
  *   emptyMessage: string,
- * }} [props.filter] filtro opcional del listado (deshabilita el reorder)
+ * }} [props.filter] filtro server-side opcional: el `value` del select se envía
+ *   como query param (`?collectionId=`, `?subcategory=`) al GET del listado.
+ *   Deshabilita el reorder mientras está activo.
  * @param {(row: object) => string} [props.rowLabel]
  * @param {string[]} [props.requiredUpdateFields] ver useAdminCrud
  * @param {(row: object) => object} [props.toFormValues] ver useAdminCrud
@@ -80,6 +82,12 @@ const AdminCrudPage = ({
   toFormValues,
 }) => {
   const [page, setPage] = useState(1)
+  const [filterValue, setFilterValue] = useState('all')
+  const isFiltered = Boolean(filter) && filterValue !== 'all'
+  const params = isFiltered
+    ? { page, limit: PAGE_LIMIT, [filter.param]: filterValue }
+    : { page, limit: PAGE_LIMIT }
+
   const {
     loading,
     error,
@@ -101,15 +109,12 @@ const AdminCrudPage = ({
     handleDelete,
     handleToggle,
   } = useAdminCrud(resource, {
-    params: { page, limit: PAGE_LIMIT },
+    params,
     requiredUpdateFields,
     toFormValues,
   })
 
-  const [filterValue, setFilterValue] = useState('all')
   const [toastMessage, setToastMessage] = useState(null)
-  const isFiltered = Boolean(filter) && filterValue !== 'all'
-  const visible = isFiltered ? ordered.filter((row) => filter.matches(row, filterValue)) : ordered
 
   /**
    * @param {Record<string, unknown>} values
@@ -195,7 +200,10 @@ const AdminCrudPage = ({
             id={filter.id}
             className={`${block}__filter-select`}
             value={filterValue}
-            onChange={(event) => setFilterValue(event.target.value)}
+            onChange={(event) => {
+              setFilterValue(event.target.value)
+              setPage(1)
+            }}
           >
             <option value="all">Todas</option>
             {filter.options.map((option) => (
@@ -209,7 +217,7 @@ const AdminCrudPage = ({
 
       <AdminTable
         columns={columns}
-        rows={visible}
+        rows={ordered}
         loading={loading}
         emptyMessage={isFiltered ? filter.emptyMessage : emptyMessage}
         rowLabel={rowLabel}

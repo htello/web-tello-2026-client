@@ -58,9 +58,15 @@ function renderView() {
 
 describe('AdminPaintings', () => {
   beforeEach(() => {
-    adminApi.list.mockImplementation((resource) =>
-      Promise.resolve({ data: resource === 'paintings' ? PAINTINGS : COLLECTIONS }),
-    )
+    adminApi.list.mockImplementation((resource, { params } = {}) => {
+      if (resource !== 'paintings') {
+        return Promise.resolve({ data: COLLECTIONS })
+      }
+      const data = params?.collectionId
+        ? PAINTINGS.filter((painting) => String(painting.collection?.id) === String(params.collectionId))
+        : PAINTINGS
+      return Promise.resolve({ data })
+    })
     adminApi.create.mockResolvedValue({ data: { id: 12 } })
     adminApi.update.mockResolvedValue({ data: { id: 10 } })
     adminApi.remove.mockResolvedValue(null)
@@ -188,19 +194,33 @@ describe('AdminPaintings', () => {
     )
   })
 
-  it('filtra la lista por colección', async () => {
+  it('filtra la lista por colección vía query del server', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Marina' })
 
     await user.selectOptions(screen.getByLabelText('Filtrar por colección'), '1')
 
-    expect(screen.getByRole('cell', { name: 'Marina' })).toBeInTheDocument()
-    expect(screen.queryByRole('cell', { name: 'Retrato' })).not.toBeInTheDocument()
+    await waitFor(() =>
+      expect(adminApi.list).toHaveBeenCalledWith(
+        'paintings',
+        expect.objectContaining({ params: { page: 1, limit: 20, collectionId: '1' } }),
+      ),
+    )
+    expect(await screen.findByRole('cell', { name: 'Marina' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.queryByRole('cell', { name: 'Retrato' })).not.toBeInTheDocument(),
+    )
 
     await user.selectOptions(screen.getByLabelText('Filtrar por colección'), 'all')
 
-    expect(screen.getByRole('cell', { name: 'Retrato' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(adminApi.list).toHaveBeenCalledWith(
+        'paintings',
+        expect.objectContaining({ params: { page: 1, limit: 20 } }),
+      ),
+    )
+    expect(await screen.findByRole('cell', { name: 'Retrato' })).toBeInTheDocument()
   })
 
   it('oculta la reordenación con el filtro activo', async () => {
@@ -262,6 +282,6 @@ describe('AdminPaintings', () => {
 
     await user.selectOptions(screen.getByLabelText('Filtrar por colección'), '3')
 
-    expect(screen.getByText('No hay pinturas para este filtro.')).toBeInTheDocument()
+    expect(await screen.findByText('No hay pinturas para este filtro.')).toBeInTheDocument()
   })
 })
