@@ -16,7 +16,7 @@ $color-danger: #404040;
 $color-success: #595959;
 
 // Typography
-$font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$font-sans: 'Titillium Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $font-size-base: 1rem;
 $font-size-sm: 0.875rem;
 $font-size-lg: 1.25rem;
@@ -26,6 +26,7 @@ $font-size-2xl: clamp(1.75rem, 1.35rem + 2vw, 2.25rem);
 // Layout
 $header-height: 3.5rem; // móvil: padding $space-3 + brand
 $header-height-md: 4.625rem; // md+: padding $space-4 + brand $font-size-xl
+$footer-height: 4.5rem; // footer fijo: padding $space-6 * 2 + línea
 $touch-target: 2.75rem; // 44px, área táctil mínima
 
 // Spacing
