@@ -6,6 +6,7 @@ import { isNotFound } from '@/constants/businessRules.js'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './PaintingDetail.scss'
 
 const PaintingDetail = ({ paintingId }) => {
@@ -26,7 +27,7 @@ const PaintingDetail = ({ paintingId }) => {
 
   return (
     <article className="painting-detail">
-      <img
+      <ProtectedArtworkImage
         className="painting-detail__image"
         src={painting.imageUrl}
         alt={painting.title}

@@ -5,6 +5,7 @@ import GallerySkeleton from '@/components/GallerySkeleton.jsx'
 import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
+import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './DesignGallery.scss'
 
 const DesignGallery = ({ subcategory }) => {
@@ -32,11 +33,10 @@ const DesignGallery = ({ subcategory }) => {
       <div className="design-gallery__grid">
         {projects.map((project) => (
           <figure key={project.id} className="design-gallery__item">
-            <img
+            <ProtectedArtworkImage
               className="design-gallery__image"
               src={project.imageUrl}
               alt={project.title}
-              loading="lazy"
             />
             <figcaption className="design-gallery__title">{project.title}</figcaption>
             {project.description && (

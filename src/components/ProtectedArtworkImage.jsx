@@ -9,7 +9,7 @@ import './ProtectedArtworkImage.scss'
  * (conserva el layout y el `alt` en el árbol de accesibilidad).
  * NOTA: es una barrera de interfaz; NO sustituye controles de derechos de autor.
  *
- * @param {{ src: string, alt: string, className?: string, objectFit?: string, loading?: string }} props
+ * @param {{ src: string, alt: string, className?: string, objectFit?: string, loading?: string, fetchPriority?: string }} props
  */
 const ProtectedArtworkImage = ({
   src,
@@ -17,6 +17,7 @@ const ProtectedArtworkImage = ({
   className = '',
   objectFit = 'cover',
   loading = 'lazy',
+  fetchPriority,
 }) => {
   const [failed, setFailed] = useState(false)
 
@@ -29,6 +30,7 @@ const ProtectedArtworkImage = ({
         alt={alt}
         src={src}
         loading={loading}
+        fetchPriority={fetchPriority}
         onError={() => setFailed(true)}
       />
       {failed && (
