@@ -40,7 +40,8 @@ const ExhibitionList = () => {
             <p className="exhibition-list__location">{exhibition.location}</p>
             {images.length > 0 && (
               <div
-                className="exhibition-list__slider"
+                className="exhibition-list__grid"
+                role="group"
                 aria-label={`Imágenes de ${exhibition.title}`}
               >
                 {images.map((image, imageIndex) => {

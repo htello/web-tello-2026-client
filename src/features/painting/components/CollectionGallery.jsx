@@ -8,7 +8,7 @@ import CollectionSkeleton from '@/components/CollectionSkeleton.jsx'
 import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
-import Carousel from '@/components/Carousel.jsx'
+import MasonryGrid from '@/components/MasonryGrid.jsx'
 import PaintingCard from './PaintingCard.jsx'
 import Lightbox from './Lightbox.jsx'
 import './CollectionGallery.scss'
@@ -42,7 +42,7 @@ const CollectionGallery = ({ collectionId }) => {
         image={collection.coverImage ?? paintings[0]?.imageUrl}
       />
       <h1 className="collection-gallery__title">{collection.title}</h1>
-      <Carousel label={`Obras de ${collection.title}`}>
+      <MasonryGrid label={`Obras de ${collection.title}`}>
         {paintings.map((painting) => (
           <PaintingCard
             key={painting.id}
@@ -57,7 +57,7 @@ const CollectionGallery = ({ collectionId }) => {
             }}
           />
         ))}
-      </Carousel>
+      </MasonryGrid>
       <Lightbox
         isOpen={selectedPainting !== null}
         image={

@@ -6,7 +6,7 @@ import GallerySkeleton from '@/components/GallerySkeleton.jsx'
 import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
-import Carousel from '@/components/Carousel.jsx'
+import MasonryGrid from '@/components/MasonryGrid.jsx'
 import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import Lightbox from '@/features/painting/components/Lightbox.jsx'
 import './DesignGallery.scss'
@@ -34,7 +34,7 @@ const DesignGallery = ({ subcategory }) => {
     <section className="design-gallery">
       <SeoMeta title={`${heading} — ${ARTIST_NAME}`} path={`/design/${subcategory}`} />
       <h1 className="design-gallery__heading">{heading}</h1>
-      <Carousel label={`Proyectos de ${heading}`}>
+      <MasonryGrid label={`Proyectos de ${heading}`}>
         {projects.map((project) => (
           <figure key={project.id} className="design-gallery__item">
             <button
@@ -54,7 +54,7 @@ const DesignGallery = ({ subcategory }) => {
             )}
           </figure>
         ))}
-      </Carousel>
+      </MasonryGrid>
       <Lightbox
         isOpen={selected !== null}
         image={selected ? { src: selected.imageUrl, alt: selected.title } : null}
