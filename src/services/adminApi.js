@@ -45,7 +45,7 @@ export const REORDERABLE_RESOURCES = [
 ]
 
 /** Secciones válidas para POST /admin/upload. */
-export const UPLOAD_SECTIONS = ['pintura', 'ilustracion', 'diseno', 'general']
+export const UPLOAD_SECTIONS = ['pintura', 'ilustracion', 'diseno', 'general', 'exposiciones']
 
 /**
  * Error de validación local (antes de llamar a la red).
@@ -158,7 +158,7 @@ const reorder = async (resource, orderedIds) => {
  * `imageUrl`/`coverImage` en el JSON del create/update.
  *
  * @param {File} file imagen a subir
- * @param {string} [section] pintura | ilustracion | diseno | general
+ * @param {string} [section] pintura | ilustracion | diseno | general | exposiciones
  * @returns {Promise<{ data: { url: string, thumbnail: string, width: number, height: number, format: string } }>}
  */
 const upload = async (file, section = 'general') => {
