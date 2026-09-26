@@ -61,6 +61,9 @@ const ExhibitionList = () => {
             {formatDateRange(selected.date, selected.endDate)}
           </p>
           <p className="exhibition-list__location">{selected.location}</p>
+          {selected.description && (
+            <p className="exhibition-list__description">{selected.description}</p>
+          )}
           {images.length > 0 && (
             <div
               className="exhibition-list__grid"
@@ -81,9 +84,6 @@ const ExhibitionList = () => {
                 )
               })}
             </div>
-          )}
-          {selected.description && (
-            <p className="exhibition-list__description">{selected.description}</p>
           )}
         </article>
       </div>
