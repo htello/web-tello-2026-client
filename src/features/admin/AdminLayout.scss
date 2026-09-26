@@ -1,10 +1,71 @@
 @use '@/styles/variables' as *;
 @use '@/styles/mixins' as *;
 
+// Alto natural del topbar (mismo padding y tipografía que el header público)
+$topbar-height: 4.625rem;
+
 .admin-layout {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
+  grid-template-areas:
+    'topbar'
+    'toggle'
+    'nav'
+    'main'
+    'footer';
+
+  @include breakpoint-up('md') {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas:
+      'topbar'
+      'toggle'
+      'main'
+      'footer';
+  }
+
+  &__topbar {
+    grid-area: topbar;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $space-4 $space-6;
+    background: #000000;
+  }
+
+  &__topbar-brand {
+    color: $color-text-inverse;
+    font-size: $font-size-xl;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  &__topbar-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  &__topbar-logout {
+    padding: 0;
+    background: none;
+    border: 0;
+    color: $color-text-inverse;
+    font-size: $font-size-base;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
 
   &__toggle {
+    grid-area: toggle;
     display: flex;
     align-items: center;
     gap: $space-2;
@@ -27,6 +88,7 @@
   }
 
   &__nav {
+    grid-area: nav;
     display: none;
     flex-direction: column;
     gap: $space-4;
@@ -40,10 +102,13 @@
 
     @include breakpoint-up('md') {
       display: flex;
-      position: sticky;
-      top: 0;
-      align-self: start;
-      min-height: 100vh;
+      position: fixed;
+      top: $topbar-height;
+      left: 0;
+      bottom: 0;
+      width: 15rem;
+      overflow-y: auto;
+      z-index: 9;
       border-bottom: 0;
       border-right: 1px solid $color-border;
     }
@@ -86,32 +151,23 @@
     }
   }
 
-  &__logout {
-    margin-top: auto;
-    padding: $space-2 $space-3;
-    background: transparent;
-    color: $color-text-muted;
-    border: 1px solid $color-border;
-    cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      color: $color-text;
-      border-color: $color-accent;
-    }
-  }
-
   &__main {
+    grid-area: main;
     padding: $space-4;
 
     @include breakpoint-up('md') {
-      display: block;
+      margin-left: 15rem;
       padding: $space-8;
     }
   }
 
-  @include breakpoint-up('md') {
-    display: grid;
-    grid-template-columns: 15rem 1fr;
+  &__footer {
+    grid-area: footer;
+    position: relative;
+    z-index: 11;
+    padding: $space-6;
+    background: #000000;
+    text-align: center;
+    color: $color-text-inverse;
   }
 }
