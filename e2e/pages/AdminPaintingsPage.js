@@ -12,16 +12,15 @@ export class AdminPaintingsPage extends AdminCrudPage {
   }
 
   /**
-   * @param {{ title: string, collection: string, year: number, imagePath?: string, published?: boolean, featured?: boolean }} painting
+   * @param {{ title: string, collection: string, year: number, imagePath?: string, published?: boolean }} painting
    */
-  async create({ title, collection, year, imagePath, published, featured }) {
+  async create({ title, collection, year, imagePath, published }) {
     await this.openCreate()
     await this.fillText('Título', title)
     await this.selectOptionByLabel('Colección', collection)
     await this.fillText('Año', String(year))
     if (imagePath) await this.uploadImage('Imagen', imagePath)
     if (published) await this.check('Publicada')
-    if (featured) await this.check('Destacada')
     await this.save()
     await expect(this.cell(title)).toBeVisible()
   }

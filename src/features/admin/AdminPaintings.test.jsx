@@ -84,13 +84,11 @@ describe('AdminPaintings', () => {
     expect(await screen.findByRole('cell', { name: 'Marina' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Retrato' })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Publicar Marina' })).toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Marina' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Publicar Retrato' })).not.toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Retrato' })).not.toBeChecked()
     expect(screen.getByRole('cell', { name: 'Óleos' })).toBeInTheDocument()
   })
 
-  it('alterna publicada/destacada inline con PUT parcial', async () => {
+  it('alterna publicada inline con PUT parcial', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Marina' })
@@ -99,12 +97,6 @@ describe('AdminPaintings', () => {
 
     await waitFor(() =>
       expect(adminApi.update).toHaveBeenCalledWith('paintings', 11, { isPublished: true }),
-    )
-
-    await user.click(screen.getByRole('checkbox', { name: 'Destacar Marina' }))
-
-    await waitFor(() =>
-      expect(adminApi.update).toHaveBeenCalledWith('paintings', 10, { isFeatured: false }),
     )
   })
 
@@ -168,7 +160,6 @@ describe('AdminPaintings', () => {
         year: 2024,
         collectionId: 1,
         isPublished: true,
-        isFeatured: false,
       }),
     )
   })
@@ -183,7 +174,6 @@ describe('AdminPaintings', () => {
     expect(screen.getByLabelText('Título')).toHaveValue('Marina')
     expect(screen.getByRole('combobox', { name: 'Colección' })).toHaveValue('1')
     expect(screen.getByLabelText('Año')).toHaveValue(2001)
-    expect(screen.getByRole('checkbox', { name: 'Destacada' })).toBeChecked()
 
     await user.clear(screen.getByLabelText('Técnica'))
     await user.type(screen.getByLabelText('Técnica'), 'Acrílico')
