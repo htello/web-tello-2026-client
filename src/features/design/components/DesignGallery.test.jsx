@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import DesignGallery from './DesignGallery.jsx'
 
 function jsonResponse(data) {
@@ -24,6 +25,16 @@ describe('DesignGallery', () => {
     expect(await screen.findByRole('img', { name: 'Logo' })).toBeInTheDocument()
     expect(screen.getByRole('img', { name: 'Cartel' })).toBeInTheDocument()
     expect(screen.getByText('Logo corporativo')).toBeInTheDocument()
+  })
+
+  it('abre el Lightbox al hacer click en un proyecto', async () => {
+    const user = userEvent.setup()
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse({ data: projects })))
+    render(<DesignGallery subcategory="imagen-corporativa" />)
+
+    await user.click(await screen.findByRole('button', { name: 'Logo' }))
+
+    expect(screen.getByRole('dialog', { name: 'Logo' })).toBeInTheDocument()
   })
 
   it('muestra un estado vacío sin proyectos', async () => {
