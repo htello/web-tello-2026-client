@@ -39,8 +39,8 @@
 | 13 | [Panel Admin: Upload](./fase-13-admin-upload.md) | Imagen en 2 pasos integrada en los formularios | Sí | ✅ 2026-09-25 · `f5f0ae7` |
 | 14 | [Panel Admin: Usuarios + E2E](./fase-14-admin-users-e2e.md) | Usuarios paginados y journey admin con Playwright | Parcial | ✅ 2026-09-25 · `1d4262d` |
 | 15 | [Refactor del Admin](./fase-15-admin-refactor.md) | Panel DRY, contrato verificado y cobertura | No | ✅ 2026-09-25 · `d1e0b58` |
-| 16 | [A11y, UX y SEO](./fase-16-a11y-ux.md) | Portfolio y panel accesibles, protegidos y optimizados | Sí | ⬜ Pendiente |
-| 17 | [Observabilidad con Sentry](./fase-17-sentry.md) | Errores y API monitorizados | No | ⬜ Pendiente |
+| 16 | [A11y, UX y SEO](./fase-16-a11y-ux.md) | Portfolio y panel accesibles, protegidos y optimizados | Sí | ✅ 2026-09-26 · `eb0f73c` |
+| 17 | [Observabilidad con Sentry](./fase-17-sentry.md) | Errores y API monitorizados | No | ✅ 2026-09-26 · `e37bf5a` |
 | 18 | [Quality Gates + Build Final](./fase-18-quality-gates.md) | Gate de coverage, CI y build de despliegue | No | ⬜ Pendiente |
 
 > Actualizar la columna Estado al cerrar cada fase (fecha + merge a develop).
@@ -125,5 +125,5 @@ playwright.config.js
 - [x] Panel CRUD y upload de imágenes
 - [x] Sass/SCSS como solución de estilos
 - [x] Vitest + Playwright
-- [ ] ESLint + a11y + Sentry (ESLint activo; a11y y SEO hechos en fase 16; Sentry fase 17)
+- [x] ESLint + a11y + Sentry (ESLint y a11y/SEO activos; Sentry integrado en fase 17)
 - [ ] pnpm verify pasando (fase 18)
