@@ -41,7 +41,7 @@
 | 15 | [Refactor del Admin](./fase-15-admin-refactor.md) | Panel DRY, contrato verificado y cobertura | No | ✅ 2026-09-25 · `d1e0b58` |
 | 16 | [A11y, UX y SEO](./fase-16-a11y-ux.md) | Portfolio y panel accesibles, protegidos y optimizados | Sí | ✅ 2026-09-26 · `eb0f73c` |
 | 17 | [Observabilidad con Sentry](./fase-17-sentry.md) | Errores y API monitorizados | No | ✅ 2026-09-26 · `e37bf5a` |
-| 18 | [Quality Gates + Build Final](./fase-18-quality-gates.md) | Gate de coverage, CI y build de despliegue | No | ⬜ Pendiente |
+| 18 | [Quality Gates + Build Final](./fase-18-quality-gates.md) | Gate de coverage, CI y build de despliegue | No | ✅ 2026-09-26 · `77f1359` |
 
 > Actualizar la columna Estado al cerrar cada fase (fecha + merge a develop).
 
@@ -126,4 +126,4 @@ playwright.config.js
 - [x] Sass/SCSS como solución de estilos
 - [x] Vitest + Playwright
 - [x] ESLint + a11y + Sentry (ESLint y a11y/SEO activos; Sentry integrado en fase 17)
-- [ ] pnpm verify pasando (fase 18)
+- [x] pnpm verify pasando (fase 18)
