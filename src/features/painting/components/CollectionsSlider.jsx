@@ -52,7 +52,11 @@ const CollectionsSlider = () => {
             <h2 className="collection-slider__title">
               <Link to={`/painting/collections/${collection.id}`}>{collection.title}</Link>
             </h2>
-            <div className="collection-slider__slider" aria-label={`Obras de ${collection.title}`}>
+            <Link
+              to={`/painting/collections/${collection.id}`}
+              className="collection-slider__slider"
+              aria-label={`Ver obras de ${collection.title}`}
+            >
               {images.map((painting, imageIndex) => {
                 const isPriority = sectionIndex === 0 && imageIndex === 0
                 return (
@@ -66,7 +70,7 @@ const CollectionsSlider = () => {
                   />
                 )
               })}
-            </div>
+            </Link>
           </section>
         )
       })}

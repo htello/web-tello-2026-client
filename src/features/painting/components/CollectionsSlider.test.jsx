@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import CollectionsSlider from './CollectionsSlider.jsx'
 
@@ -65,6 +65,14 @@ describe('CollectionsSlider', () => {
     renderSlider()
 
     expect(await screen.findByRole('img', { name: 'Atardecer azul' })).toBeInTheDocument()
+  })
+
+  it('envuelve la banda de imágenes en un enlace a su colección', async () => {
+    renderSlider()
+
+    const band = await screen.findByRole('link', { name: 'Ver obras de Serie Azul' })
+    expect(band).toHaveAttribute('href', '/painting/collections/1')
+    expect(within(band).getByRole('img', { name: 'Atardecer azul' })).toBeInTheDocument()
   })
 
   it('usa la portada como fallback cuando la colección no tiene obras', async () => {

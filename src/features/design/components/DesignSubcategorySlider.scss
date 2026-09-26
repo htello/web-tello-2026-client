@@ -31,6 +31,8 @@
     overflow-x: auto;
     padding-bottom: $space-2;
     scroll-snap-type: x mandatory;
+    cursor: pointer;
+    text-decoration: none;
   }
 
   &__image {

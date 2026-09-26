@@ -47,7 +47,11 @@ const DesignSubcategorySlider = () => {
             <h2 className="design-subcategory-slider__title">
               <Link to={`/design/${key}`}>{label}</Link>
             </h2>
-            <div className="design-subcategory-slider__slider" aria-label={`Proyectos de ${label}`}>
+            <Link
+              to={`/design/${key}`}
+              className="design-subcategory-slider__slider"
+              aria-label={`Ver proyectos de ${label}`}
+            >
               {images.map((project, imageIndex) => {
                 const isPriority = sectionIndex === 0 && imageIndex === 0
                 return (
@@ -61,7 +65,7 @@ const DesignSubcategorySlider = () => {
                   />
                 )
               })}
-            </div>
+            </Link>
           </section>
         )
       })}

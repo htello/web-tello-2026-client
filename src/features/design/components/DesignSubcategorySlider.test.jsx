@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import DesignSubcategorySlider from './DesignSubcategorySlider.jsx'
 
@@ -71,6 +71,14 @@ describe('DesignSubcategorySlider', () => {
     renderSlider()
 
     expect(await screen.findByRole('img', { name: 'Caja' })).toBeInTheDocument()
+  })
+
+  it('envuelve la banda de imágenes en un enlace a su subcategoría', async () => {
+    renderSlider()
+
+    const band = await screen.findByRole('link', { name: 'Ver proyectos de Imagen corporativa' })
+    expect(band).toHaveAttribute('href', '/design/imagen-corporativa')
+    expect(within(band).getByRole('img', { name: 'Logo Empresa' })).toBeInTheDocument()
   })
 
   it('enlaza cada subcategoría a su galería', async () => {
