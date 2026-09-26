@@ -7,8 +7,10 @@ import './PaintingView.scss'
 const PaintingView = () => (
   <div className="painting-view">
     <SeoMeta title={`Pintura — ${ARTIST_NAME}`} path="/painting" />
-    <h1 className="painting-view__title">Pintura</h1>
-    <ExhibitionLink />
+    <div className="painting-view__header">
+      <h1 className="painting-view__title">Pintura</h1>
+      <ExhibitionLink />
+    </div>
     <CollectionsSlider />
   </div>
 )

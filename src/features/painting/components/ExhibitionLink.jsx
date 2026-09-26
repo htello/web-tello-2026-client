@@ -3,7 +3,7 @@ import './ExhibitionLink.scss'
 
 const ExhibitionLink = () => (
   <Link className="exhibition-link" to="/painting/exhibitions">
-    Exhibiciones
+    Ver exposiciones
   </Link>
 )
 

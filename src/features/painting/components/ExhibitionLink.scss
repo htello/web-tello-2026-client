@@ -1,5 +1,17 @@
 @use '@/styles/variables' as *;
 
 .exhibition-link {
-  color: $color-accent;
+  display: inline-block;
+  padding: $space-2 $space-6;
+  background: #000000;
+  color: $color-text-inverse;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 999px;
+
+  &:hover,
+  &:focus-visible {
+    background: $color-accent;
+    color: #ffffff;
+  }
 }

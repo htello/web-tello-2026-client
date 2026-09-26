@@ -67,7 +67,8 @@ describe('CollectionsSlider', () => {
     expect(await screen.findByRole('img', { name: 'Atardecer azul' })).toBeInTheDocument()
   })
 
-  it('usa la portada como fallback cuando no hay destacadas', async () => {
+  it('usa la portada como fallback cuando la colección no tiene obras', async () => {
+    vi.stubGlobal('fetch', mockApi({ paintings: { 1: paintingsByCollection[1], 2: [] } }))
     renderSlider()
 
     expect(await screen.findByRole('img', { name: 'Serie Roja' })).toBeInTheDocument()
@@ -92,7 +93,7 @@ describe('CollectionsSlider', () => {
     const first = await screen.findByRole('img', { name: 'Atardecer azul' })
     expect(first).toHaveAttribute('loading', 'eager')
     expect(first).toHaveAttribute('fetchpriority', 'high')
-    expect(screen.getByRole('img', { name: 'Serie Roja' })).toHaveAttribute('loading', 'lazy')
+    expect(screen.getByRole('img', { name: 'Rojo apagado' })).toHaveAttribute('loading', 'lazy')
   })
 
   it('muestra un skeleton de galería durante la carga', () => {
