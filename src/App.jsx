@@ -6,7 +6,7 @@ import PaintingView from './features/painting/PaintingView.jsx'
 import CollectionGallery from './features/painting/components/CollectionGallery.jsx'
 import ExhibitionList from './features/painting/components/ExhibitionList.jsx'
 import BiographySection from './features/biography/BiographySection.jsx'
-import DesignSubcategorySlider from './features/design/components/DesignSubcategorySlider.jsx'
+import DesignSection from './features/design/DesignSection.jsx'
 import DesignGallery from './features/design/components/DesignGallery.jsx'
 import IllustrationGallery from './features/illustration/components/IllustrationGallery.jsx'
 import ContactForm from './features/contact/components/ContactForm.jsx'
@@ -46,7 +46,7 @@ function App() {
           <Route path="painting/exhibitions" element={<ExhibitionList />} />
           <Route path="biography" element={<BiographySection />} />
           <Route path="illustration" element={<IllustrationGallery />} />
-          <Route path="design" element={<DesignSubcategorySlider />} />
+          <Route path="design" element={<DesignSection />} />
           <Route path="design/:subcategory" element={<DesignGalleryRoute />} />
           <Route path="contact" element={<ContactForm />} />
         </Route>
