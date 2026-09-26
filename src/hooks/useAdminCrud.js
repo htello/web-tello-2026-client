@@ -19,7 +19,8 @@ import { useReorder } from './useReorder.js'
  * @param {string} resource uno de ADMIN_RESOURCES (p. ej. 'collections')
  * @param {object} [options]
  * @param {Record<string, string | number>} [options.params] query del listado
- *   paginado (`{ page, limit }` según el contrato de los GET admin).
+ *   paginado y filtrable (`{ page, limit }` según el contrato de los GET admin,
+ *   más filtros como `collectionId` o `subcategory`).
  * @param {string[]} [options.requiredUpdateFields] campos que el contrato
  *   exige en CADA PUT aunque no cambien (p. ej. `title` en colecciones, ver
  *   CollectionRequest en openapi). En `handleSubmit` se toman de los valores

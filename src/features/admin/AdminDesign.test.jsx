@@ -48,7 +48,12 @@ function renderView() {
 
 describe('AdminDesign', () => {
   beforeEach(() => {
-    adminApi.list.mockResolvedValue({ data: DESIGNS })
+    adminApi.list.mockImplementation((resource, { params } = {}) => {
+      const data = params?.subcategory
+        ? DESIGNS.filter((design) => design.subcategory === params.subcategory)
+        : DESIGNS
+      return Promise.resolve({ data })
+    })
     adminApi.create.mockResolvedValue({ data: { id: 32 } })
     adminApi.update.mockResolvedValue({ data: { id: 30 } })
     adminApi.remove.mockResolvedValue(null)
@@ -154,19 +159,33 @@ describe('AdminDesign', () => {
     )
   })
 
-  it('filtra la lista por subcategoría', async () => {
+  it('filtra la lista por subcategoría vía query del server', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Cartel Feria' })
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'carteleria')
 
-    expect(screen.getByRole('cell', { name: 'Cartel Feria' })).toBeInTheDocument()
-    expect(screen.queryByRole('cell', { name: 'Logo Bodega' })).not.toBeInTheDocument()
+    await waitFor(() =>
+      expect(adminApi.list).toHaveBeenCalledWith(
+        'design',
+        expect.objectContaining({ params: { page: 1, limit: 20, subcategory: 'carteleria' } }),
+      ),
+    )
+    expect(await screen.findByRole('cell', { name: 'Cartel Feria' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.queryByRole('cell', { name: 'Logo Bodega' })).not.toBeInTheDocument(),
+    )
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'all')
 
-    expect(screen.getByRole('cell', { name: 'Logo Bodega' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(adminApi.list).toHaveBeenCalledWith(
+        'design',
+        expect.objectContaining({ params: { page: 1, limit: 20 } }),
+      ),
+    )
+    expect(await screen.findByRole('cell', { name: 'Logo Bodega' })).toBeInTheDocument()
   })
 
   it('oculta la reordenación con el filtro activo', async () => {
@@ -203,7 +222,7 @@ describe('AdminDesign', () => {
   })
 
   it('muestra el estado vacío sin filtro', async () => {
-    adminApi.list.mockResolvedValue({ data: [] })
+    adminApi.list.mockImplementation(() => Promise.resolve({ data: [] }))
     renderView()
 
     expect(await screen.findByText('No hay proyectos de diseño.')).toBeInTheDocument()
@@ -216,6 +235,6 @@ describe('AdminDesign', () => {
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'editorial')
 
-    expect(screen.getByText('No hay proyectos para este filtro.')).toBeInTheDocument()
+    expect(await screen.findByText('No hay proyectos para este filtro.')).toBeInTheDocument()
   })
 })

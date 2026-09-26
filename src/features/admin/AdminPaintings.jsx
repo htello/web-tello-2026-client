@@ -11,17 +11,9 @@ const columns = [
 /**
  * CRUD de pinturas del panel admin: validación cliente de year (1900-2100) y
  * collectionId obligatorios, selector de colección alimentado por
- * GET /admin/collections, filtro por colección, reorder con SOLO orderedIds
+ * GET /admin/collections, filtro por colección server-side
+ * (`?collectionId=` con meta.total filtrado), reorder con SOLO orderedIds
  * y subida de imagen en segundo plano (ImageUploadField → POST /admin/upload).
- */
-/**
- * Pendiente (server ya soporta ?collectionId= en GET /admin/paintings con meta.total
- * filtrado): pasar el valor del filtro a la query del listado en lugar de
- * filtrar en local la página actual (20 items). Cambiar este `filter` a:
- *   filter={{ id, label, options, param: 'collectionId', emptyMessage }}
- * y en AdminCrudPage incluir `params: { page, limit, ...(isFiltered && filter.param ? { [filter.param]: filterValue } : {}) }`
- * en useAdminCrud + setPage(1) al cambiar el filtro. El filtrado local actual
- * solo ve la página cargada y muestra un número aleatorio de filas por página.
  */
 const AdminPaintings = () => {
   const { items: collections } = useAdminResource('collections', { params: { limit: 100 } })
@@ -62,7 +54,7 @@ const AdminPaintings = () => {
         id: 'paintings-collection-filter',
         label: 'Filtrar por colección',
         options: collectionOptions,
-        matches: (row, value) => String(row.collection?.id) === value,
+        param: 'collectionId',
         emptyMessage: 'No hay pinturas para este filtro.',
       }}
     />

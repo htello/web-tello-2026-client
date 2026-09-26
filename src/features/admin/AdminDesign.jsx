@@ -37,14 +37,9 @@ const columns = [
 
 /**
  * CRUD de proyectos de diseño del panel admin: subcategoría obligatoria
- * (enum del contrato), filtro del listado por subcategoría, reorder con SOLO
- * orderedIds y subida de imagen en segundo plano (ImageUploadField).
- */
-/**
- * Pendiente (server ya soporta ?subcategory= en GET /admin/design con meta.total
- * filtrado): mismo cambio pendiente que en AdminPaintings — pasar el filtro a
- * la query (`param: 'subcategory'`) en AdminCrudPage y resetear a página 1 al
- * cambiarlo. El filtrado local actual solo recorta la página cargada.
+ * (enum del contrato), filtro del listado server-side (`?subcategory=` con
+ * meta.total filtrado), reorder con SOLO orderedIds y subida de imagen
+ * en segundo plano (ImageUploadField).
  */
 const AdminDesign = () => (
   <AdminCrudPage
@@ -62,7 +57,7 @@ const AdminDesign = () => (
       id: 'design-subcategory-filter',
       label: 'Filtrar por subcategoría',
       options: SUBCATEGORY_OPTIONS,
-      matches: (row, value) => row.subcategory === value,
+      param: 'subcategory',
       emptyMessage: 'No hay proyectos para este filtro.',
     }}
   />
