@@ -6,9 +6,11 @@
   justify-content: center;
   min-height: 100vh;
   min-height: 100svh;
+  padding: $space-4;
   background-size: cover;
   background-position: center;
   color: $color-text-inverse;
+  text-align: center;
 
   &__title {
     margin: 0;
