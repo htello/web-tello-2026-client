@@ -16,7 +16,7 @@ export class PaintingPage {
   }
 
   exhibitionsLink() {
-    return this.page.getByRole('link', { name: 'Exhibiciones' })
+    return this.page.getByRole('link', { name: 'Ver exposiciones' })
   }
 
   lightbox() {
