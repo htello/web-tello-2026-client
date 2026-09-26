@@ -5,12 +5,15 @@ $breakpoint-lg: 64rem; // 1024px
 $breakpoint-xl: 80rem; // 1280px
 
 // Colors
-$color-background: #0e0e0e;
-$color-surface: #1a1a1a;
-$color-text: #f5f5f5;
-$color-text-muted: #a3a3a3;
-$color-accent: #d4a373;
-$color-border: #2a2a2a;
+$color-background: #ffffff;
+$color-surface: #f5f5f5;
+$color-text: #1a1a1a;
+$color-text-muted: #595959;
+$color-text-inverse: #f5f5f5;
+$color-accent: #404040;
+$color-border: #e0e0e0;
+$color-danger: #404040;
+$color-success: #595959;
 
 // Typography
 $font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;

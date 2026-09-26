@@ -68,8 +68,8 @@
     &--danger {
       &:hover:not(:disabled),
       &:focus-visible {
-        color: #e57373;
-        border-color: #e57373;
+        color: $color-danger;
+        border-color: $color-danger;
       }
     }
   }
