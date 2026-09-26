@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
+import { addBreadcrumb } from '@/infrastructure/sentry.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
 import { ARTIST_NAME } from '@/constants/businessRules.js'
 import CollectionSkeleton from '@/components/CollectionSkeleton.jsx'
@@ -15,6 +16,7 @@ const CollectionGallery = ({ collectionId }) => {
   const [selectedPainting, setSelectedPainting] = useState(null)
   const { data: collection, loading, error } = useAsyncData(
     async (signal) => {
+      addBreadcrumb({ category: 'ui', message: 'collection:open', data: { collectionId } })
       const res = await api.get(`/collections/${collectionId}`, { signal })
       return res.data
     },
@@ -44,7 +46,14 @@ const CollectionGallery = ({ collectionId }) => {
           <PaintingCard
             key={painting.id}
             painting={painting}
-            onOpen={() => setSelectedPainting(painting)}
+            onOpen={() => {
+              addBreadcrumb({
+                category: 'ui',
+                message: 'painting:open',
+                data: { paintingId: painting.id },
+              })
+              setSelectedPainting(painting)
+            }}
           />
         ))}
       </div>

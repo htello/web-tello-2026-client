@@ -1,0 +1,48 @@
+@use '@/styles/variables' as *;
+
+.sentry-error {
+  align-items: center;
+  background-color: $color-background;
+  color: $color-text;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  justify-content: center;
+  min-height: 100vh;
+  padding: $space-8 $space-4;
+  text-align: center;
+
+  &__title {
+    font-size: $font-size-xl;
+    margin: 0;
+  }
+
+  &__text {
+    color: $color-text-muted;
+    margin: 0;
+    max-width: 42ch;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
+    justify-content: center;
+    margin-top: $space-2;
+  }
+
+  &__retry,
+  &__feedback {
+    background-color: transparent;
+    border: 1px solid $color-border;
+    color: $color-text;
+    cursor: pointer;
+    font-size: $font-size-base;
+    padding: $space-2 $space-6;
+  }
+
+  &__retry {
+    border-color: $color-accent;
+    color: $color-accent;
+  }
+}

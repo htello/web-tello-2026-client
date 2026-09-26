@@ -4,6 +4,7 @@
  */
 
 import { API_TIMEOUT_MS } from '@/constants/businessRules.js'
+import { addBreadcrumb } from '@/infrastructure/sentry.js'
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api/v1'
 
@@ -75,6 +76,12 @@ async function request(method, path, { body, timeout = API_TIMEOUT_MS, signal } 
     const payload = isJson ? await response.json() : null
 
     if (!response.ok) {
+      addBreadcrumb({
+        category: 'http',
+        message: `${method} ${path}`,
+        data: { status: response.status, code: payload?.code },
+        level: 'error',
+      })
       const error = new ApiError(
         payload?.error ?? `Error ${response.status}`,
         response.status,
@@ -89,6 +96,12 @@ async function request(method, path, { body, timeout = API_TIMEOUT_MS, signal } 
     return payload
   } catch (error) {
     if (error.name === 'AbortError') {
+      addBreadcrumb({
+        category: 'http',
+        message: `${method} ${path}`,
+        data: { status: 'TIMEOUT' },
+        level: 'error',
+      })
       throw new ApiError('La petición excedió el tiempo de espera', 0, 'TIMEOUT')
     }
     throw error

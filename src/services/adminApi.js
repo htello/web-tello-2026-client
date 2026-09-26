@@ -13,6 +13,17 @@
  */
 
 import { api, ApiError } from './api.js'
+import { addBreadcrumb } from '@/infrastructure/sentry.js'
+
+/**
+ * Breadcrumb de acción del panel admin: registra la intención (recurso, id,
+ * sección) pero nunca payloads, credenciales ni datos personales.
+ *
+ * @param {string} action p. ej. 'collections:create'
+ * @param {Record<string, unknown>} [data]
+ */
+const adminBreadcrumb = (action, data) =>
+  addBreadcrumb({ category: 'admin', message: `admin:${action}`, data })
 
 /** Recursos admin con CRUD estándar. */
 export const ADMIN_RESOURCES = [
@@ -97,7 +108,10 @@ const list = async (resource, { signal, params } = {}) =>
  * @param {object} payload campos de la entidad (en paintings, `year` y `collectionId` obligatorios)
  * @returns {Promise<{ data: unknown }>} entidad creada
  */
-const create = async (resource, payload) => api.post(resourcePath(resource), payload)
+const create = async (resource, payload) => {
+  adminBreadcrumb(`${resource}:create`)
+  return api.post(resourcePath(resource), payload)
+}
 
 /**
  * Actualización parcial: enviar solo los campos a cambiar (mínimo 1 campo).
@@ -108,6 +122,7 @@ const create = async (resource, payload) => api.post(resourcePath(resource), pay
  */
 const update = async (resource, id, payload) => {
   assertPartialPayload(payload)
+  adminBreadcrumb(`${resource}:update`, { id })
   return api.put(`${resourcePath(resource)}/${id}`, payload)
 }
 
@@ -117,7 +132,10 @@ const update = async (resource, id, payload) => {
  * @param {number | string} id
  * @returns {Promise<{ data: unknown } | null>}
  */
-const remove = async (resource, id) => api.del(`${resourcePath(resource)}/${id}`)
+const remove = async (resource, id) => {
+  adminBreadcrumb(`${resource}:remove`, { id })
+  return api.del(`${resourcePath(resource)}/${id}`)
+}
 
 /**
  * Reordena entidades: PUT .../reorder con SOLO `{ orderedIds }`.
@@ -131,6 +149,7 @@ const reorder = async (resource, orderedIds) => {
   if (!REORDERABLE_RESOURCES.includes(resource)) {
     throw validationError(`El recurso no admite reordenación: ${resource}`)
   }
+  adminBreadcrumb(`${resource}:reorder`, { count: orderedIds.length })
   return api.put(`${resourcePath(resource)}/reorder`, { orderedIds })
 }
 
@@ -143,9 +162,11 @@ const reorder = async (resource, orderedIds) => {
  * @returns {Promise<{ data: { url: string, thumbnail: string, width: number, height: number, format: string } }>}
  */
 const upload = async (file, section = 'general') => {
+  const safeSection = UPLOAD_SECTIONS.includes(section) ? section : 'general'
+  adminBreadcrumb('upload', { section: safeSection })
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('section', UPLOAD_SECTIONS.includes(section) ? section : 'general')
+  formData.append('section', safeSection)
   return api.post('/admin/upload', formData)
 }
 
@@ -161,7 +182,10 @@ const getUser = async (id) => api.get(`/admin/users/${id}`)
  * @param {{ name: string, email: string, password: string }} payload
  * @returns {Promise<{ data: unknown }>}
  */
-const registerUser = async (payload) => api.post('/admin/users/register', payload)
+const registerUser = async (payload) => {
+  adminBreadcrumb('users:register')
+  return api.post('/admin/users/register', payload)
+}
 
 /**
  * Cambia la contraseña de un usuario.
@@ -169,14 +193,20 @@ const registerUser = async (payload) => api.post('/admin/users/register', payloa
  * @param {{ password: string }} payload password fuerte (≥8, mayúscula y símbolo)
  * @returns {Promise<{ data: unknown } | null>}
  */
-const updateUserPassword = async (id, payload) => api.put(`/admin/users/${id}/password`, payload)
+const updateUserPassword = async (id, payload) => {
+  adminBreadcrumb('users:password', { id })
+  return api.put(`/admin/users/${id}/password`, payload)
+}
 
 /**
  * Crea la biografía (solo existe una; el front trata el 404 público como "sin biografía").
  * @param {object} payload
  * @returns {Promise<{ data: unknown }>}
  */
-const createBiography = async (payload) => api.post('/admin/biography', payload)
+const createBiography = async (payload) => {
+  adminBreadcrumb('biography:create')
+  return api.post('/admin/biography', payload)
+}
 
 /**
  * Actualización parcial de la biografía (mínimo 1 campo).
@@ -185,6 +215,7 @@ const createBiography = async (payload) => api.post('/admin/biography', payload)
  */
 const updateBiography = async (payload) => {
   assertPartialPayload(payload)
+  adminBreadcrumb('biography:update')
   return api.put('/admin/biography', payload)
 }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { api } from '@/services/api.js'
+import { addBreadcrumb } from '@/infrastructure/sentry.js'
 import { validateContact } from '@/utils/validateContact.js'
 import { ARTIST_NAME } from '@/constants/businessRules.js'
 import SeoMeta from '@/components/SeoMeta.jsx'
@@ -22,14 +23,22 @@ const ContactForm = () => {
     if (Object.keys(next).length > 0) return
 
     setStatus('loading')
+    addBreadcrumb({ category: 'form', message: 'contact:submit' })
     try {
       await api.post('/contact', { name, email, subject, message })
+      addBreadcrumb({ category: 'form', message: 'contact:success' })
       setStatus('success')
       setName('')
       setEmail('')
       setSubject('')
       setMessage('')
     } catch (err) {
+      addBreadcrumb({
+        category: 'form',
+        message: 'contact:error',
+        data: { code: err.code },
+        level: 'error',
+      })
       setStatus('error')
       setErrorMessage(
         err.code === 'RATE_LIMITED' || err.code === 'EMAIL_ERROR'

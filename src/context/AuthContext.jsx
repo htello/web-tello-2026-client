@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { api, setAuthToken, setUnauthorizedHandler } from '@/services/api.js'
+import { addBreadcrumb, clearUserContext, setUserContext } from '@/infrastructure/sentry.js'
 import { AuthContext } from './authContext.js'
 
 const SESSION_KEY = 'admin_session'
@@ -27,6 +28,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     setAuthToken(session?.token ?? null)
+    if (session?.user) setUserContext(session.user)
+    else clearUserContext()
   }, [session])
 
   /**
@@ -43,6 +46,7 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(nextSession))
       setAuthToken(data.token)
       setSession(nextSession)
+      addBreadcrumb({ category: 'auth', message: 'auth:login:success' })
       return data.user
     } finally {
       setIsLoading(false)
@@ -51,6 +55,7 @@ export const AuthProvider = ({ children }) => {
 
   /** Limpia la sesión por completo (memoria y sessionStorage). */
   const logout = useCallback(() => {
+    addBreadcrumb({ category: 'auth', message: 'auth:logout' })
     sessionStorage.removeItem(SESSION_KEY)
     setAuthToken(null)
     setSession(null)
