@@ -73,32 +73,6 @@ describe('DesignSubcategorySlider', () => {
     expect(await screen.findByRole('img', { name: 'Caja' })).toBeInTheDocument()
   })
 
-  it('rellena con proyectos no destacados hasta cinco por subcategoría', async () => {
-    const many = [
-      { id: 11, title: 'Destacada A', imageUrl: 'https://example.com/da.jpg', isFeatured: true },
-      { id: 12, title: 'P2', imageUrl: 'https://example.com/p2.jpg', isFeatured: false },
-      { id: 13, title: 'P3', imageUrl: 'https://example.com/p3.jpg', isFeatured: false },
-      { id: 14, title: 'P4', imageUrl: 'https://example.com/p4.jpg', isFeatured: false },
-      { id: 15, title: 'P5', imageUrl: 'https://example.com/p5.jpg', isFeatured: false },
-      { id: 16, title: 'P6', imageUrl: 'https://example.com/p6.jpg', isFeatured: false },
-      { id: 17, title: 'P7', imageUrl: 'https://example.com/p7.jpg', isFeatured: false },
-    ]
-    vi.stubGlobal(
-      'fetch',
-      buildFetch({
-        'imagen-corporativa': many,
-        'packaging-expositores': projectsBySubcategory['packaging-expositores'],
-        carteleria: [],
-        editorial: [],
-      }),
-    )
-    renderSlider()
-
-    expect(await screen.findByRole('img', { name: 'P5' })).toBeInTheDocument()
-    expect(screen.queryByRole('img', { name: 'P6' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('img', { name: 'P7' })).not.toBeInTheDocument()
-  })
-
   it('enlaza cada subcategoría a su galería', async () => {
     renderSlider()
 

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
-import { ARTIST_NAME, DESIGN_SUBCATEGORIES, SECTION_MIN_IMAGES } from '@/constants/businessRules.js'
+import { ARTIST_NAME, DESIGN_SUBCATEGORIES } from '@/constants/businessRules.js'
 import GallerySkeleton from '@/components/GallerySkeleton.jsx'
 import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
@@ -40,8 +40,7 @@ const DesignSubcategorySlider = () => {
       {visibleSubcategories.map(({ key, label }, sectionIndex) => {
         const projects = projectsBySubcategory[key] ?? []
         const featured = projects.filter((p) => p.isFeatured)
-        const rest = projects.filter((p) => !p.isFeatured)
-        const images = [...featured, ...rest].slice(0, SECTION_MIN_IMAGES)
+        const images = featured.length > 0 ? featured : projects.slice(0, 1)
 
         return (
           <section key={key} className="design-subcategory-slider__item">

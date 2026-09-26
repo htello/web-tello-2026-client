@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { api } from '@/services/api.js'
 import { useAsyncData } from '@/hooks/useAsyncData.js'
 import { sortByPosition } from '@/utils/sortByPosition.js'
-import { SECTION_MIN_IMAGES } from '@/constants/businessRules.js'
 import GallerySkeleton from '@/components/GallerySkeleton.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
@@ -39,10 +38,11 @@ const CollectionsSlider = () => {
       {collections.map((collection, sectionIndex) => {
         const paintings = paintingsByCollection[collection.id] ?? []
         const featured = paintings.filter((painting) => painting.isFeatured)
-        const rest = paintings.filter((painting) => !painting.isFeatured)
         let images
-        if (featured.length > 0 || rest.length > 0) {
-          images = [...featured, ...rest].slice(0, SECTION_MIN_IMAGES)
+        if (featured.length > 0) {
+          images = featured
+        } else if (paintings.length > 0) {
+          images = paintings.slice(0, 1)
         } else {
           images = [{ title: collection.title, imageUrl: collection.coverImage }]
         }
