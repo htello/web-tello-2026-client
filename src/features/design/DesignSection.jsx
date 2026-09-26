@@ -7,7 +7,8 @@ import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import MasonryGrid from '@/components/MasonryGrid.jsx'
-import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
+import MasterDetail from '@/components/MasterDetail.jsx'
+import ArtworkCard from '@/components/ArtworkCard.jsx'
 import Lightbox from '@/features/painting/components/Lightbox.jsx'
 import './DesignSection.scss'
 
@@ -44,57 +45,32 @@ const DesignSection = () => {
     <section className="design-section">
       <SeoMeta title={`Diseño — ${ARTIST_NAME}`} path="/design" />
       <h1 className="design-section__heading">Diseño</h1>
-      <div className="design-section__layout">
-        <nav className="design-section__sidebar" aria-label="Lista de categorías de diseño">
-          <ul className="design-section__items">
-            {visibleSubcategories.map(({ key, label }) => (
-              <li key={key}>
-                <button
-                  type="button"
-                  className={
-                    key === current.key
-                      ? 'design-section__item design-section__item--active'
-                      : 'design-section__item'
-                  }
-                  aria-current={key === current.key ? 'true' : undefined}
-                  onClick={() => setSelectedKey(key)}
-                >
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <article className="design-section__detail">
-          <h2 className="design-section__title">{current.label}</h2>
-          <MasonryGrid label={`Proyectos de ${current.label}`}>
-            {projects.map((project) => (
-              <figure key={project.id} className="design-section__figure">
-                <button
-                  type="button"
-                  className="design-section__button"
-                  onClick={() => setSelected(project)}
-                >
-                  <ProtectedArtworkImage
-                    className="design-section__image"
-                    src={project.imageUrl}
-                    alt={project.title}
-                  />
-                </button>
-                <figcaption className="design-section__caption">{project.title}</figcaption>
-                {project.description && (
-                  <p className="design-section__description">{project.description}</p>
-                )}
-              </figure>
-            ))}
-          </MasonryGrid>
-          <Lightbox
-            isOpen={selected !== null}
-            image={selected ? { src: selected.imageUrl, alt: selected.title } : null}
-            onClose={() => setSelected(null)}
-          />
-        </article>
-      </div>
+      <MasterDetail
+        items={visibleSubcategories.map(({ key, label }) => ({ id: key, title: label }))}
+        selectedId={current.key}
+        onSelect={setSelectedKey}
+        label="Lista de categorías de diseño"
+      >
+        <h2 className="master-detail__title">{current.label}</h2>
+        <MasonryGrid label={`Proyectos de ${current.label}`}>
+          {projects.map((project) => (
+            <ArtworkCard
+              key={project.id}
+              src={project.imageUrl}
+              alt={project.title}
+              title={project.title}
+              headingLevel={3}
+              description={project.description}
+              onOpen={() => setSelected(project)}
+            />
+          ))}
+        </MasonryGrid>
+        <Lightbox
+          isOpen={selected !== null}
+          image={selected ? { src: selected.imageUrl, alt: selected.title } : null}
+          onClose={() => setSelected(null)}
+        />
+      </MasterDetail>
     </section>
   )
 }

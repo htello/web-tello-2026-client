@@ -8,6 +8,7 @@ import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import MasonryGrid from '@/components/MasonryGrid.jsx'
+import MasterDetail from '@/components/MasterDetail.jsx'
 import IllustrationCard from './components/IllustrationCard.jsx'
 import Lightbox from '@/features/painting/components/Lightbox.jsx'
 import './IllustrationSection.scss'
@@ -31,38 +32,29 @@ const IllustrationSection = () => {
     <section className="illustration-section">
       <SeoMeta title={`Ilustración — ${ARTIST_NAME}`} path="/illustration" />
       <h1 className="illustration-section__heading">{GROUP_LABEL}</h1>
-      <div className="illustration-section__layout">
-        <nav className="illustration-section__sidebar" aria-label="Lista de categorías de ilustración">
-          <ul className="illustration-section__items">
-            <li>
-              <button
-                type="button"
-                className="illustration-section__item illustration-section__item--active"
-                aria-current="true"
-              >
-                {GROUP_LABEL}
-              </button>
-            </li>
-          </ul>
-        </nav>
-        <article className="illustration-section__detail">
-          <h2 className="illustration-section__title">{GROUP_LABEL}</h2>
-          <MasonryGrid label="Galería de ilustraciones">
-            {illustrations.map((illustration) => (
-              <IllustrationCard
-                key={illustration.id}
-                illustration={illustration}
-                onOpen={() => setSelected(illustration)}
-              />
-            ))}
-          </MasonryGrid>
-          <Lightbox
-            isOpen={selected !== null}
-            image={selected ? { src: selected.imageUrl, alt: selected.title } : null}
-            onClose={() => setSelected(null)}
-          />
-        </article>
-      </div>
+      <MasterDetail
+        items={[{ id: 'general', title: GROUP_LABEL }]}
+        selectedId="general"
+        onSelect={() => {}}
+        label="Lista de categorías de ilustración"
+      >
+        <h2 className="master-detail__title">{GROUP_LABEL}</h2>
+        <MasonryGrid label="Galería de ilustraciones">
+          {illustrations.map((illustration) => (
+            <IllustrationCard
+              key={illustration.id}
+              illustration={illustration}
+              headingLevel={3}
+              onOpen={() => setSelected(illustration)}
+            />
+          ))}
+        </MasonryGrid>
+        <Lightbox
+          isOpen={selected !== null}
+          image={selected ? { src: selected.imageUrl, alt: selected.title } : null}
+          onClose={() => setSelected(null)}
+        />
+      </MasterDetail>
     </section>
   )
 }

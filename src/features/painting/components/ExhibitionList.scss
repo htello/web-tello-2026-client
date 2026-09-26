@@ -11,61 +11,8 @@
     font-size: $font-size-2xl;
   }
 
-  &__layout {
-    display: grid;
-    gap: $space-6;
-
-    @include breakpoint-up('md') {
-      grid-template-columns: 15rem 1fr;
-      gap: $space-8;
-      align-items: start;
-    }
-  }
-
-  &__items {
-    display: flex;
-    flex-direction: column;
-    gap: $space-1;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  &__item {
-    display: block;
-    width: 100%;
-    min-height: $touch-target;
-    padding: $space-2 $space-3;
-    background: none;
-    border: 0;
-    border-left: 3px solid transparent;
-    color: $color-text-muted;
-    font-size: $font-size-base;
-    text-align: left;
-    cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      color: $color-text;
-      background: rgba($color-accent, 0.08);
-    }
-
-    &--active {
-      color: $color-accent;
-      border-left-color: $color-accent;
-      font-weight: 600;
-    }
-  }
-
   &__detail {
-    display: flex;
-    flex-direction: column;
     gap: $space-2;
-  }
-
-  &__title {
-    margin: 0;
-    font-size: $font-size-lg;
   }
 
   &__date,

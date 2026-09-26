@@ -8,6 +8,7 @@ import SeoMeta from '@/components/SeoMeta.jsx'
 import LoadingState from '@/components/LoadingState.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
+import MasterDetail from '@/components/MasterDetail.jsx'
 import ProtectedArtworkImage from '@/components/ProtectedArtworkImage.jsx'
 import './ExhibitionList.scss'
 
@@ -34,59 +35,43 @@ const ExhibitionList = () => {
     <section className="exhibition-list">
       <SeoMeta title={`Exposiciones — ${ARTIST_NAME}`} path="/painting/exhibitions" />
       <h1 className="exhibition-list__heading">Exposiciones</h1>
-      <div className="exhibition-list__layout">
-        <nav className="exhibition-list__sidebar" aria-label="Lista de exposiciones">
-          <ul className="exhibition-list__items">
-            {sorted.map((exhibition) => (
-              <li key={exhibition.id}>
-                <button
-                  type="button"
-                  className={
-                    exhibition.id === selected.id
-                      ? 'exhibition-list__item exhibition-list__item--active'
-                      : 'exhibition-list__item'
-                  }
-                  aria-current={exhibition.id === selected.id ? 'true' : undefined}
-                  onClick={() => setSelectedId(exhibition.id)}
-                >
-                  {exhibition.title}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <article className="exhibition-list__detail">
-          <h2 className="exhibition-list__title">{selected.title}</h2>
-          <p className="exhibition-list__date">
-            {formatDateRange(selected.date, selected.endDate)}
-          </p>
-          <p className="exhibition-list__location">{selected.location}</p>
-          {selected.description && (
-            <p className="exhibition-list__description">{selected.description}</p>
-          )}
-          {images.length > 0 && (
-            <div
-              className="exhibition-list__grid"
-              role="group"
-              aria-label={`Imágenes de ${selected.title}`}
-            >
-              {images.map((image, imageIndex) => {
-                const isPriority = imageIndex === 0
-                return (
-                  <ProtectedArtworkImage
-                    key={image.id ?? `img-${selected.id}-${imageIndex}`}
-                    className="exhibition-list__image"
-                    src={image.thumbnail ?? image.url}
-                    alt={selected.title}
-                    loading={isPriority ? 'eager' : 'lazy'}
-                    fetchPriority={isPriority ? 'high' : undefined}
-                  />
-                )
-              })}
-            </div>
-          )}
-        </article>
-      </div>
+      <MasterDetail
+        items={sorted.map((exhibition) => ({ id: exhibition.id, title: exhibition.title }))}
+        selectedId={selected.id}
+        onSelect={setSelectedId}
+        label="Lista de exposiciones"
+        detailClassName="exhibition-list__detail"
+      >
+        <h2 className="master-detail__title">{selected.title}</h2>
+        <p className="exhibition-list__date">
+          {formatDateRange(selected.date, selected.endDate)}
+        </p>
+        <p className="exhibition-list__location">{selected.location}</p>
+        {selected.description && (
+          <p className="exhibition-list__description">{selected.description}</p>
+        )}
+        {images.length > 0 && (
+          <div
+            className="exhibition-list__grid"
+            role="group"
+            aria-label={`Imágenes de ${selected.title}`}
+          >
+            {images.map((image, imageIndex) => {
+              const isPriority = imageIndex === 0
+              return (
+                <ProtectedArtworkImage
+                  key={image.id ?? `img-${selected.id}-${imageIndex}`}
+                  className="exhibition-list__image"
+                  src={image.thumbnail ?? image.url}
+                  alt={selected.title}
+                  loading={isPriority ? 'eager' : 'lazy'}
+                  fetchPriority={isPriority ? 'high' : undefined}
+                />
+              )
+            })}
+          </div>
+        )}
+      </MasterDetail>
     </section>
   )
 }

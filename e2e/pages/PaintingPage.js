@@ -12,7 +12,7 @@ export class PaintingPage {
   }
 
   async selectCollection(name) {
-    await this.page.getByRole('link', { name }).click()
+    await this.page.getByRole('button', { name }).click()
   }
 
   exhibitionsLink() {
