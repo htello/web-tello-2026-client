@@ -20,6 +20,9 @@ test-results
 .env.*
 !.env.example
 
+# Vercel CLI (proyecto vinculado en local)
+.vercel
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
