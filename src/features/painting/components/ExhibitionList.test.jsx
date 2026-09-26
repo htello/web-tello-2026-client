@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import ExhibitionList from './ExhibitionList.jsx'
 
 function jsonResponse(data) {
@@ -30,13 +31,27 @@ describe('ExhibitionList', () => {
     vi.unstubAllGlobals()
   })
 
-  it('lista las exposiciones ordenadas por position con title, date y location', async () => {
+  it('muestra una columna con las exposiciones ordenadas y selecciona la primera', async () => {
     render(<ExhibitionList />)
 
-    const titles = (await screen.findAllByRole('heading')).map((h) => h.textContent)
-    expect(titles).toEqual(['Exposiciones', 'Expo A', 'Expo B'])
+    const items = await screen.findAllByRole('button')
+    expect(items.map((item) => item.textContent)).toEqual(['Expo A', 'Expo B'])
+    expect(screen.getByRole('heading', { name: 'Exposiciones' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Expo A' })).toBeInTheDocument()
     expect(screen.getByText('Valencia')).toBeInTheDocument()
     expect(screen.getByText(/retrospectiva/i)).toBeInTheDocument()
+    expect(items[0]).toHaveAttribute('aria-current', 'true')
+  })
+
+  it('al pulsar una exposición muestra sus datos en el panel derecho', async () => {
+    const user = userEvent.setup()
+    render(<ExhibitionList />)
+
+    await user.click(await screen.findByRole('button', { name: 'Expo B' }))
+
+    expect(screen.getByRole('heading', { name: 'Expo B' })).toBeInTheDocument()
+    expect(screen.getByText('Madrid')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Expo B' })).toHaveAttribute('aria-current', 'true')
   })
 
   it('muestra la fecha formateada en español', async () => {
@@ -46,10 +61,13 @@ describe('ExhibitionList', () => {
   })
 
   it('muestra el rango "Del X al Y" cuando hay endDate', async () => {
+    const user = userEvent.setup()
     render(<ExhibitionList />)
 
+    await user.click(await screen.findByRole('button', { name: 'Expo B' }))
+
     expect(
-      await screen.findByText('Del 10 de junio de 2024 al 30 de junio de 2024'),
+      screen.getByText('Del 10 de junio de 2024 al 30 de junio de 2024'),
     ).toBeInTheDocument()
   })
 
@@ -60,7 +78,7 @@ describe('ExhibitionList', () => {
     expect(await screen.findByText(/no hay exposiciones/i)).toBeInTheDocument()
   })
 
-  it('muestra las imágenes de cada exposición en un carrusel con la primera prioritaria', async () => {
+  it('muestra las imágenes de la exposición seleccionada con la primera prioritaria', async () => {
     vi.stubGlobal(
       'fetch',
       mockExhibitions({
@@ -94,7 +112,7 @@ describe('ExhibitionList', () => {
     expect(second).toHaveAttribute('loading', 'lazy')
   })
 
-  it('omite el carrusel cuando la exposición no tiene imágenes', async () => {
+  it('omite la retícula cuando la exposición no tiene imágenes', async () => {
     render(<ExhibitionList />)
 
     expect(await screen.findByRole('heading', { name: 'Expo A' })).toBeInTheDocument()
