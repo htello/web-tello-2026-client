@@ -1,6 +1,8 @@
 @use '@/styles/variables' as *;
 
-.painting-card {
+.artwork-card {
+  margin: 0;
+
   &__button {
     display: block;
     width: 100%;
@@ -21,6 +23,12 @@
   &__title {
     margin: 0 0 $space-2;
     font-size: $font-size-lg;
+    font-weight: 600;
+  }
+
+  &__description {
+    margin: 0 0 $space-2;
+    color: $color-text-muted;
   }
 
   &__details {

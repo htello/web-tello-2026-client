@@ -9,6 +9,7 @@ import SeoMeta from '@/components/SeoMeta.jsx'
 import ErrorState from '@/components/ErrorState.jsx'
 import EmptyState from '@/components/EmptyState.jsx'
 import MasonryGrid from '@/components/MasonryGrid.jsx'
+import MasterDetail from '@/components/MasterDetail.jsx'
 import ExhibitionLink from './components/ExhibitionLink.jsx'
 import PaintingCard from './components/PaintingCard.jsx'
 import Lightbox from './components/Lightbox.jsx'
@@ -66,49 +67,37 @@ const PaintingSection = () => {
     <section className="painting-section">
       <SeoMeta title={`Pintura — ${ARTIST_NAME}`} path="/painting" />
       {header}
-      <div className="painting-section__layout">
-        <nav className="painting-section__sidebar" aria-label="Lista de colecciones">
-          <ul className="painting-section__items">
-            {collections.map((collection) => (
-              <li key={collection.id}>
-                <button
-                  type="button"
-                  className={
-                    collection.id === selected.id
-                      ? 'painting-section__item painting-section__item--active'
-                      : 'painting-section__item'
-                  }
-                  aria-current={collection.id === selected.id ? 'true' : undefined}
-                  onClick={() => setSelectedId(collection.id)}
-                >
-                  {collection.title}
-                </button>
-              </li>
+      <MasterDetail
+        items={collections.map((collection) => ({ id: collection.id, title: collection.title }))}
+        selectedId={selected.id}
+        onSelect={setSelectedId}
+        label="Lista de colecciones"
+      >
+        <h2 className="master-detail__title">{selected.title}</h2>
+        {paintings.length === 0 ? (
+          <EmptyState message="No hay obras en esta colección." />
+        ) : (
+          <MasonryGrid label={`Obras de ${selected.title}`}>
+            {paintings.map((painting) => (
+              <PaintingCard
+                key={painting.id}
+                painting={painting}
+                headingLevel={3}
+                onOpen={() => handleOpen(painting)}
+              />
             ))}
-          </ul>
-        </nav>
-        <article className="painting-section__detail">
-          <h2 className="painting-section__title">{selected.title}</h2>
-          {paintings.length === 0 ? (
-            <EmptyState message="No hay obras en esta colección." />
-          ) : (
-            <MasonryGrid label={`Obras de ${selected.title}`}>
-              {paintings.map((painting) => (
-                <PaintingCard key={painting.id} painting={painting} onOpen={() => handleOpen(painting)} />
-              ))}
-            </MasonryGrid>
-          )}
-          <Lightbox
-            isOpen={selectedPainting !== null}
-            image={
-              selectedPainting
-                ? { src: selectedPainting.imageUrl, alt: selectedPainting.title }
-                : null
-            }
-            onClose={() => setSelectedPainting(null)}
-          />
-        </article>
-      </div>
+          </MasonryGrid>
+        )}
+        <Lightbox
+          isOpen={selectedPainting !== null}
+          image={
+            selectedPainting
+              ? { src: selectedPainting.imageUrl, alt: selectedPainting.title }
+              : null
+          }
+          onClose={() => setSelectedPainting(null)}
+        />
+      </MasterDetail>
     </section>
   )
 }

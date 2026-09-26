@@ -8,7 +8,7 @@ export class DesignPage {
   }
 
   async selectSubcategory(label) {
-    await this.page.getByRole('link', { name: label }).click()
+    await this.page.getByRole('button', { name: label }).click()
   }
 
   image(alt) {
