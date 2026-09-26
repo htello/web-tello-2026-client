@@ -36,7 +36,6 @@ const AdminPaintings = () => {
     { name: 'technique', label: 'Técnica', type: 'text' },
     { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'pintura' },
     { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
-    { name: 'isFeatured', label: 'Destacada', type: 'checkbox' },
   ]
 
   return (
@@ -47,7 +46,7 @@ const AdminPaintings = () => {
       entityLabel="pintura"
       fields={paintingFields}
       columns={columns}
-      toggleFields={['isPublished', 'isFeatured']}
+      toggleFields={['isPublished']}
       emptyMessage="No hay pinturas."
       toFormValues={(row) => ({ ...row, collectionId: row.collection?.id })}
       filter={{

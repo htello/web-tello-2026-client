@@ -23,7 +23,6 @@ const DESIGN_FIELDS = [
   { name: 'description', label: 'Descripción', type: 'textarea' },
   { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'diseno' },
   { name: 'isPublished', label: 'Publicado', type: 'checkbox' },
-  { name: 'isFeatured', label: 'Destacado', type: 'checkbox' },
 ]
 
 const columns = [
@@ -51,7 +50,7 @@ const AdminDesign = () => (
     gender="masculine"
     fields={DESIGN_FIELDS}
     columns={columns}
-    toggleFields={['isPublished', 'isFeatured']}
+    toggleFields={['isPublished']}
     emptyMessage="No hay proyectos de diseño."
     filter={{
       id: 'design-subcategory-filter',

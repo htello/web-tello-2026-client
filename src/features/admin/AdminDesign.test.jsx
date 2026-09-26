@@ -72,11 +72,9 @@ describe('AdminDesign', () => {
     expect(screen.getByRole('cell', { name: 'Cartelería' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Imagen corporativa' })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Publicar Cartel Feria' })).toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Cartel Feria' })).not.toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Logo Bodega' })).toBeChecked()
   })
 
-  it('alterna publicada/destacada inline con PUT parcial', async () => {
+  it('alterna publicada inline con PUT parcial', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Cartel Feria' })
@@ -133,7 +131,6 @@ describe('AdminDesign', () => {
         title: 'Catálogo Expo',
         subcategory: 'editorial',
         isPublished: true,
-        isFeatured: false,
       }),
     )
   })

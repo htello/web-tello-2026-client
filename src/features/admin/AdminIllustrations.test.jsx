@@ -64,12 +64,10 @@ describe('AdminIllustrations', () => {
     expect(await screen.findByRole('cell', { name: 'Dragón' })).toBeInTheDocument()
     expect(screen.getByRole('cell', { name: 'Retrato a tinta' })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Publicar Dragón' })).toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Dragón' })).not.toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Publicar Retrato a tinta' })).not.toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Retrato a tinta' })).toBeChecked()
   })
 
-  it('alterna publicada/destacada inline con PUT parcial', async () => {
+  it('alterna publicada inline con PUT parcial', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Dragón' })
@@ -78,12 +76,6 @@ describe('AdminIllustrations', () => {
 
     await waitFor(() =>
       expect(adminApi.update).toHaveBeenCalledWith('illustrations', 41, { isPublished: true }),
-    )
-
-    await user.click(screen.getByRole('checkbox', { name: 'Destacar Dragón' }))
-
-    await waitFor(() =>
-      expect(adminApi.update).toHaveBeenCalledWith('illustrations', 40, { isFeatured: true }),
     )
   })
 
@@ -110,14 +102,12 @@ describe('AdminIllustrations', () => {
 
     await user.type(screen.getByLabelText('Título'), 'Bosque')
     await user.click(screen.getByRole('checkbox', { name: 'Publicada' }))
-    await user.click(screen.getByRole('checkbox', { name: 'Destacada' }))
     await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
     await waitFor(() =>
       expect(adminApi.create).toHaveBeenCalledWith('illustrations', {
         title: 'Bosque',
         isPublished: true,
-        isFeatured: true,
       }),
     )
   })

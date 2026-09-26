@@ -11,15 +11,14 @@ export class AdminIllustrationsPage extends AdminCrudPage {
   }
 
   /**
-   * @param {{ title: string, description?: string, imagePath?: string, published?: boolean, featured?: boolean }} illustration
+   * @param {{ title: string, description?: string, imagePath?: string, published?: boolean }} illustration
    */
-  async create({ title, description, imagePath, published, featured }) {
+  async create({ title, description, imagePath, published }) {
     await this.openCreate()
     await this.fillText('Título', title)
     if (description) await this.fillText('Descripción', description)
     if (imagePath) await this.uploadImage('Imagen', imagePath)
     if (published) await this.check('Publicada')
-    if (featured) await this.check('Destacada')
     await this.save()
     await expect(this.cell(title)).toBeVisible()
   }

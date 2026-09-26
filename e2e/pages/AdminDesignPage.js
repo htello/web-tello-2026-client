@@ -12,16 +12,15 @@ export class AdminDesignPage extends AdminCrudPage {
   }
 
   /**
-   * @param {{ title: string, subcategory: string, description?: string, imagePath?: string, published?: boolean, featured?: boolean }} project
+   * @param {{ title: string, subcategory: string, description?: string, imagePath?: string, published?: boolean }} project
    */
-  async create({ title, subcategory, description, imagePath, published, featured }) {
+  async create({ title, subcategory, description, imagePath, published }) {
     await this.openCreate()
     await this.fillText('Título', title)
     await this.selectOptionByLabel('Subcategoría', subcategory)
     if (description) await this.fillText('Descripción', description)
     if (imagePath) await this.uploadImage('Imagen', imagePath)
     if (published) await this.check('Publicado')
-    if (featured) await this.check('Destacado')
     await this.save()
     await expect(this.cell(title)).toBeVisible()
   }
