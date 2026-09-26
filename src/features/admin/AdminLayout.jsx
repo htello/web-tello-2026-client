@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { ADMIN_NAV_SECTIONS, ARTIST_NAME } from '@/constants/businessRules.js'
 import { useAuth } from '@/hooks/useAuth.js'
 import SeoMeta from '@/components/SeoMeta.jsx'
@@ -26,6 +26,16 @@ const AdminLayout = () => {
   return (
     <div className="admin-layout">
       <SeoMeta title={`Panel de administración — ${ARTIST_NAME}`} noindex />
+      <header className="admin-layout__topbar">
+        <Link to="/" className="admin-layout__topbar-brand">
+          {ARTIST_NAME}
+        </Link>
+        <nav className="admin-layout__topbar-nav" aria-label="Acciones de administración">
+          <button type="button" className="admin-layout__topbar-logout" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
+        </nav>
+      </header>
       <button
         type="button"
         className="admin-layout__toggle"
@@ -54,13 +64,11 @@ const AdminLayout = () => {
             </li>
           ))}
         </ul>
-        <button type="button" className="admin-layout__logout" onClick={handleLogout}>
-          Cerrar sesión
-        </button>
       </nav>
       <main className="admin-layout__main">
         <Outlet />
       </main>
+      <footer className="admin-layout__footer">© {ARTIST_NAME}</footer>
     </div>
   )
 }

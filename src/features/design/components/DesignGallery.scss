@@ -16,6 +16,15 @@
     margin: 0;
   }
 
+  &__button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
   &__image {
     width: 100%;
     aspect-ratio: 4 / 3;

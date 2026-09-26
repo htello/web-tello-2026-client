@@ -16,11 +16,11 @@
   border-left-width: 4px;
 
   &--success {
-    border-left-color: #81c784;
+    border-left-color: $color-success;
   }
 
   &--error {
-    border-left-color: #e57373;
+    border-left-color: $color-danger;
   }
 
   &--info {

@@ -9,8 +9,7 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    background: #000000;
   }
 
   &__nav {
@@ -21,7 +20,7 @@
   }
 
   &__brand {
-    color: $color-text;
+    color: $color-text-inverse;
     font-size: $font-size-xl;
     font-weight: 700;
     text-decoration: none;
@@ -37,7 +36,7 @@
   }
 
   &__link {
-    color: $color-text;
+    color: $color-text-inverse;
     text-decoration: none;
 
     &:hover {
@@ -52,7 +51,8 @@
 
   &__footer {
     padding: $space-6;
+    background: #000000;
     text-align: center;
-    color: $color-text-muted;
+    color: $color-text-inverse;
   }
 }

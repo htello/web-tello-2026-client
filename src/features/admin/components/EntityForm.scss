@@ -23,7 +23,7 @@
     border: 1px solid $color-border;
 
     &[aria-invalid='true'] {
-      border-color: #e57373;
+      border-color: $color-danger;
     }
 
     &:focus-visible {
@@ -41,14 +41,14 @@
   &__error {
     margin: 0;
     font-size: $font-size-sm;
-    color: #e57373;
+    color: $color-danger;
   }
 
   &__server-error {
     margin: 0;
     padding: $space-3;
-    color: #e57373;
-    border: 1px solid #e57373;
+    color: $color-danger;
+    border: 1px solid $color-danger;
   }
 
   &__actions {

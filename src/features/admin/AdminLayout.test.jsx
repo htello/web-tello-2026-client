@@ -3,7 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import AdminLayout from './AdminLayout.jsx'
-import { ADMIN_NAV_SECTIONS as ADMIN_NAV } from '@/constants/businessRules.js'
+import { ADMIN_NAV_SECTIONS as ADMIN_NAV, ARTIST_NAME } from '@/constants/businessRules.js'
 import { AuthProvider } from '@/context/AuthContext.jsx'
 import { setAuthToken } from '@/services/api.js'
 
@@ -52,6 +52,20 @@ describe('AdminLayout', () => {
       'Biografía',
       'Usuarios',
     ])
+  })
+
+  it('renderiza el header con la marca pública y el logout', () => {
+    renderLayout()
+
+    const header = screen.getByRole('banner')
+    expect(header).toHaveTextContent(ARTIST_NAME)
+    expect(header).toContainElement(screen.getByRole('button', { name: 'Cerrar sesión' }))
+  })
+
+  it('renderiza el footer con el copyright', () => {
+    renderLayout()
+
+    expect(screen.getByRole('contentinfo')).toHaveTextContent(`© ${ARTIST_NAME}`)
   })
 
   it('marca la sección activa con aria-current', async () => {

@@ -3,7 +3,7 @@
 .skeleton {
   display: block;
   border-radius: $space-1;
-  background: $color-border linear-gradient(90deg, transparent, #3a3a3a, transparent);
+  background: $color-border linear-gradient(90deg, transparent, #f5f5f5, transparent);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
 
