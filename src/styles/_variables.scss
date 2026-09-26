@@ -20,8 +20,20 @@ $font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $font-size-base: 1rem;
 $font-size-sm: 0.875rem;
 $font-size-lg: 1.25rem;
-$font-size-xl: 1.75rem;
-$font-size-2xl: 2.25rem;
+$font-size-xl: clamp(1.35rem, 1.15rem + 1vw, 1.75rem);
+$font-size-2xl: clamp(1.75rem, 1.35rem + 2vw, 2.25rem);
+
+// Layout
+$header-height: 3.5rem; // móvil: padding $space-3 + brand
+$header-height-md: 4.625rem; // md+: padding $space-4 + brand $font-size-xl
+$touch-target: 2.75rem; // 44px, área táctil mínima
+
+// Carrusel: imágenes visibles por breakpoint
+$carousel-per-view: (
+  'mobile': 1,
+  'md': 2,
+  'lg': 5,
+);
 
 // Spacing
 $space-1: 0.25rem;

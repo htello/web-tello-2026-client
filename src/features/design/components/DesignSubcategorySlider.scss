@@ -1,4 +1,5 @@
 @use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
 
 .design-subcategory-slider {
   display: flex;
@@ -34,8 +35,12 @@
 
   &__image {
     flex: 0 0 auto;
-    width: 10rem;
+    width: 8rem;
     aspect-ratio: 4 / 3;
     scroll-snap-align: start;
+
+    @include breakpoint-up('md') {
+      width: 10rem;
+    }
   }
 }
