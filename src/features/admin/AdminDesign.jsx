@@ -40,6 +40,12 @@ const columns = [
  * (enum del contrato), filtro del listado por subcategoría, reorder con SOLO
  * orderedIds y subida de imagen en segundo plano (ImageUploadField).
  */
+/**
+ * Pendiente (server ya soporta ?subcategory= en GET /admin/design con meta.total
+ * filtrado): mismo cambio pendiente que en AdminPaintings — pasar el filtro a
+ * la query (`param: 'subcategory'`) en AdminCrudPage y resetear a página 1 al
+ * cambiarlo. El filtrado local actual solo recorta la página cargada.
+ */
 const AdminDesign = () => (
   <AdminCrudPage
     block="admin-design"
