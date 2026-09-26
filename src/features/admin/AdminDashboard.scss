@@ -1,0 +1,63 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-xl;
+  }
+
+  &__welcome {
+    margin: 0;
+    color: $color-text-muted;
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-4;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    @include breakpoint-up('sm') {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include breakpoint-up('lg') {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+    height: 100%;
+    padding: $space-6;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $color-accent;
+    }
+  }
+
+  &__card-title {
+    margin: 0;
+    font-size: $font-size-lg;
+    color: $color-accent;
+  }
+
+  &__card-count {
+    margin: 0;
+    font-size: $font-size-2xl;
+    color: $color-text;
+  }
+}

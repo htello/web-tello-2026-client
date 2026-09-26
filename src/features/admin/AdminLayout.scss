@@ -1,0 +1,117 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.admin-layout {
+  min-height: 100vh;
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    width: 100%;
+    padding: $space-3 $space-4;
+    background: $color-surface;
+    color: $color-text;
+    border: 0;
+    border-bottom: 1px solid $color-border;
+    cursor: pointer;
+    font-size: $font-size-base;
+
+    @include breakpoint-up('md') {
+      display: none;
+    }
+  }
+
+  &__toggle-icon {
+    font-size: $font-size-lg;
+  }
+
+  &__nav {
+    display: none;
+    flex-direction: column;
+    gap: $space-4;
+    padding: $space-4;
+    background: $color-surface;
+    border-bottom: 1px solid $color-border;
+
+    &--open {
+      display: flex;
+    }
+
+    @include breakpoint-up('md') {
+      display: flex;
+      position: sticky;
+      top: 0;
+      align-self: start;
+      min-height: 100vh;
+      border-bottom: 0;
+      border-right: 1px solid $color-border;
+    }
+  }
+
+  &__brand {
+    margin: 0;
+    font-size: $font-size-lg;
+    color: $color-accent;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__link {
+    display: block;
+    padding: $space-2 $space-3;
+    color: $color-text-muted;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-text;
+      background: rgba($color-accent, 0.08);
+    }
+
+    &[aria-current='page'] {
+      color: $color-accent;
+      border-left-color: $color-accent;
+      font-weight: 600;
+    }
+  }
+
+  &__logout {
+    margin-top: auto;
+    padding: $space-2 $space-3;
+    background: transparent;
+    color: $color-text-muted;
+    border: 1px solid $color-border;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-text;
+      border-color: $color-accent;
+    }
+  }
+
+  &__main {
+    padding: $space-4;
+
+    @include breakpoint-up('md') {
+      display: block;
+      padding: $space-8;
+    }
+  }
+
+  @include breakpoint-up('md') {
+    display: grid;
+    grid-template-columns: 15rem 1fr;
+  }
+}

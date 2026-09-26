@@ -1,0 +1,76 @@
+@use '@/styles/variables' as *;
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: $font-size-sm;
+
+  &__header {
+    padding: $space-2 $space-3;
+    text-align: left;
+    color: $color-text-muted;
+    border-bottom: 1px solid $color-border;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__row {
+    &:hover {
+      background: rgba($color-accent, 0.04);
+    }
+  }
+
+  &__cell {
+    padding: $space-2 $space-3;
+    border-bottom: 1px solid $color-border;
+    color: $color-text;
+
+    &--actions {
+      display: flex;
+      gap: $space-2;
+      justify-content: flex-end;
+    }
+
+    &--toggle {
+      text-align: center;
+    }
+  }
+
+  &__toggle {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: $color-accent;
+    cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  &__action {
+    padding: $space-1 $space-2;
+    background: transparent;
+    color: $color-text-muted;
+    border: 1px solid $color-border;
+    cursor: pointer;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      color: $color-text;
+      border-color: $color-accent;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &--danger {
+      &:hover:not(:disabled),
+      &:focus-visible {
+        color: #e57373;
+        border-color: #e57373;
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+@use '@/styles/variables' as *;
+
+.painting-card-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  &__title {
+    width: 70%;
+  }
+
+  &__line {
+    width: 45%;
+  }
+}

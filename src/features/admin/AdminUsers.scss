@@ -1,0 +1,58 @@
+@use '@/styles/variables' as *;
+@use 'admin-crud' as *;
+
+.admin-users {
+  @include admin-crud;
+
+  &__hint {
+    margin: 0 0 $space-4;
+    font-size: $font-size-sm;
+    color: $color-text-muted;
+  }
+
+  &__password {
+    padding: $space-1 $space-2;
+    background: transparent;
+    color: $color-text-muted;
+    border: 1px solid $color-border;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-text;
+      border-color: $color-accent;
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-4;
+  }
+
+  &__info {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $color-text-muted;
+  }
+
+  &__page {
+    padding: $space-2 $space-4;
+    background: transparent;
+    color: $color-text;
+    border: 1px solid $color-border;
+    cursor: pointer;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      color: $color-accent;
+      border-color: $color-accent;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

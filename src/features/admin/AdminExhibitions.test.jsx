@@ -1,0 +1,278 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
+import AdminExhibitions from './AdminExhibitions.jsx'
+import { adminApi } from '@/services/adminApi.js'
+
+vi.mock('@/services/adminApi.js', () => ({
+  adminApi: {
+    list: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    remove: vi.fn(),
+    reorder: vi.fn(),
+    upload: vi.fn(),
+  },
+}))
+
+const EXHIBITIONS = [
+  {
+    id: 20,
+    title: 'Expo Madrid',
+    date: '2024-05-01',
+    location: 'Madrid',
+    description: '',
+    position: 0,
+    isPublished: true,
+    images: [
+      {
+        id: 5,
+        url: 'https://cdn.test/madrid.jpg',
+        thumbnail: 'https://cdn.test/madrid_t.jpg',
+        width: 800,
+        height: 600,
+        position: 0,
+      },
+    ],
+  },
+  {
+    id: 21,
+    title: 'Expo Sevilla',
+    date: '2023-04-01',
+    location: 'Sevilla',
+    description: '',
+    position: 1,
+    isPublished: false,
+  },
+]
+
+function renderView() {
+  return render(
+    <MemoryRouter>
+      <AdminExhibitions />
+    </MemoryRouter>,
+  )
+}
+
+describe('AdminExhibitions', () => {
+  beforeEach(() => {
+    adminApi.list.mockResolvedValue({ data: EXHIBITIONS })
+    adminApi.create.mockResolvedValue({ data: { id: 22 } })
+    adminApi.update.mockResolvedValue({ data: { id: 20 } })
+    adminApi.remove.mockResolvedValue(null)
+    adminApi.reorder.mockResolvedValue({ data: null })
+  })
+
+  afterEach(() => {
+    cleanup()
+    vi.clearAllMocks()
+  })
+
+  it('lista las exhibiciones con fecha y toggle inline de estado', async () => {
+    renderView()
+
+    expect(await screen.findByRole('cell', { name: 'Expo Madrid' })).toBeInTheDocument()
+    expect(screen.getByRole('cell', { name: '2024-05-01' })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Expo Madrid' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Publicar Expo Sevilla' })).not.toBeChecked()
+  })
+
+  it('alterna publicada inline con PUT parcial', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('checkbox', { name: 'Publicar Expo Sevilla' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 21, { isPublished: true }),
+    )
+  })
+
+  it('valida título y fecha obligatorios antes de crear', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Nueva exhibición' }))
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    expect(screen.getByText('Título es obligatorio')).toBeInTheDocument()
+    expect(screen.getByText('Fecha es obligatorio')).toBeInTheDocument()
+    expect(adminApi.create).not.toHaveBeenCalled()
+  })
+
+  it('crea una exhibición con campos del schema ExhibitionRequest', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Nueva exhibición' }))
+    expect(screen.getByLabelText('Localización')).toBeInTheDocument()
+    expect(screen.getByLabelText('Descripción')).toBeInTheDocument()
+
+    await user.type(screen.getByLabelText('Título'), 'Expo Bilbao')
+    fireEvent.change(screen.getByLabelText('Fecha'), { target: { value: '2025-01-15' } })
+    fireEvent.change(screen.getByLabelText('Fecha de fin'), {
+      target: { value: '2025-02-15' },
+    })
+    await user.type(screen.getByLabelText('Localización'), 'Bilbao')
+    await user.click(screen.getByRole('checkbox', { name: 'Publicada' }))
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    await waitFor(() =>
+      expect(adminApi.create).toHaveBeenCalledWith('exhibitions', {
+        title: 'Expo Bilbao',
+        date: '2025-01-15',
+        endDate: '2025-02-15',
+        location: 'Bilbao',
+        isPublished: true,
+      }),
+    )
+  })
+
+  it('edita precargando la fecha de fin y permite cambiarla', async () => {
+    const user = userEvent.setup()
+    adminApi.list.mockResolvedValue({
+      data: [
+        {
+          id: 30,
+          title: 'Expo Rango',
+          date: '2025-01-15',
+          endDate: '2025-02-15',
+          location: null,
+          description: '',
+          position: 0,
+          isPublished: true,
+        },
+      ],
+    })
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Rango' })
+
+    await user.click(screen.getByRole('button', { name: 'Editar Expo Rango' }))
+
+    expect(screen.getByLabelText('Fecha')).toHaveValue('2025-01-15')
+    expect(screen.getByLabelText('Fecha de fin')).toHaveValue('2025-02-15')
+
+    fireEvent.change(screen.getByLabelText('Fecha de fin'), {
+      target: { value: '2025-03-01' },
+    })
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 30, {
+        endDate: '2025-03-01',
+      }),
+    )
+  })
+
+  it('edita con valores precargados y envía solo lo cambiado', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Editar Expo Madrid' }))
+
+    expect(screen.getByLabelText('Título')).toHaveValue('Expo Madrid')
+    expect(screen.getByLabelText('Fecha')).toHaveValue('2024-05-01')
+
+    await user.clear(screen.getByLabelText('Localización'))
+    await user.type(screen.getByLabelText('Localización'), 'Barcelona')
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 20, { location: 'Barcelona' }),
+    )
+  })
+
+  it('añade una imagen en edición y envía la lista completa en el PUT', async () => {
+    const user = userEvent.setup()
+    adminApi.upload.mockResolvedValue({
+      data: {
+        url: 'https://cdn.test/nueva.jpg',
+        thumbnail: 'https://cdn.test/nueva_t.jpg',
+        width: 400,
+        height: 300,
+        format: 'jpg',
+      },
+    })
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Editar Expo Madrid' }))
+
+    expect(screen.getByAltText('Imagen 1')).toHaveAttribute('src', 'https://cdn.test/madrid_t.jpg')
+
+    await user.upload(
+      screen.getByLabelText('Añadir imagen'),
+      new File(['img'], 'nueva.jpg', { type: 'image/jpeg' }),
+    )
+    await screen.findByAltText('Imagen 2')
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    expect(adminApi.upload).toHaveBeenCalledWith(expect.any(File), 'general')
+    await waitFor(() =>
+      expect(adminApi.update).toHaveBeenCalledWith('exhibitions', 20, {
+        images: [
+          {
+            url: 'https://cdn.test/madrid.jpg',
+            thumbnail: 'https://cdn.test/madrid_t.jpg',
+            width: 800,
+            height: 600,
+          },
+          {
+            url: 'https://cdn.test/nueva.jpg',
+            thumbnail: 'https://cdn.test/nueva_t.jpg',
+            width: 400,
+            height: 300,
+          },
+        ],
+      }),
+    )
+  })
+
+  it('borra tras confirmar en el ConfirmDialog', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Borrar Expo Madrid' }))
+
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveTextContent('¿Borrar la exhibición «Expo Madrid»?')
+
+    await user.click(within(dialog).getByRole('button', { name: 'Borrar' }))
+
+    await waitFor(() => expect(adminApi.remove).toHaveBeenCalledWith('exhibitions', 20))
+  })
+
+  it('reordena enviando { orderedIds }', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Bajar Expo Madrid' }))
+
+    await waitFor(() => expect(adminApi.reorder).toHaveBeenCalledWith('exhibitions', [21, 20]))
+  })
+
+  it('muestra el error del server al crear', async () => {
+    adminApi.create.mockRejectedValue(
+      Object.assign(new Error('Registro duplicado'), { status: 400, code: 'DUPLICATE_ERROR' }),
+    )
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Expo Madrid' })
+
+    await user.click(screen.getByRole('button', { name: 'Nueva exhibición' }))
+    await user.type(screen.getByLabelText('Título'), 'Expo Madrid')
+    fireEvent.change(screen.getByLabelText('Fecha'), { target: { value: '2025-01-15' } })
+    await user.click(screen.getByRole('button', { name: 'Guardar' }))
+
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent('Registro duplicado')
+    expect(alert).toHaveTextContent('DUPLICATE_ERROR')
+  })
+})

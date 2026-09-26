@@ -1,0 +1,19 @@
+@use '@/styles/variables' as *;
+
+.home-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  background-size: cover;
+  background-position: center;
+  color: $color-text;
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-2xl;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  }
+}

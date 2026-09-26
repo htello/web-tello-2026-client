@@ -1,0 +1,65 @@
+@use '@/styles/variables' as *;
+
+.confirm-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+  width: min(28rem, calc(100vw - #{$space-8}));
+  padding: $space-6;
+  background: $color-surface;
+  border: 1px solid $color-border;
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-4;
+    background: rgba(0, 0, 0, 0.65);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+  }
+
+  &__message {
+    margin: 0;
+    color: $color-text-muted;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $space-3;
+  }
+
+  &__cancel {
+    padding: $space-2 $space-4;
+    background: transparent;
+    color: $color-text-muted;
+    border: 1px solid $color-border;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: $color-text;
+      border-color: $color-accent;
+    }
+  }
+
+  &__confirm {
+    padding: $space-2 $space-4;
+    background: $color-accent;
+    color: $color-background;
+    border: 0;
+    cursor: pointer;
+
+    &--danger {
+      background: #b3453c;
+      color: $color-text;
+    }
+  }
+}
