@@ -71,7 +71,7 @@ test.describe('recorrido del portfolio', () => {
 
   test('Biografía muestra texto y fotografía', async ({ page }) => {
     await mockApi(page)
-    await page.goto('/biography')
+    await page.goto('/biografia')
 
     await expect(page.getByText('Nací en 1970')).toBeVisible()
     await expect(page.getByRole('img', { name: 'Fotografía de Antonio Tello' })).toBeVisible()
@@ -117,7 +117,7 @@ test.describe('recorrido del portfolio', () => {
 
   test('Biografía ausente (404) muestra sin biografía', async ({ page }) => {
     await mockApi(page, { biographyStatus: 404 })
-    await page.goto('/biography')
+    await page.goto('/biografia')
 
     await expect(page.getByText(/sin biografía/i)).toBeVisible()
   })

@@ -4,7 +4,7 @@ export class PaintingPage {
   }
 
   async goto() {
-    await this.page.goto('/painting')
+    await this.page.goto('/pintura')
   }
 
   collectionHeading(name) {

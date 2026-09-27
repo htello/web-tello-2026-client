@@ -4,7 +4,7 @@ export class IllustrationPage {
   }
 
   async goto() {
-    await this.page.goto('/illustration')
+    await this.page.goto('/ilustracion')
   }
 
   image(alt) {
