@@ -42,7 +42,7 @@ const CollectionGallery = ({ collectionId }) => {
         path={`/painting/collections/${collectionId}`}
         image={collection.coverImage ?? paintings[0]?.imageUrl}
       />
-      <SectionHeader title={collection.title} />
+      <SectionHeader title={collection.title} description={collection.description} />
       <MasonryGrid label={`Obras de ${collection.title}`}>
         {paintings.map((painting) => (
           <PaintingCard
