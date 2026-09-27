@@ -19,7 +19,17 @@ Frontend del portfolio artístico de Antonio Tello. Proyecto completado: galerí
 ## Instalación y uso
 
 ```bash
+# 1. Clona el repositorio
+git clone https://github.com/htello/web-tello-2026-client.git
+cd web-tello-2026-client
+
+# 2. Instala dependencias (Node.js >= 22 y pnpm)
 pnpm install --frozen-lockfile
+
+# 3. Configura las variables de entorno
+cp .env.example .env
+
+# 4. Inicia el servidor de desarrollo
 pnpm dev
 ```
 
