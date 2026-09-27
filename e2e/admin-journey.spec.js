@@ -75,6 +75,7 @@ test.describe.serial('panel admin: journey extremo a extremo (server real)', () 
     })
 
     await test.step('reordenar pinturas (bajar) y verificar el orden', async () => {
+      await paintings.filterByCollection(collection)
       await paintings.expectOrder(paintingA, paintingB)
       await paintings.move(paintingA, 'down')
       await paintings.expectOrder(paintingB, paintingA)
@@ -228,9 +229,11 @@ test.describe.serial('panel admin: CRUD completo por entidad (server real)', () 
     })
 
     await test.step('reorder con subir/bajar', async () => {
+      await paintings.filterByCollection(collection)
       await paintings.expectOrder(first, second)
       await paintings.move(second, 'up')
       await paintings.expectOrder(second, first)
+      await paintings.filterByCollection('Todas')
     })
 
     await test.step('edición parcial de título y año con imagen persistida', async () => {

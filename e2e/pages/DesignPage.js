@@ -4,7 +4,7 @@ export class DesignPage {
   }
 
   async goto() {
-    await this.page.goto('/design')
+    await this.page.goto('/diseno')
   }
 
   async selectSubcategory(label) {
