@@ -2,7 +2,7 @@
 
 .toast {
   position: fixed;
-  bottom: $space-4;
+  bottom: calc(#{$space-4} + 5.5rem); // hueco para el botón "Report a bug" de Sentry (abajo-derecha)
   right: $space-4;
   z-index: 100;
   display: flex;
