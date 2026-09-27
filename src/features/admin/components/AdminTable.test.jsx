@@ -26,6 +26,14 @@ describe('AdminTable', () => {
     expect(screen.getByRole('cell', { name: 'Obra A' })).toBeInTheDocument()
   })
 
+  it('alinea a la derecha la cabecera de Acciones', () => {
+    render(<AdminTable columns={columns} rows={rows} onEdit={vi.fn()} />)
+
+    expect(screen.getByRole('columnheader', { name: 'Acciones' })).toHaveClass(
+      'admin-table__header--actions',
+    )
+  })
+
   it('usa la función render de la columna cuando existe', () => {
     render(<AdminTable columns={columns} rows={rows} />)
 
