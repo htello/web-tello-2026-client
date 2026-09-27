@@ -1,9 +1,8 @@
-import { Routes, Route, useParams } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import Layout from './app/Layout.jsx'
 import HomeHero from './features/home/HomeHero.jsx'
 import PaintingSection from './features/painting/PaintingSection.jsx'
-import CollectionGallery from './features/painting/components/CollectionGallery.jsx'
 import ExhibitionList from './features/painting/components/ExhibitionList.jsx'
 import BiographySection from './features/biography/BiographySection.jsx'
 import DesignSection from './features/design/DesignSection.jsx'
@@ -24,11 +23,6 @@ import AdminIllustrations from './features/admin/AdminIllustrations.jsx'
 import AdminBiography from './features/admin/AdminBiography.jsx'
 import heroImage from './assets/prueba-camisa-1200.jpg'
 
-function CollectionGalleryRoute() {
-  const { id } = useParams()
-  return <CollectionGallery collectionId={Number(id)} />
-}
-
 function App() {
   return (
     <AuthProvider>
@@ -36,7 +30,6 @@ function App() {
         <Route element={<Layout />}>
           <Route index element={<HomeHero backgroundImage={heroImage} />} />
           <Route path="painting" element={<PaintingSection />} />
-          <Route path="painting/collections/:id" element={<CollectionGalleryRoute />} />
           <Route path="painting/exhibitions" element={<ExhibitionList />} />
           <Route path="biography" element={<BiographySection />} />
           <Route path="illustration" element={<IllustrationSection />} />

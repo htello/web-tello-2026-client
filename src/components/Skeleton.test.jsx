@@ -2,7 +2,6 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import Skeleton from './Skeleton.jsx'
 import PaintingCardSkeleton from './PaintingCardSkeleton.jsx'
-import CollectionSkeleton from './CollectionSkeleton.jsx'
 import GallerySkeleton from './GallerySkeleton.jsx'
 
 describe('Skeleton', () => {
@@ -52,13 +51,5 @@ describe('Skeletons compuestos', () => {
     expect(gallery.querySelectorAll('.painting-card-skeleton')).toHaveLength(3)
     const hint = screen.getByText('Cargando…')
     expect(hint).toHaveAttribute('aria-hidden', 'true')
-  })
-
-  it('CollectionSkeleton anuncia la carga e incluye título y tarjetas', () => {
-    render(<CollectionSkeleton count={2} />)
-    const collection = screen.getByRole('status', { name: 'Cargando colección…' })
-    expect(collection.querySelector('.collection-skeleton__title')).toBeInTheDocument()
-    expect(collection.querySelectorAll('.painting-card-skeleton')).toHaveLength(2)
-    expect(screen.getByText('Cargando…')).toHaveAttribute('aria-hidden', 'true')
   })
 })
