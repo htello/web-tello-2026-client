@@ -58,8 +58,8 @@
     cursor: pointer;
 
     &--danger {
-      background: #b3453c;
-      color: $color-text;
+      background: $color-dark;
+      color: $color-text-inverse;
     }
   }
 }

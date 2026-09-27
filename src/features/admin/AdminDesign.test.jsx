@@ -36,6 +36,16 @@ const DESIGNS = [
     isFeatured: true,
     position: 1,
   },
+  {
+    id: 33,
+    title: 'Folleto Cultural',
+    description: '',
+    imageUrl: null,
+    subcategory: 'carteleria',
+    isPublished: true,
+    isFeatured: false,
+    position: 2,
+  },
 ]
 
 function renderView() {
@@ -48,7 +58,12 @@ function renderView() {
 
 describe('AdminDesign', () => {
   beforeEach(() => {
-    adminApi.list.mockResolvedValue({ data: DESIGNS })
+    adminApi.list.mockImplementation((resource, { params } = {}) => {
+      const data = params?.subcategory
+        ? DESIGNS.filter((design) => design.subcategory === params.subcategory)
+        : DESIGNS
+      return Promise.resolve({ data })
+    })
     adminApi.create.mockResolvedValue({ data: { id: 32 } })
     adminApi.update.mockResolvedValue({ data: { id: 30 } })
     adminApi.remove.mockResolvedValue(null)
@@ -64,14 +79,12 @@ describe('AdminDesign', () => {
     renderView()
 
     expect(await screen.findByRole('cell', { name: 'Cartel Feria' })).toBeInTheDocument()
-    expect(screen.getByRole('cell', { name: 'Cartelería' })).toBeInTheDocument()
+    expect(screen.getAllByRole('cell', { name: 'Cartelería' })).toHaveLength(2)
     expect(screen.getByRole('cell', { name: 'Imagen corporativa' })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Publicar Cartel Feria' })).toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Cartel Feria' })).not.toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Destacar Logo Bodega' })).toBeChecked()
   })
 
-  it('alterna publicada/destacada inline con PUT parcial', async () => {
+  it('alterna publicada inline con PUT parcial', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Cartel Feria' })
@@ -128,7 +141,6 @@ describe('AdminDesign', () => {
         title: 'Catálogo Expo',
         subcategory: 'editorial',
         isPublished: true,
-        isFeatured: false,
       }),
     )
   })
@@ -154,40 +166,59 @@ describe('AdminDesign', () => {
     )
   })
 
-  it('filtra la lista por subcategoría', async () => {
+  it('filtra la lista por subcategoría vía query del server', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Cartel Feria' })
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'carteleria')
 
-    expect(screen.getByRole('cell', { name: 'Cartel Feria' })).toBeInTheDocument()
-    expect(screen.queryByRole('cell', { name: 'Logo Bodega' })).not.toBeInTheDocument()
+    await waitFor(() =>
+      expect(adminApi.list).toHaveBeenCalledWith(
+        'design',
+        expect.objectContaining({ params: { page: 1, limit: 20, subcategory: 'carteleria' } }),
+      ),
+    )
+    expect(await screen.findByRole('cell', { name: 'Cartel Feria' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(screen.queryByRole('cell', { name: 'Logo Bodega' })).not.toBeInTheDocument(),
+    )
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'all')
 
-    expect(screen.getByRole('cell', { name: 'Logo Bodega' })).toBeInTheDocument()
+    await waitFor(() =>
+      expect(adminApi.list).toHaveBeenCalledWith(
+        'design',
+        expect.objectContaining({ params: { page: 1, limit: 20 } }),
+      ),
+    )
+    expect(await screen.findByRole('cell', { name: 'Logo Bodega' })).toBeInTheDocument()
   })
 
-  it('oculta la reordenación con el filtro activo', async () => {
+  it('oculta la reordenación sin filtro (no hay orden global de diseño)', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Cartel Feria' })
+
+    expect(screen.queryByRole('button', { name: /subir/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /bajar/i })).not.toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'carteleria')
+
+    expect(screen.getByRole('button', { name: 'Subir Cartel Feria' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Bajar Folleto Cultural' })).toBeInTheDocument()
+  })
+
+  it('reordena la subcategoría filtrada enviando solo sus orderedIds', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Cartel Feria' })
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'carteleria')
 
-    expect(screen.queryByRole('button', { name: /subir/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /bajar/i })).not.toBeInTheDocument()
-  })
+    await user.click(await screen.findByRole('button', { name: 'Bajar Cartel Feria' }))
 
-  it('reordena enviando SOLO { orderedIds }', async () => {
-    const user = userEvent.setup()
-    renderView()
-    await screen.findByRole('cell', { name: 'Cartel Feria' })
-
-    await user.click(screen.getByRole('button', { name: 'Bajar Cartel Feria' }))
-
-    await waitFor(() => expect(adminApi.reorder).toHaveBeenCalledWith('design', [31, 30]))
+    await waitFor(() => expect(adminApi.reorder).toHaveBeenCalledWith('design', [33, 30]))
     expect(adminApi.reorder.mock.calls[0]).toHaveLength(2)
   })
 
@@ -203,7 +234,7 @@ describe('AdminDesign', () => {
   })
 
   it('muestra el estado vacío sin filtro', async () => {
-    adminApi.list.mockResolvedValue({ data: [] })
+    adminApi.list.mockImplementation(() => Promise.resolve({ data: [] }))
     renderView()
 
     expect(await screen.findByText('No hay proyectos de diseño.')).toBeInTheDocument()
@@ -216,6 +247,6 @@ describe('AdminDesign', () => {
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'editorial')
 
-    expect(screen.getByText('No hay proyectos para este filtro.')).toBeInTheDocument()
+    expect(await screen.findByText('No hay proyectos para este filtro.')).toBeInTheDocument()
   })
 })

@@ -17,24 +17,24 @@ test.describe('recorrido del portfolio', () => {
     await expect(home.nav.getByRole('link', { name: 'Pintura' })).toBeVisible()
   })
 
-  test('Pintura muestra un slider por cada colección, uno debajo del otro', async ({ page }) => {
+  test('Pintura lista las colecciones en la columna lateral y selecciona la primera', async ({ page }) => {
     await mockApi(page)
     const painting = new PaintingPage(page)
     await painting.goto()
 
     await expect(painting.collectionHeading('Serie Azul')).toBeVisible()
-    await expect(painting.collectionHeading('Serie Roja')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Serie Roja' })).toBeVisible()
   })
 
-  test('seleccionar una colección abre su galería y el lightbox', async ({ page }) => {
+  test('seleccionar una colección muestra sus obras y abre el lightbox', async ({ page }) => {
     await mockApi(page)
     const painting = new PaintingPage(page)
     await painting.goto()
 
-    await painting.selectCollection('Serie Azul')
+    await painting.selectCollection('Serie Roja')
 
-    await expect(page.getByRole('heading', { name: 'Serie Azul' })).toBeVisible()
-    await page.getByRole('button', { name: 'Atardecer azul' }).click()
+    await expect(page.getByRole('heading', { name: 'Serie Roja' })).toBeVisible()
+    await page.getByRole('button', { name: 'Rojo apagado' }).click()
     await expect(painting.lightbox()).toBeVisible()
   })
 
@@ -49,12 +49,12 @@ test.describe('recorrido del portfolio', () => {
     await expect(page.getByText('Valencia')).toBeVisible()
   })
 
-  test('Diseño muestra un slider por subcategoría y abre su galería', async ({ page }) => {
+  test('Diseño lista las categorías y muestra los proyectos de la seleccionada', async ({ page }) => {
     await mockApi(page)
     const design = new DesignPage(page)
     await design.goto()
 
-    await expect(page.getByRole('link', { name: 'Packaging y Expositores' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Packaging y Expositores' })).toBeVisible()
 
     await design.selectSubcategory('Imagen corporativa')
 
@@ -71,7 +71,7 @@ test.describe('recorrido del portfolio', () => {
 
   test('Biografía muestra texto y fotografía', async ({ page }) => {
     await mockApi(page)
-    await page.goto('/biography')
+    await page.goto('/biografia')
 
     await expect(page.getByText('Nací en 1970')).toBeVisible()
     await expect(page.getByRole('img', { name: 'Fotografía de Antonio Tello' })).toBeVisible()
@@ -117,7 +117,7 @@ test.describe('recorrido del portfolio', () => {
 
   test('Biografía ausente (404) muestra sin biografía', async ({ page }) => {
     await mockApi(page, { biographyStatus: 404 })
-    await page.goto('/biography')
+    await page.goto('/biografia')
 
     await expect(page.getByText(/sin biografía/i)).toBeVisible()
   })

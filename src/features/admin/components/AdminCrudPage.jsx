@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import ErrorState from '@/components/ErrorState.jsx'
+import Pagination from '@/components/Pagination.jsx'
 import Toast from '@/components/Toast.jsx'
 import { useAdminCrud } from '@/hooks/useAdminCrud.js'
 import AdminTable from './AdminTable.jsx'
 import ConfirmDialog from './ConfirmDialog.jsx'
 import EntityForm from './EntityForm.jsx'
+
+/** Entidades por página de los listados admin (el server admite hasta 100). */
+const PAGE_LIMIT = 20
 
 /** Etiquetas de los toggles de tabla por campo y género gramatical. */
 const TOGGLE_LABELS = {
@@ -41,6 +45,8 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
  * @param {string} props.title título de la sección (h1)
  * @param {string} props.resource recurso de adminApi (p. ej. 'collections')
  * @param {string} props.entityLabel sustantivo de la entidad ('colección')
+ * @param {string} [props.entityPlural] plural de la entidad para el resumen de
+ *   la paginación ('colecciones'); por defecto, el título en minúsculas.
  * @param {'feminine' | 'masculine'} [props.gender] género de `entityLabel`
  * @param {Array<object>} props.fields campos del EntityForm
  * @param {Array<object>} props.columns columnas del AdminTable
@@ -50,9 +56,13 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
  *   id: string,
  *   label: string,
  *   options: Array<{ value: unknown, label: string }>,
- *   matches: (row: object, value: string) => boolean,
+ *   param: string,
  *   emptyMessage: string,
- * }} [props.filter] filtro opcional del listado (deshabilita el reorder)
+ * }} [props.filter] filtro server-side opcional: el `value` del select se envía
+ *   como query param (`?collectionId=`, `?subcategory=`) al GET del listado.
+ *   El reorder SOLO está disponible con el filtro activo: pinturas y diseño se
+ *   ordenan DENTRO de su colección/subcategoría (no globalmente), así que los
+ *   `orderedIds` que se envían son siempre los del subconjunto visible filtrado.
  * @param {(row: object) => string} [props.rowLabel]
  * @param {string[]} [props.requiredUpdateFields] ver useAdminCrud
  * @param {(row: object) => object} [props.toFormValues] ver useAdminCrud
@@ -63,6 +73,7 @@ const AdminCrudPage = ({
   resource,
   entityLabel,
   gender = 'feminine',
+  entityPlural = title.toLowerCase(),
   fields,
   columns,
   toggleFields = [],
@@ -72,11 +83,19 @@ const AdminCrudPage = ({
   requiredUpdateFields,
   toFormValues,
 }) => {
+  const [page, setPage] = useState(1)
+  const [filterValue, setFilterValue] = useState('all')
+  const isFiltered = Boolean(filter) && filterValue !== 'all'
+  const params = isFiltered
+    ? { page, limit: PAGE_LIMIT, [filter.param]: filterValue }
+    : { page, limit: PAGE_LIMIT }
+
   const {
     loading,
     error,
     saveError,
     ordered,
+    meta,
     moveUp,
     moveDown,
     reorderError,
@@ -91,12 +110,14 @@ const AdminCrudPage = ({
     handleSubmit,
     handleDelete,
     handleToggle,
-  } = useAdminCrud(resource, { requiredUpdateFields, toFormValues })
+  } = useAdminCrud(resource, {
+    params,
+    requiredUpdateFields,
+    toFormValues,
+  })
 
-  const [filterValue, setFilterValue] = useState('all')
+  const canReorder = !filter || isFiltered
   const [toastMessage, setToastMessage] = useState(null)
-  const isFiltered = Boolean(filter) && filterValue !== 'all'
-  const visible = isFiltered ? ordered.filter((row) => filter.matches(row, filterValue)) : ordered
 
   /**
    * @param {Record<string, unknown>} values
@@ -182,7 +203,10 @@ const AdminCrudPage = ({
             id={filter.id}
             className={`${block}__filter-select`}
             value={filterValue}
-            onChange={(event) => setFilterValue(event.target.value)}
+            onChange={(event) => {
+              setFilterValue(event.target.value)
+              setPage(1)
+            }}
           >
             <option value="all">Todas</option>
             {filter.options.map((option) => (
@@ -196,7 +220,7 @@ const AdminCrudPage = ({
 
       <AdminTable
         columns={columns}
-        rows={visible}
+        rows={ordered}
         loading={loading}
         emptyMessage={isFiltered ? filter.emptyMessage : emptyMessage}
         rowLabel={rowLabel}
@@ -204,9 +228,18 @@ const AdminCrudPage = ({
         onToggle={handleToggleWithToast}
         onEdit={openEdit}
         onDelete={requestDelete}
-        onMoveUp={isFiltered ? undefined : (row, index) => moveUp(index)}
-        onMoveDown={isFiltered ? undefined : (row, index) => moveDown(index)}
+        onMoveUp={canReorder ? (row, index) => moveUp(index) : undefined}
+        onMoveDown={canReorder ? (row, index) => moveDown(index) : undefined}
       />
+
+      {meta && (
+        <Pagination
+          meta={meta}
+          label={`Paginación de ${entityPlural}`}
+          noun={entityPlural}
+          onPageChange={setPage}
+        />
+      )}
 
       <ConfirmDialog
         open={deleteTarget !== null}

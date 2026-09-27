@@ -27,7 +27,7 @@
   }
 
   &__error {
-    color: #e57373;
+    color: $color-danger;
     font-size: $font-size-sm;
   }
 
@@ -59,8 +59,8 @@
     cursor: pointer;
 
     &:hover {
-      border-color: #e57373;
-      color: #e57373;
+      border-color: $color-danger;
+      color: $color-danger;
     }
 
     &:focus-visible {

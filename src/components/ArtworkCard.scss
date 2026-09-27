@@ -1,8 +1,7 @@
 @use '@/styles/variables' as *;
 
-.painting-card {
-  background-color: $color-surface;
-  border: 1px solid $color-border;
+.artwork-card {
+  margin: 0 0 30px;
 
   &__button {
     display: block;
@@ -15,16 +14,21 @@
 
   &__image {
     width: 100%;
-    aspect-ratio: 3 / 4;
   }
 
   &__body {
-    padding: $space-4;
+    padding-top: $space-2;
   }
 
   &__title {
     margin: 0 0 $space-2;
     font-size: $font-size-lg;
+    font-weight: 600;
+  }
+
+  &__description {
+    margin: 0 0 $space-2;
+    color: $color-text-muted;
   }
 
   &__details {

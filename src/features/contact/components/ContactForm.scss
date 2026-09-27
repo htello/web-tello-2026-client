@@ -1,10 +1,12 @@
 @use '@/styles/variables' as *;
 
 .contact-form {
-  max-width: 32rem;
+  width: 100%;
+  max-width: 40rem;
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
-  gap: $space-4;
+  gap: $space-6;
 
   &__title {
     margin: 0;
@@ -14,46 +16,70 @@
   &__field {
     display: flex;
     flex-direction: column;
-    gap: $space-1;
+    gap: $space-2;
 
     label {
+      font-size: $font-size-sm;
       font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: $color-text-muted;
     }
 
     input,
     textarea {
-      padding: $space-2;
-      background: $color-surface;
+      padding: $space-3 0;
+      background: transparent;
       color: $color-text;
-      border: 1px solid $color-border;
+      border: 0;
+      border-bottom: 1px solid $color-border;
+      border-radius: 0;
+
+      &:focus {
+        border-bottom-color: $color-dark;
+      }
     }
 
     textarea {
-      min-height: 8rem;
+      min-height: 10rem;
       resize: vertical;
     }
   }
 
   &__submit {
-    padding: $space-2 $space-4;
-    background: $color-accent;
-    color: $color-background;
+    align-self: center;
+    min-height: $touch-target;
+    padding: $space-2 $space-8;
+    background: $color-dark;
+    color: $color-text-inverse;
+    font-weight: 600;
     border: 0;
+    border-radius: 999px;
     cursor: pointer;
 
+    &:hover:not(:disabled),
+    &:focus-visible {
+      background: $color-accent;
+    }
+
     &:disabled {
-      opacity: 0.6;
+      opacity: 0.5;
       cursor: not-allowed;
     }
   }
 
   &__error {
-    color: #e57373;
     margin: 0;
+    font-size: $font-size-sm;
+    color: $color-danger;
   }
 
   &__success {
-    color: $color-accent;
     margin: 0;
+    padding: $space-3 $space-4;
+    font-size: $font-size-sm;
+    color: $color-text;
+    background: $color-surface;
+    border-left: 2px solid $color-dark;
   }
 }

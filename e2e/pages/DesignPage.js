@@ -4,11 +4,11 @@ export class DesignPage {
   }
 
   async goto() {
-    await this.page.goto('/design')
+    await this.page.goto('/diseno')
   }
 
   async selectSubcategory(label) {
-    await this.page.getByRole('link', { name: label }).click()
+    await this.page.getByRole('button', { name: label }).click()
   }
 
   image(alt) {

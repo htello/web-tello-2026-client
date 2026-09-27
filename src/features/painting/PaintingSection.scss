@@ -1,0 +1,13 @@
+@use '@/styles/variables' as *;
+
+.painting-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+
+  &__description {
+    margin: 0;
+    max-width: 60ch;
+    color: $color-text-muted;
+  }
+}

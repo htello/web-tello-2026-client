@@ -7,6 +7,7 @@ import { adminApi } from '@/services/adminApi.js'
 import { getChangedFields, stripEmptyFields } from '@/utils/formPayload.js'
 import { validatePassword } from '@/utils/validatePassword.js'
 import Toast from '@/components/Toast.jsx'
+import Pagination from '@/components/Pagination.jsx'
 import AdminTable from './components/AdminTable.jsx'
 import ConfirmDialog from './components/ConfirmDialog.jsx'
 import EntityForm from './components/EntityForm.jsx'
@@ -246,27 +247,12 @@ const AdminUsers = () => {
       />
 
       {meta && (
-        <nav className="admin-users__pagination" aria-label="Paginación de usuarios">
-          <button
-            type="button"
-            className="admin-users__page"
-            disabled={meta.page <= 1}
-            onClick={() => setPage(meta.page - 1)}
-          >
-            Página anterior
-          </button>
-          <p className="admin-users__info">
-            Página {meta.page} de {meta.pages} · {meta.total} usuarios
-          </p>
-          <button
-            type="button"
-            className="admin-users__page"
-            disabled={meta.page >= meta.pages}
-            onClick={() => setPage(meta.page + 1)}
-          >
-            Página siguiente
-          </button>
-        </nav>
+        <Pagination
+          meta={meta}
+          label="Paginación de usuarios"
+          noun="usuarios"
+          onPageChange={setPage}
+        />
       )}
 
       <ConfirmDialog

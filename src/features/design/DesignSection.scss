@@ -1,0 +1,7 @@
+@use '@/styles/variables' as *;
+
+.design-section {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+}

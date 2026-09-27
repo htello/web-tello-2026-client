@@ -23,7 +23,6 @@ const DESIGN_FIELDS = [
   { name: 'description', label: 'Descripción', type: 'textarea' },
   { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'diseno' },
   { name: 'isPublished', label: 'Publicado', type: 'checkbox' },
-  { name: 'isFeatured', label: 'Destacado', type: 'checkbox' },
 ]
 
 const columns = [
@@ -37,25 +36,27 @@ const columns = [
 
 /**
  * CRUD de proyectos de diseño del panel admin: subcategoría obligatoria
- * (enum del contrato), filtro del listado por subcategoría, reorder con SOLO
- * orderedIds y subida de imagen en segundo plano (ImageUploadField).
+ * (enum del contrato), filtro del listado server-side (`?subcategory=` con
+ * meta.total filtrado), reorder con SOLO orderedIds y subida de imagen
+ * en segundo plano (ImageUploadField).
  */
 const AdminDesign = () => (
   <AdminCrudPage
     block="admin-design"
     title="Diseño"
+    entityPlural="proyectos"
     resource="design"
     entityLabel="proyecto"
     gender="masculine"
     fields={DESIGN_FIELDS}
     columns={columns}
-    toggleFields={['isPublished', 'isFeatured']}
+    toggleFields={['isPublished']}
     emptyMessage="No hay proyectos de diseño."
     filter={{
       id: 'design-subcategory-filter',
       label: 'Filtrar por subcategoría',
       options: SUBCATEGORY_OPTIONS,
-      matches: (row, value) => row.subcategory === value,
+      param: 'subcategory',
       emptyMessage: 'No hay proyectos para este filtro.',
     }}
   />

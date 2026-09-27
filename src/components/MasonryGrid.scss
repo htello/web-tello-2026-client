@@ -1,0 +1,29 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.masonry-grid {
+  margin-top: $space-6; // 24px: separación bajo el título+descripción de la sección
+  column-count: 1;
+  column-gap: $space-4;
+
+  > * {
+    break-inside: avoid;
+  }
+
+  > :not(.artwork-card) {
+    margin-bottom: $space-4;
+  }
+
+  @include breakpoint-up('md') {
+    column-count: 2;
+    column-gap: $space-6;
+
+    > :not(.artwork-card) {
+      margin-bottom: $space-6;
+    }
+  }
+
+  @include breakpoint-up('lg') {
+    column-count: 3;
+  }
+}

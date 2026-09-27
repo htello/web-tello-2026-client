@@ -1,12 +1,7 @@
 @use '@/styles/variables' as *;
 
-.collection-slider {
+.illustration-section {
   display: flex;
   flex-direction: column;
   gap: $space-8;
-
-  &__title {
-    margin: 0;
-    font-size: $font-size-xl;
-  }
 }

@@ -50,7 +50,7 @@ const ContactForm = () => {
 
   return (
     <form className="contact-form" onSubmit={handleSubmit} noValidate>
-      <SeoMeta title={`Contacto — ${ARTIST_NAME}`} path="/contact" />
+      <SeoMeta title={`Contacto — ${ARTIST_NAME}`} path="/contacto" />
       <h1 className="contact-form__title">Contacto</h1>
       <div className="contact-form__field">
         <label htmlFor="contact-name">Nombre</label>

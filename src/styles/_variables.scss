@@ -5,20 +5,30 @@ $breakpoint-lg: 64rem; // 1024px
 $breakpoint-xl: 80rem; // 1280px
 
 // Colors
-$color-background: #0e0e0e;
-$color-surface: #1a1a1a;
-$color-text: #f5f5f5;
-$color-text-muted: #a3a3a3;
-$color-accent: #d4a373;
-$color-border: #2a2a2a;
+$color-background: #ffffff;
+$color-surface: #f5f5f5;
+$color-text: #1a1a1a;
+$color-text-muted: #595959;
+$color-text-inverse: #f5f5f5;
+$color-dark: #000000; // fondo sólido de header/footer/overlays y foco de hover
+$color-accent: #404040;
+$color-border: #e0e0e0;
+$color-danger: #404040;
+$color-success: #595959;
 
 // Typography
-$font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$font-sans: 'Titillium Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $font-size-base: 1rem;
 $font-size-sm: 0.875rem;
 $font-size-lg: 1.25rem;
-$font-size-xl: 1.75rem;
-$font-size-2xl: 2.25rem;
+$font-size-xl: clamp(1.35rem, 1.15rem + 1vw, 1.75rem);
+$font-size-2xl: clamp(1.75rem, 1.35rem + 2vw, 2.25rem);
+
+// Layout
+$header-height: 3.5rem; // móvil: padding $space-3 + brand
+$header-height-md: 4.625rem; // md+: padding $space-4 + brand $font-size-xl
+$footer-height: 4.5rem; // footer fijo: padding $space-6 * 2 + línea
+$touch-target: 2.75rem; // 44px, área táctil mínima
 
 // Spacing
 $space-1: 0.25rem;

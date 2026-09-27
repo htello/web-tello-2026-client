@@ -5,13 +5,13 @@
 - Runtime: Node.js >= 22
 - Frontend: React 19 + JavaScript (JSX) — **sin TypeScript**
 - Bundler: Vite 8 (con React Compiler vía Babel)
-- Estilos: **SASS/SCSS** (pendiente de instalar en Fase 01; hoy existen `App.css`/`index.css` de ejemplo de la plantilla Vite)
+- Estilos: **SASS/SCSS** con BEM y variables centralizadas en `src/styles/_variables.scss` (los `App.css`/`index.css` de la plantilla ya no existen; entry `src/index.scss`)
 - Lint: ESLint 10 (flat config, `eslint.config.js`)
-- Testing: Vitest + React Testing Library (**planificados, aún no instalados**; ver `promps/fase-01-setup.md`). E2E con Playwright en Fase 07
+- Testing: **instalado y operativo** — Vitest 5 + React Testing Library + `user-event` (unit) y Playwright (E2E en `e2e/`)
 - Package Manager: pnpm
-- CI/CD: GitHub Actions (hoy: lint + build; añadir tests cuando se instale Vitest)
-- Planificación por fases: carpeta `promps/` (fase-01 → fase-12)
-- Historias: **HU17 Galería Pública** (fases 1–7) y **HU18 Panel Admin** (fases 8–12)
+- CI/CD: GitHub Actions (`.github/workflows/ci.yml`): lint + `test:coverage` (gate de umbrales) + build
+- Planificación por fases: carpeta `promps/` (fase-01 → fase-18), **todas cerradas**
+- Historias: **HU17 Galería Pública** (fases 1–7) y **HU18 Panel Admin** (fases 8–18: auth, CRUD, uploads, usuarios, refactor, a11y/UX, Sentry y quality gates)
 - **Backend**: repositorio hermano `../server` — API desplegada y verificada en producción
 
 ## API del Backend (FUENTE DE VERDAD)
@@ -26,7 +26,7 @@
 | Local (server en `../server` con `pnpm dev`) | `http://localhost:3000/api/v1` |
 | Producción (Render free, Frankfurt) | `https://portfolio-api-u5sx.onrender.com/api/v1` |
 
-Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las variables `VITE_*` se embeben en el bundle: **nunca poner secretos en ellas**.
+Configurar vía `VITE_API_URL` en `.env` (hay `.env.example`). Las variables `VITE_*` se embeben en el bundle: **nunca poner secretos en ellas**.
 
 ### Convenciones de respuesta (todos los endpoints)
 
@@ -38,7 +38,7 @@ Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las 
 ### Convención de imágenes (OBLIGATORIA, acordada con el server)
 
 - El front usa **siempre raw JSON** (`Content-Type: application/json`) en todos los endpoints.
-- Subida de imágenes en 2 pasos: `POST /admin/upload` (multipart, campo `file`, opcional `section`: pintura|ilustracion|diseno|general) → devuelve `{ url, thumbnail, width, height, format }` → la `url` se envía como `imageUrl`/`coverImage` en el JSON del create/update.
+- Subida de imágenes en 2 pasos: `POST /admin/upload` (multipart, campo `file`, opcional `section`: pintura|ilustracion|diseno|general|exposiciones) → devuelve `{ url, thumbnail, width, height, format }` → la `url` se envía como `imageUrl`/`coverImage`/`images[].url` en el JSON del create/update.
 - NUNCA usar los campos multipart (`image`) de los endpoints de entidades desde el front (existen como capacidad extra del back, no para el front).
 
 ### Endpoints y particularidades del contrato
@@ -79,7 +79,7 @@ Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las 
 3. **Confirmación de Git**:
    - **NO son confirmaciones:** "ok", "vale", "perfecto", "bien", "sigue".
    - **SÍ son confirmaciones:** "haz commit", "commit", "push", "sube", "guarda", "mergea", "haz merge".
-4. **Flujo de parada**: Cambios → Tests + Lint + Build (+ Coverage cuando Vitest esté instalado) → **DETENERSE Y ESPERAR CONFIRMACIÓN DEL USUARIO**.
+4. **Flujo de parada**: Cambios → `pnpm verify` (lint + unit + E2E + build; coverage en el CI) → **DETENERSE Y ESPERAR CONFIRMACIÓN DEL USUARIO**.
 5. **Inspección de archivos y eficiencia de tokens**:
    - **NUNCA leer el repositorio entero** por iniciativa propia; si hace falta, pedir confirmación.
    - **PROHIBIDO PRE-ESCANEAR:** no leer automáticamente `promps/` completos, `README.md`, `dist/` ni ejecutar `git log` al inicio de las peticiones. Leer de `promps/` solo la fase en curso.
@@ -88,7 +88,7 @@ Configurar vía `VITE_API_URL` en `.env` (crear `.env.example` en Fase 01). Las 
 6. **Bloqueo de commit por fallo de calidad**: NUNCA commitear/mergear si `pnpm lint`, `pnpm build` o los tests fallan. Detenerse, informar y arreglar primero.
 7. **Respuestas concisas**: sin saludos ni rodeos; código y resultados directos; proponer diffs/funciones en vez de reimprimir archivos enteros.
 
-## Reglas TDD (cuando Vitest esté instalado — Fase 01)
+## Reglas TDD (Vitest operativo)
 
 Resumen: RED → GREEN → REFACTOR.
 - Cobertura objetivo: **100% en `src/services/`, `src/hooks/` y `src/utils/`**; componentes con tests de comportamiento (RTL). Umbral global: mantener ≥90% y no bajarlo.
@@ -111,10 +111,12 @@ pnpm dev                         # servidor de desarrollo Vite
 pnpm build                       # build de producción (dist/)
 pnpm preview                     # servir el build localmente
 pnpm lint                        # ESLint (flat config)
-# Pendientes de instalar en Fase 01:
-# pnpm test                      # Vitest watch
-# pnpm test:run                  # Vitest run (una pasada)
-# pnpm run test:coverage         # cobertura
+pnpm test                        # Vitest watch
+pnpm test:run                    # Vitest run (una pasada)
+pnpm test:coverage               # cobertura (gate de umbrales en CI)
+pnpm test:e2e                    # Playwright (requiere server y `playwright install`)
+pnpm quality                     # lint + test:run
+pnpm verify                      # quality + test:e2e + build
 ```
 
 ## Estructura del Proyecto
@@ -122,32 +124,30 @@ pnpm lint                        # ESLint (flat config)
 ```
 client/
 ├── src/
-│   ├── app/            # router, layout y providers (NO App.jsx)
+│   ├── app/            # layout público (Layout.jsx) y layout admin bajo features/admin
 │   ├── services/       # cliente HTTP y servicios de API
 │   ├── components/     # componentes UI compartidos
 │   ├── features/
 │   │   ├── home/       # hero y obras destacadas
-│   │   ├── painting/   # colecciones, pinturas y lightbox
+│   │   ├── painting/   # colecciones, pinturas, exposiciones y lightbox
 │   │   ├── design/     # proyectos de diseño y filtros
 │   │   ├── illustration/
-│   │   ├── exhibitions/
 │   │   ├── biography/
 │   │   ├── contact/
 │   │   └── admin/      # login y gestión protegida
-│   ├── hooks/          # hooks transversales (useAuth, useFetch...)
-│   ├── models/         # modelos documentados con JSDoc
-│   ├── context/        # PortfolioContext y AuthContext
-│   ├── utils/
+│   ├── hooks/          # hooks transversales (useAuth, useAsyncData, useAdminCrud, useReorder...)
+│   ├── context/        # AuthContext (sesión admin)
+│   ├── utils/          # validaciones, formPayload, orden por position
 │   ├── infrastructure/ # Sentry y configuración externa
 │   ├── styles/         # SASS: parciales _variables, _mixins, base, layout, componentes
 │   ├── assets/         # imágenes estáticas
 │   ├── test/           # setup y helpers de test
 │   ├── index.scss      # entry SASS (importa parciales de styles/)
-│   ├── App.jsx         # raíz (hoy: plantilla de ejemplo)
+│   ├── App.jsx         # rutas (públicas + /admin/*) bajo AuthProvider
 │   └── main.jsx        # entry point
-├── promps/             # planificación por fases (fase-01 → fase-12)
+├── promps/             # planificación por fases (fase-01 → fase-18)
 ├── docs/               # documentación del front (vacía por ahora)
-├── .github/workflows/  # CI: lint + build (+ tests cuando existan)
+├── .github/workflows/  # CI: lint + test:coverage + build
 ├── index.html
 ├── vite.config.js
 └── AGENTS.md
@@ -159,7 +159,7 @@ client/
 - **Variables**: `const` por defecto, `let` solo si se reasigna, nunca `var`.
 - **Async**: siempre `async/await`, nunca `.then()`; errores de red capturados y traducidos a estado de UI (error/loading/data).
 - **Templates**: siempre template literals, nunca concatenación `+`.
-- **Imports**: ES Modules; alias `@/` si se configura en Vite (decidir en Fase 01 y mantenerlo).
+- **Imports**: ES Modules; alias `@/` → `src/` configurado en Vite (usarlo siempre).
 - **Naming**: `PascalCase` componentes y tipos; `camelCase` variables/funciones/hooks (`useXxx`); `SCREAMING_SNAKE_CASE` constantes; archivos de componentes en `PascalCase.jsx`.
 - **JSDoc**: obligatorio en `src/services/`, `src/hooks/` y `src/utils/` (`@param`, `@returns`); opcional en componentes simples.
 - **Props**: validar con `propTypes` o destructuración con defaults; documentar props no obvias.
@@ -198,11 +198,14 @@ client/
 - **Enlaces externos**: `rel="noopener noreferrer"`.
 - **CORS**: el server acepta un único origen (`CORS_ORIGIN`); al desplegar el front, avisar para actualizar esa variable (y `FRONTEND_URL`, usada en los emails de recuperación) en Render.
 
-## Despliegue del Front (planificado)
+## Despliegue del Front (activo en Vercel)
 
-- Hosting gratuito previsto: Vercel o Netlify (build Vite → `dist/`).
+## Despliegue del Front (activo en Vercel)
+
+- Hosting: Vercel — https://web-tello-2026-client.vercel.app/ (build Vite → `dist/`; rewrites SPA en `vercel.json` para deep links; `scripts/vercel-env.sh` sincroniza variables).
 - Variables: `VITE_API_URL=https://portfolio-api-u5sx.onrender.com/api/v1`.
-- Checklist al desplegar: actualizar en Render `CORS_ORIGIN` y `FRONTEND_URL` con el dominio del front; probar flujo completo (login admin, galerías, contacto, recuperación de contraseña).
+- URLs públicas en español (sin tildes): `/pintura`, `/pintura/exposiciones`, `/ilustracion`, `/diseno`, `/biografia`, `/contacto`; admin en `/admin/*`. La página `/collections/:id` ya no existe: la colección se ve en el master-detail de `/pintura`.
+- Render debe tener `CORS_ORIGIN` y `FRONTEND_URL` apuntando al dominio del front en Vercel; flujo completo probado con `pnpm test:e2e`.
 
 ## Documentación y Fuente de Verdad
 

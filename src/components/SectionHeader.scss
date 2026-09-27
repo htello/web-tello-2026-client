@@ -1,9 +1,11 @@
 @use '@/styles/variables' as *;
 
-.painting-view {
+.section-header {
   display: flex;
-  flex-direction: column;
-  gap: $space-6;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-4;
 
   &__title {
     margin: 0;

@@ -11,11 +11,12 @@ const columns = [
 /**
  * CRUD de pinturas del panel admin: validación cliente de year (1900-2100) y
  * collectionId obligatorios, selector de colección alimentado por
- * GET /admin/collections, filtro por colección, reorder con SOLO orderedIds
+ * GET /admin/collections, filtro por colección server-side
+ * (`?collectionId=` con meta.total filtrado), reorder con SOLO orderedIds
  * y subida de imagen en segundo plano (ImageUploadField → POST /admin/upload).
  */
 const AdminPaintings = () => {
-  const { items: collections } = useAdminResource('collections')
+  const { items: collections } = useAdminResource('collections', { params: { limit: 100 } })
   const collectionOptions = collections.map((collection) => ({
     value: collection.id,
     label: collection.title,
@@ -35,7 +36,6 @@ const AdminPaintings = () => {
     { name: 'technique', label: 'Técnica', type: 'text' },
     { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'pintura' },
     { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
-    { name: 'isFeatured', label: 'Destacada', type: 'checkbox' },
   ]
 
   return (
@@ -46,14 +46,14 @@ const AdminPaintings = () => {
       entityLabel="pintura"
       fields={paintingFields}
       columns={columns}
-      toggleFields={['isPublished', 'isFeatured']}
+      toggleFields={['isPublished']}
       emptyMessage="No hay pinturas."
       toFormValues={(row) => ({ ...row, collectionId: row.collection?.id })}
       filter={{
         id: 'paintings-collection-filter',
         label: 'Filtrar por colección',
         options: collectionOptions,
-        matches: (row, value) => String(row.collection?.id) === value,
+        param: 'collectionId',
         emptyMessage: 'No hay pinturas para este filtro.',
       }}
     />

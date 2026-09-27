@@ -4,7 +4,7 @@ export class PaintingPage {
   }
 
   async goto() {
-    await this.page.goto('/painting')
+    await this.page.goto('/pintura')
   }
 
   collectionHeading(name) {
@@ -12,11 +12,11 @@ export class PaintingPage {
   }
 
   async selectCollection(name) {
-    await this.page.getByRole('link', { name }).click()
+    await this.page.getByRole('button', { name }).click()
   }
 
   exhibitionsLink() {
-    return this.page.getByRole('link', { name: 'Exhibiciones' })
+    return this.page.getByRole('link', { name: 'Ver exposiciones' })
   }
 
   lightbox() {

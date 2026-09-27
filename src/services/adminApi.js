@@ -45,7 +45,7 @@ export const REORDERABLE_RESOURCES = [
 ]
 
 /** Secciones válidas para POST /admin/upload. */
-export const UPLOAD_SECTIONS = ['pintura', 'ilustracion', 'diseno', 'general']
+export const UPLOAD_SECTIONS = ['pintura', 'ilustracion', 'diseno', 'general', 'exposiciones']
 
 /**
  * Error de validación local (antes de llamar a la red).
@@ -93,7 +93,9 @@ const toQueryString = (params) => {
 
 /**
  * Lista el recurso (publicado y no publicado, ordenado por position asc).
- * En `users` admite `params: { page, limit }` y devuelve `{ data, meta }`.
+ * Admite `params` según el contrato de cada GET admin: `{ page, limit }` en
+ * `users`, `{ page, limit, collectionId }` en `paintings` y
+ * `{ page, limit, subcategory }` en `design` (meta.total ya filtrado).
  *
  * @param {string} resource uno de ADMIN_RESOURCES
  * @param {{ signal?: AbortSignal, params?: Record<string, string | number> }} [options]
@@ -158,7 +160,7 @@ const reorder = async (resource, orderedIds) => {
  * `imageUrl`/`coverImage` en el JSON del create/update.
  *
  * @param {File} file imagen a subir
- * @param {string} [section] pintura | ilustracion | diseno | general
+ * @param {string} [section] pintura | ilustracion | diseno | general | exposiciones
  * @returns {Promise<{ data: { url: string, thumbnail: string, width: number, height: number, format: string } }>}
  */
 const upload = async (file, section = 'general') => {

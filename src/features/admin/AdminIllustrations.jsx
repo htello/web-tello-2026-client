@@ -7,7 +7,6 @@ const ILLUSTRATION_FIELDS = [
   { name: 'description', label: 'Descripción', type: 'textarea' },
   { name: 'imageUrl', label: 'Imagen', type: 'image', section: 'ilustracion' },
   { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
-  { name: 'isFeatured', label: 'Destacada', type: 'checkbox' },
 ]
 
 const columns = [
@@ -21,7 +20,7 @@ const columns = [
 
 /**
  * CRUD de ilustraciones del panel admin: listar todo (publicado y no),
- * crear/editar (PUT parcial), toggles inline de published/featured, borrado
+ * crear/editar (PUT parcial), toggle inline de published, borrado
  * con confirmación y reorder con SOLO orderedIds.
  */
 const AdminIllustrations = () => (
@@ -32,7 +31,7 @@ const AdminIllustrations = () => (
     entityLabel="ilustración"
     fields={ILLUSTRATION_FIELDS}
     columns={columns}
-    toggleFields={['isPublished', 'isFeatured']}
+    toggleFields={['isPublished']}
     emptyMessage="No hay ilustraciones."
   />
 )

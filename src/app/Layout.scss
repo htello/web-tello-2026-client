@@ -1,4 +1,5 @@
 @use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
 
 .layout {
   min-height: 100vh;
@@ -6,53 +7,117 @@
   flex-direction: column;
 
   &__header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: $color-dark;
   }
 
   &__nav {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: $space-4 $space-6;
+    gap: $space-2 $space-4;
+    min-height: $header-height;
+    padding: $space-2 $space-4;
+
+    @include breakpoint-up('md') {
+      min-height: $header-height-md;
+      padding: $space-4 $space-6;
+    }
   }
 
   &__brand {
-    color: $color-text;
+    color: $color-text-inverse;
     font-size: $font-size-xl;
     font-weight: 700;
     text-decoration: none;
   }
 
-  &__menu {
+  &__toggle {
     display: flex;
-    flex-wrap: wrap;
-    gap: $space-4;
+    align-items: center;
+    gap: $space-2;
+    min-height: $touch-target;
+    padding: $space-2 $space-3;
+    background: transparent;
+    color: $color-text-inverse;
+    border: 1px solid $color-text-inverse;
+    cursor: pointer;
+    font-size: $font-size-base;
+
+    @include breakpoint-up('md') {
+      display: none;
+    }
+  }
+
+  &__toggle-icon {
+    font-size: $font-size-lg;
+  }
+
+  &__menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: $space-1;
     margin: 0;
-    padding: 0;
+    padding: 0 $space-4 $space-3 0;
     list-style: none;
+
+    &--open {
+      display: flex;
+    }
+
+    @include breakpoint-up('md') {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: auto;
+      gap: $space-4;
+      padding: 0;
+    }
   }
 
   &__link {
-    color: $color-text;
+    display: block;
+    padding: $space-3 0;
+    color: $color-text-inverse;
     text-decoration: none;
 
     &:hover {
       text-decoration: underline;
     }
+
+    @include breakpoint-up('md') {
+      padding: 0;
+    }
   }
 
   &__main {
     flex: 1;
-    padding: $space-6;
+    padding: calc($header-height + $space-4) $space-4 calc($footer-height + $space-4);
+
+    @include breakpoint-up('md') {
+      padding: calc($header-height-md + $space-6) $space-6 calc($footer-height + $space-6);
+    }
   }
 
   &__footer {
-    padding: $space-6;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: $footer-height;
+    padding: 0 $space-4;
+    background: $color-dark;
     text-align: center;
-    color: $color-text-muted;
+    color: $color-text-inverse;
   }
 }

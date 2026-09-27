@@ -75,6 +75,7 @@ test.describe.serial('panel admin: journey extremo a extremo (server real)', () 
     })
 
     await test.step('reordenar pinturas (bajar) y verificar el orden', async () => {
+      await paintings.filterByCollection(collection)
       await paintings.expectOrder(paintingA, paintingB)
       await paintings.move(paintingA, 'down')
       await paintings.expectOrder(paintingB, paintingA)
@@ -210,7 +211,6 @@ test.describe.serial('panel admin: CRUD completo por entidad (server real)', () 
       collection,
       year: 2024,
       imagePath: FIXTURE_IMAGE,
-      featured: true,
     })
     await paintings.create({ title: second, collection, year: 2025, imagePath: FIXTURE_IMAGE_2 })
 
@@ -224,16 +224,16 @@ test.describe.serial('panel admin: CRUD completo por entidad (server real)', () 
       expect((await paintings.titles()).length).toBeGreaterThan(2)
     })
 
-    await test.step('toggles inline de publicada y destacada', async () => {
+    await test.step('toggle inline de publicada', async () => {
       expect(await paintings.toggle(second, 'Publicar')).toBe(true)
-      expect(await paintings.toggle(second, 'Destacar')).toBe(true)
-      expect(await paintings.toggle(second, 'Destacar')).toBe(false)
     })
 
     await test.step('reorder con subir/bajar', async () => {
+      await paintings.filterByCollection(collection)
       await paintings.expectOrder(first, second)
       await paintings.move(second, 'up')
       await paintings.expectOrder(second, first)
+      await paintings.filterByCollection('Todas')
     })
 
     await test.step('edición parcial de título y año con imagen persistida', async () => {
@@ -312,7 +312,6 @@ test.describe.serial('panel admin: CRUD completo por entidad (server real)', () 
       description: 'Proyecto de diseño E2E',
       imagePath: FIXTURE_IMAGE,
       published: true,
-      featured: true,
     })
 
     await test.step('el filtro por subcategoría aísla el proyecto', async () => {
@@ -331,8 +330,8 @@ test.describe.serial('panel admin: CRUD completo por entidad (server real)', () 
       await expect(design.row(edited)).toContainText('Editorial')
     })
 
-    await test.step('toggle inline de destacado', async () => {
-      expect(await design.toggle(edited, 'Destacar')).toBe(false)
+    await test.step('toggle inline de publicado', async () => {
+      expect(await design.toggle(edited, 'Publicar')).toBe(false)
     })
 
     await test.step('borrado con confirmación', async () => {
@@ -340,7 +339,7 @@ test.describe.serial('panel admin: CRUD completo por entidad (server real)', () 
     })
   })
 
-  test('ilustración: crear con imagen, destacar, editar y borrar', async ({ page }) => {
+  test('ilustración: crear con imagen, editar y borrar', async ({ page }) => {
     const illustrations = new AdminIllustrationsPage(page)
     const title = `E2E Ilustración ${RUN_ID}`
     const edited = `${title} editada`
@@ -359,8 +358,7 @@ test.describe.serial('panel admin: CRUD completo por entidad (server real)', () 
       await illustrations.cancel()
     })
 
-    await test.step('toggles inline de publicada y destacada', async () => {
-      expect(await illustrations.toggle(title, 'Destacar')).toBe(true)
+    await test.step('toggle inline de publicada', async () => {
       expect(await illustrations.toggle(title, 'Publicar')).toBe(false)
     })
 

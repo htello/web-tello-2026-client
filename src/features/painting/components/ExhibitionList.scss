@@ -1,21 +1,13 @@
 @use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
 
 .exhibition-list {
-  &__heading {
-    margin: 0 0 $space-6;
-    font-size: $font-size-2xl;
-  }
-
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: $space-6;
+  gap: $space-8;
 
-  &__title {
-    margin: 0 0 $space-2;
-    font-size: $font-size-lg;
+  &__detail {
+    gap: $space-2;
   }
 
   &__date,
@@ -24,7 +16,26 @@
     color: $color-text-muted;
   }
 
+  &__grid {
+    column-count: 2;
+    column-gap: $space-3;
+
+    > * {
+      break-inside: avoid;
+      margin-bottom: $space-3;
+    }
+
+    @include breakpoint-up('md') {
+      column-count: 3;
+    }
+  }
+
+  &__image {
+    width: 100%;
+  }
+
   &__description {
+    margin: 0;
     color: $color-text-muted;
   }
 }

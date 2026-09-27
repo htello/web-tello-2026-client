@@ -1,0 +1,33 @@
+@use '@/styles/variables' as *;
+
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $space-4;
+
+  &__info {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $color-text-muted;
+  }
+
+  &__page {
+    padding: $space-2 $space-4;
+    background: transparent;
+    color: $color-text;
+    border: 1px solid $color-border;
+    cursor: pointer;
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      color: $color-accent;
+      border-color: $color-accent;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

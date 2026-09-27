@@ -1,12 +1,11 @@
 # Portfolio de Antonio Tello
 
-Frontend del portfolio artístico de Antonio Tello. La galería pública (HU17, fases 1-7) está implementada y el panel de administración (HU18, fases 8-12) está en progreso: la fase 9 (login admin, recuperación de contraseña y rutas protegidas) está completada.
+Frontend del portfolio artístico de Antonio Tello. Proyecto completado: galería pública y panel de administración con las fases 1-18 cerradas, E2E Playwright en verde y despliegue en Vercel. Los detalles por fase están en `promps/`.
 
 ## Estado
 
-- **Implementado:** secciones públicas de pintura (colecciones, galerías, lightbox), ilustración, diseño (por subcategorías), exposiciones, biografía y contacto; cliente HTTP con gestión de errores y timeout; login admin con sesión JWT (`sessionStorage`), recuperación/restablecimiento de contraseña y rutas `/admin` protegidas por rol.
-- **En progreso:** panel de administración (HU18) — CRUD de colecciones, pinturas, exposiciones, diseño, ilustraciones, biografía y usuarios (fases 10-12), con subida de imágenes vía `POST /admin/upload`.
-- **Planificado:** despliegue del front en hosting estático (Vercel/Netlify). Los detalles por fase están en `promps/`.
+- **Implementado:** secciones públicas de pintura (colecciones, galería master-detail, lightbox), ilustración, diseño (por subcategorías), exposiciones, biografía y contacto; cliente HTTP con gestión de errores y timeout; login admin con sesión JWT (`sessionStorage`), recuperación/restablecimiento de contraseña y rutas `/admin` protegidas por rol; CRUD admin completo de colecciones, pinturas, exposiciones, diseño, ilustraciones, biografía y usuarios, con subida de imágenes vía `POST /admin/upload`, filtro server-side y reordenación por colección/subcategoría; SEO con canonical y Open Graph y URLs públicas en español (`/pintura`, `/pintura/exposiciones`, `/ilustracion`, `/diseno`, `/biografia`, `/contacto`); observabilidad con Sentry (errores, tracing, replay y widget de feedback).
+- **Desplegado:** front en Vercel — https://web-tello-2026-client.vercel.app/ (build Vite → `dist/`, rewrites SPA en `vercel.json`, variables sincronizadas con la API de Render).
 
 ## Stack y requisitos
 
@@ -52,7 +51,7 @@ Copiar `.env.example` a `.env`. La única variable pública es `VITE_API_URL` (b
 
 ## CI en GitHub
 
-GitHub Actions ejecuta `pnpm lint` y `pnpm build` en pushes a `main`/`develop` y en pull requests dirigidos a esas ramas (Node.js 22, pnpm, `--frozen-lockfile`). Está pendiente añadir los tests al workflow.
+GitHub Actions (`.github/workflows/ci.yml`) ejecuta `pnpm lint`, `pnpm test:coverage` (gate de umbrales) y `pnpm build` en pushes a `main`/`develop` y en pull requests dirigidos a esas ramas (Node.js 22, pnpm, `--frozen-lockfile`).
 
 ## Estructura actual
 
@@ -70,8 +69,9 @@ src/
 │   ├── biography/
 │   ├── contact/    # Formulario de contacto
 │   └── admin/      # Login, recuperación de contraseña, ruta protegida y panel
-├── hooks/          # useAsyncData, useAuth
-├── services/       # Cliente HTTP (api.js) con ApiError, Bearer token y handler 401/403
+├── hooks/          # useAsyncData, useAuth, useAdminCrud, useReorder...
+├── infrastructure/ # Sentry (errores, tracing, replay, feedback)
+├── services/       # Cliente HTTP (api.js) con ApiError, Bearer token y handler 401/403; adminApi.js
 ├── styles/         # Parciales SASS (_variables, _mixins, _base)
 ├── test/           # Setup de Vitest
 ├── utils/          # Validaciones, ordenación, formatos
@@ -96,11 +96,11 @@ La sesión se persiste en `sessionStorage` (nunca `localStorage`); el token y la
 
 ## Testing y validación
 
-Unitarios con Vitest + React Testing Library (red mockeada con `vi.stubGlobal('fetch', ...)`) y E2E con Playwright. Verificación obligatoria por fase: `pnpm lint`, `pnpm test:run`, `pnpm build` (y cobertura al cerrar fase).
+Unitarios con Vitest + React Testing Library (red mockeada con `vi.stubGlobal('fetch', ...)`) y E2E con Playwright (`pnpm test:e2e`, server real o mocks en `e2e/support/`). Verificación obligatoria por fase: `pnpm verify` (`lint` + `test:run` + E2E + `build`, con cobertura en el CI).
 
 ## Despliegue
 
-Pendiente (Vercel o Netlify; build estático en `dist/`). Al desplegar, actualizar en Render `CORS_ORIGIN` y `FRONTEND_URL` con el dominio del front y probar el flujo completo (login, recuperación, galerías, contacto).
+Desplegado en Vercel: **https://web-tello-2026-client.vercel.app/** (build Vite → `dist/`). `vercel.json` incluye rewrites SPA para que los deep links (`/pintura`, etc.) sirvan `index.html`. `scripts/vercel-env.sh` sincroniza las variables de entorno (`VITE_API_URL` de producción). El server debe tener `CORS_ORIGIN` y `FRONTEND_URL` apuntando al dominio del front en Vercel.
 
 ## Troubleshooting
 

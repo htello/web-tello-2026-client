@@ -1,14 +1,12 @@
-import { Routes, Route, useParams } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import Layout from './app/Layout.jsx'
 import HomeHero from './features/home/HomeHero.jsx'
-import PaintingView from './features/painting/PaintingView.jsx'
-import CollectionGallery from './features/painting/components/CollectionGallery.jsx'
+import PaintingSection from './features/painting/PaintingSection.jsx'
 import ExhibitionList from './features/painting/components/ExhibitionList.jsx'
 import BiographySection from './features/biography/BiographySection.jsx'
-import DesignSubcategorySlider from './features/design/components/DesignSubcategorySlider.jsx'
-import DesignGallery from './features/design/components/DesignGallery.jsx'
-import IllustrationGallery from './features/illustration/components/IllustrationGallery.jsx'
+import DesignSection from './features/design/DesignSection.jsx'
+import IllustrationSection from './features/illustration/IllustrationSection.jsx'
 import ContactForm from './features/contact/components/ContactForm.jsx'
 import AdminLogin from './features/admin/components/AdminLogin.jsx'
 import ForgotPasswordForm from './features/admin/components/ForgotPasswordForm.jsx'
@@ -25,30 +23,18 @@ import AdminIllustrations from './features/admin/AdminIllustrations.jsx'
 import AdminBiography from './features/admin/AdminBiography.jsx'
 import heroImage from './assets/prueba-camisa-1200.jpg'
 
-function CollectionGalleryRoute() {
-  const { id } = useParams()
-  return <CollectionGallery collectionId={Number(id)} />
-}
-
-function DesignGalleryRoute() {
-  const { subcategory } = useParams()
-  return <DesignGallery subcategory={subcategory} />
-}
-
 function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<HomeHero backgroundImage={heroImage} />} />
-          <Route path="painting" element={<PaintingView />} />
-          <Route path="painting/collections/:id" element={<CollectionGalleryRoute />} />
-          <Route path="painting/exhibitions" element={<ExhibitionList />} />
-          <Route path="biography" element={<BiographySection />} />
-          <Route path="illustration" element={<IllustrationGallery />} />
-          <Route path="design" element={<DesignSubcategorySlider />} />
-          <Route path="design/:subcategory" element={<DesignGalleryRoute />} />
-          <Route path="contact" element={<ContactForm />} />
+          <Route path="pintura" element={<PaintingSection />} />
+          <Route path="pintura/exposiciones" element={<ExhibitionList />} />
+          <Route path="biografia" element={<BiographySection />} />
+          <Route path="ilustracion" element={<IllustrationSection />} />
+          <Route path="diseno" element={<DesignSection />} />
+          <Route path="contacto" element={<ContactForm />} />
         </Route>
         <Route path="admin/login" element={<AdminLogin />} />
         <Route path="admin/forgot-password" element={<ForgotPasswordForm />} />

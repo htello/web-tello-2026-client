@@ -8,7 +8,7 @@ const EXHIBITION_FIELDS = [
   { name: 'endDate', label: 'Fecha de fin', type: 'date' },
   { name: 'location', label: 'Localización', type: 'text' },
   { name: 'description', label: 'Descripción', type: 'textarea' },
-  { name: 'images', label: 'Imágenes', type: 'images', section: 'general' },
+  { name: 'images', label: 'Imágenes', type: 'images', section: 'exposiciones' },
   { name: 'position', label: 'Posición', type: 'number', min: 0 },
   { name: 'isPublished', label: 'Publicada', type: 'checkbox' },
 ]

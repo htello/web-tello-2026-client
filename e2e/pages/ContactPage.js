@@ -4,7 +4,7 @@ export class ContactPage {
   }
 
   async goto() {
-    await this.page.goto('/contact')
+    await this.page.goto('/contacto')
   }
 
   async fill(name, email, subject, message) {
