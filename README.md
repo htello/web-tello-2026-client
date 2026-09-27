@@ -1,11 +1,11 @@
 # Portfolio de Antonio Tello
 
-Frontend del portfolio artístico de Antonio Tello. Proyecto completado: galería pública (HU17) y panel de administración (HU18) con las fases 1-18 cerradas, E2E Playwright en verde y despliegue en Vercel. Los detalles por fase están en `promps/`.
+Frontend del portfolio artístico de Antonio Tello. Proyecto completado: galería pública y panel de administración con las fases 1-18 cerradas, E2E Playwright en verde y despliegue en Vercel. Los detalles por fase están en `promps/`.
 
 ## Estado
 
 - **Implementado:** secciones públicas de pintura (colecciones, galería master-detail, lightbox), ilustración, diseño (por subcategorías), exposiciones, biografía y contacto; cliente HTTP con gestión de errores y timeout; login admin con sesión JWT (`sessionStorage`), recuperación/restablecimiento de contraseña y rutas `/admin` protegidas por rol; CRUD admin completo de colecciones, pinturas, exposiciones, diseño, ilustraciones, biografía y usuarios, con subida de imágenes vía `POST /admin/upload`, filtro server-side y reordenación por colección/subcategoría; SEO con canonical y Open Graph y URLs públicas en español (`/pintura`, `/pintura/exposiciones`, `/ilustracion`, `/diseno`, `/biografia`, `/contacto`); observabilidad con Sentry (errores, tracing, replay y widget de feedback).
-- **Desplegado:** front en Vercel (build Vite → `dist/`, rewrites SPA en `vercel.json`, variables sincronizadas con la API de Render).
+- **Desplegado:** front en Vercel — https://web-tello-2026-client.vercel.app/ (build Vite → `dist/`, rewrites SPA en `vercel.json`, variables sincronizadas con la API de Render).
 
 ## Stack y requisitos
 
@@ -100,7 +100,7 @@ Unitarios con Vitest + React Testing Library (red mockeada con `vi.stubGlobal('f
 
 ## Despliegue
 
-Desplegado en Vercel (build Vite → `dist/`). `vercel.json` incluye rewrites SPA para que los deep links (`/pintura`, etc.) sirvan `index.html`. `scripts/vercel-env.sh` sincroniza las variables de entorno (`VITE_API_URL` de producción). El server debe tener `CORS_ORIGIN` y `FRONTEND_URL` apuntando al dominio del front en Vercel.
+Desplegado en Vercel: **https://web-tello-2026-client.vercel.app/** (build Vite → `dist/`). `vercel.json` incluye rewrites SPA para que los deep links (`/pintura`, etc.) sirvan `index.html`. `scripts/vercel-env.sh` sincroniza las variables de entorno (`VITE_API_URL` de producción). El server debe tener `CORS_ORIGIN` y `FRONTEND_URL` apuntando al dominio del front en Vercel.
 
 ## Troubleshooting
 
