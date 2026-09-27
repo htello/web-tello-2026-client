@@ -46,6 +46,18 @@ const PAINTINGS = [
     isFeatured: false,
     collection: { id: 2, title: 'Bocetos' },
   },
+  {
+    id: 12,
+    title: 'Bodegón',
+    year: 2003,
+    dimensions: '40x40',
+    technique: 'Óleo sobre tabla',
+    imageUrl: null,
+    position: 2,
+    isPublished: true,
+    isFeatured: false,
+    collection: { id: 1, title: 'Óleos' },
+  },
 ]
 
 function renderView() {
@@ -85,7 +97,7 @@ describe('AdminPaintings', () => {
     expect(screen.getByRole('cell', { name: 'Retrato' })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Publicar Marina' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Publicar Retrato' })).not.toBeChecked()
-    expect(screen.getByRole('cell', { name: 'Óleos' })).toBeInTheDocument()
+    expect(screen.getAllByRole('cell', { name: 'Óleos' })).toHaveLength(2)
   })
 
   it('alterna publicada inline con PUT parcial', async () => {
@@ -213,25 +225,30 @@ describe('AdminPaintings', () => {
     expect(await screen.findByRole('cell', { name: 'Retrato' })).toBeInTheDocument()
   })
 
-  it('oculta la reordenación con el filtro activo', async () => {
+  it('oculta la reordenación sin filtro (no hay orden global de pinturas)', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Marina' })
+
+    expect(screen.queryByRole('button', { name: /subir/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /bajar/i })).not.toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('Filtrar por colección'), '1')
+
+    expect(screen.getByRole('button', { name: 'Subir Marina' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Bajar Bodegón' })).toBeInTheDocument()
+  })
+
+  it('reordena la colección filtrada enviando solo sus orderedIds', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Marina' })
 
     await user.selectOptions(screen.getByLabelText('Filtrar por colección'), '1')
 
-    expect(screen.queryByRole('button', { name: /subir/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /bajar/i })).not.toBeInTheDocument()
-  })
+    await user.click(await screen.findByRole('button', { name: 'Bajar Marina' }))
 
-  it('reordena enviando SOLO { orderedIds }', async () => {
-    const user = userEvent.setup()
-    renderView()
-    await screen.findByRole('cell', { name: 'Marina' })
-
-    await user.click(screen.getByRole('button', { name: 'Bajar Marina' }))
-
-    await waitFor(() => expect(adminApi.reorder).toHaveBeenCalledWith('paintings', [11, 10]))
+    await waitFor(() => expect(adminApi.reorder).toHaveBeenCalledWith('paintings', [12, 10]))
     expect(adminApi.reorder.mock.calls[0]).toHaveLength(2)
   })
 
