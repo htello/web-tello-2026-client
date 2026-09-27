@@ -90,7 +90,10 @@ const AdminTable = ({
               </th>
             ))}
           {hasActions && (
-            <th scope="col" className="admin-table__header">
+            <th
+              scope="col"
+              className="admin-table__header admin-table__header--actions"
+            >
               Acciones
             </th>
           )}
