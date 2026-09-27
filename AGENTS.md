@@ -202,7 +202,7 @@ client/
 
 ## Despliegue del Front (activo en Vercel)
 
-- Hosting: Vercel (build Vite → `dist/`; rewrites SPA en `vercel.json` para deep links; `scripts/vercel-env.sh` sincroniza variables).
+- Hosting: Vercel — https://web-tello-2026-client.vercel.app/ (build Vite → `dist/`; rewrites SPA en `vercel.json` para deep links; `scripts/vercel-env.sh` sincroniza variables).
 - Variables: `VITE_API_URL=https://portfolio-api-u5sx.onrender.com/api/v1`.
 - URLs públicas en español (sin tildes): `/pintura`, `/pintura/exposiciones`, `/ilustracion`, `/diseno`, `/biografia`, `/contacto`; admin en `/admin/*`. La página `/collections/:id` ya no existe: la colección se ve en el master-detail de `/pintura`.
 - Render debe tener `CORS_ORIGIN` y `FRONTEND_URL` apuntando al dominio del front en Vercel; flujo completo probado con `pnpm test:e2e`.
