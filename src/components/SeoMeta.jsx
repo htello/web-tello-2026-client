@@ -13,7 +13,7 @@ import heroImage from '@/assets/prueba-camisa-1200.jpg'
  * @param {object} props
  * @param {string} props.title título completo de la página
  * @param {string} [props.description] usa SITE_DESCRIPTION si se omite
- * @param {string} [props.path] ruta canónica relativa (p. ej. '/painting/collections/1')
+ * @param {string} [props.path] ruta canónica relativa (p. ej. '/painting')
  * @param {string} [props.image] URL absoluta o ruta del bundle ('/assets/…');
  *   por defecto la imagen del hero
  * @param {boolean} [props.noindex] añade `<meta name="robots" content="noindex, nofollow">`

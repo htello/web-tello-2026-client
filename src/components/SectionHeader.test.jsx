@@ -29,23 +29,4 @@ describe('SectionHeader', () => {
 
     expect(container.querySelectorAll('.section-header > *')).toHaveLength(1)
   })
-
-  it('renderiza la descripción debajo del título', () => {
-    const { container } = render(
-      <SectionHeader title="Cosmos" description="Serie de pinturas abstractas." />,
-    )
-
-    const description = container.querySelector('p.section-header__description')
-    expect(description).toBeInTheDocument()
-    expect(description).toHaveTextContent('Serie de pinturas abstractas.')
-    expect(description.compareDocumentPosition(container.querySelector('h1'))).toBe(
-      Node.DOCUMENT_POSITION_PRECEDING,
-    )
-  })
-
-  it('omite la descripción cuando no se indica', () => {
-    const { container } = render(<SectionHeader title="Diseño" />)
-
-    expect(container.querySelector('p.section-header__description')).not.toBeInTheDocument()
-  })
 })

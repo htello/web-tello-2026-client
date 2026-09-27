@@ -7,20 +7,8 @@
   justify-content: space-between;
   gap: $space-4;
 
-  &__text {
-    display: flex;
-    flex-direction: column;
-    gap: $space-2;
-  }
-
   &__title {
     margin: 0;
     font-size: $font-size-2xl;
-  }
-
-  &__description {
-    margin: 0;
-    max-width: 60ch;
-    color: $color-text-muted;
   }
 }

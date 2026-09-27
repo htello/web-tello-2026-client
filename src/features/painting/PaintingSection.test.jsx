@@ -5,7 +5,14 @@ import { MemoryRouter } from 'react-router-dom'
 import PaintingSection from './PaintingSection.jsx'
 
 const collections = [
-  { id: 1, title: 'Serie Azul', coverImage: 'https://example.com/azul.jpg', position: 1, isPublished: true },
+  {
+    id: 1,
+    title: 'Serie Azul',
+    description: 'Óleos sobre lienzo.',
+    coverImage: 'https://example.com/azul.jpg',
+    position: 1,
+    isPublished: true,
+  },
   { id: 2, title: 'Serie Roja', coverImage: 'https://example.com/roja.jpg', position: 2, isPublished: true },
 ]
 
@@ -84,11 +91,25 @@ describe('PaintingSection', () => {
     expect(await screen.findByRole('dialog', { name: 'Atardecer azul' })).toBeInTheDocument()
   })
 
-  it('enlaza el título del panel a la página de la colección', async () => {
+  it('el título del panel no enlaza a la página de la colección', async () => {
     renderSection()
 
-    const link = await screen.findByRole('link', { name: 'Serie Azul' })
-    expect(link).toHaveAttribute('href', '/painting/collections/1')
+    await screen.findByRole('heading', { level: 2, name: 'Serie Azul' })
+    expect(
+      screen.queryByRole('link', {
+        name: 'Serie Azul',
+        href: '/painting/collections/1',
+      }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('muestra la descripción de la colección bajo el título', async () => {
+    renderSection()
+
+    const title = await screen.findByRole('heading', { level: 2, name: 'Serie Azul' })
+    const description = screen.getByText('Óleos sobre lienzo.')
+    expect(description.tagName).toBe('P')
+    expect(description.compareDocumentPosition(title)).toBe(Node.DOCUMENT_POSITION_PRECEDING)
   })
 
   it('muestra el enlace a exposiciones', async () => {
