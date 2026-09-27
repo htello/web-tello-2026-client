@@ -31,7 +31,7 @@ const IllustrationSection = () => {
 
   return (
     <section className="illustration-section">
-      <SeoMeta title={`Ilustración — ${ARTIST_NAME}`} path="/illustration" />
+      <SeoMeta title={`Ilustración — ${ARTIST_NAME}`} path="/ilustracion" />
       <SectionHeader title={GROUP_LABEL} />
       <MasterDetail
         items={[{ id: 'general', title: GROUP_LABEL }]}

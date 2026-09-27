@@ -29,12 +29,12 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<HomeHero backgroundImage={heroImage} />} />
-          <Route path="painting" element={<PaintingSection />} />
-          <Route path="painting/exhibitions" element={<ExhibitionList />} />
-          <Route path="biography" element={<BiographySection />} />
-          <Route path="illustration" element={<IllustrationSection />} />
-          <Route path="design" element={<DesignSection />} />
-          <Route path="contact" element={<ContactForm />} />
+          <Route path="pintura" element={<PaintingSection />} />
+          <Route path="pintura/exposiciones" element={<ExhibitionList />} />
+          <Route path="biografia" element={<BiographySection />} />
+          <Route path="ilustracion" element={<IllustrationSection />} />
+          <Route path="diseno" element={<DesignSection />} />
+          <Route path="contacto" element={<ContactForm />} />
         </Route>
         <Route path="admin/login" element={<AdminLogin />} />
         <Route path="admin/forgot-password" element={<ForgotPasswordForm />} />

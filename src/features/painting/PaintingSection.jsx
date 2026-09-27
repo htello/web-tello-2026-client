@@ -44,7 +44,7 @@ const PaintingSection = () => {
   if (collections.length === 0) {
     return (
       <section className="painting-section">
-        <SeoMeta title={`Pintura — ${ARTIST_NAME}`} path="/painting" />
+        <SeoMeta title={`Pintura — ${ARTIST_NAME}`} path="/pintura" />
         {header}
         <EmptyState message="No hay colecciones disponibles." />
       </section>
@@ -61,7 +61,7 @@ const PaintingSection = () => {
 
   return (
     <section className="painting-section">
-      <SeoMeta title={`Pintura — ${ARTIST_NAME}`} path="/painting" />
+      <SeoMeta title={`Pintura — ${ARTIST_NAME}`} path="/pintura" />
       {header}
       <MasterDetail
         items={collections.map((collection) => ({ id: collection.id, title: collection.title }))}
