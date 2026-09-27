@@ -60,7 +60,9 @@ const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1)
  *   emptyMessage: string,
  * }} [props.filter] filtro server-side opcional: el `value` del select se envía
  *   como query param (`?collectionId=`, `?subcategory=`) al GET del listado.
- *   Deshabilita el reorder mientras está activo.
+ *   El reorder SOLO está disponible con el filtro activo: pinturas y diseño se
+ *   ordenan DENTRO de su colección/subcategoría (no globalmente), así que los
+ *   `orderedIds` que se envían son siempre los del subconjunto visible filtrado.
  * @param {(row: object) => string} [props.rowLabel]
  * @param {string[]} [props.requiredUpdateFields] ver useAdminCrud
  * @param {(row: object) => object} [props.toFormValues] ver useAdminCrud
@@ -114,6 +116,7 @@ const AdminCrudPage = ({
     toFormValues,
   })
 
+  const canReorder = !filter || isFiltered
   const [toastMessage, setToastMessage] = useState(null)
 
   /**
@@ -225,8 +228,8 @@ const AdminCrudPage = ({
         onToggle={handleToggleWithToast}
         onEdit={openEdit}
         onDelete={requestDelete}
-        onMoveUp={isFiltered ? undefined : (row, index) => moveUp(index)}
-        onMoveDown={isFiltered ? undefined : (row, index) => moveDown(index)}
+        onMoveUp={canReorder ? (row, index) => moveUp(index) : undefined}
+        onMoveDown={canReorder ? (row, index) => moveDown(index) : undefined}
       />
 
       {meta && (

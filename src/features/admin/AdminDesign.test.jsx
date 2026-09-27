@@ -36,6 +36,16 @@ const DESIGNS = [
     isFeatured: true,
     position: 1,
   },
+  {
+    id: 33,
+    title: 'Folleto Cultural',
+    description: '',
+    imageUrl: null,
+    subcategory: 'carteleria',
+    isPublished: true,
+    isFeatured: false,
+    position: 2,
+  },
 ]
 
 function renderView() {
@@ -69,7 +79,7 @@ describe('AdminDesign', () => {
     renderView()
 
     expect(await screen.findByRole('cell', { name: 'Cartel Feria' })).toBeInTheDocument()
-    expect(screen.getByRole('cell', { name: 'Cartelería' })).toBeInTheDocument()
+    expect(screen.getAllByRole('cell', { name: 'Cartelería' })).toHaveLength(2)
     expect(screen.getByRole('cell', { name: 'Imagen corporativa' })).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Publicar Cartel Feria' })).toBeChecked()
   })
@@ -185,25 +195,30 @@ describe('AdminDesign', () => {
     expect(await screen.findByRole('cell', { name: 'Logo Bodega' })).toBeInTheDocument()
   })
 
-  it('oculta la reordenación con el filtro activo', async () => {
+  it('oculta la reordenación sin filtro (no hay orden global de diseño)', async () => {
+    const user = userEvent.setup()
+    renderView()
+    await screen.findByRole('cell', { name: 'Cartel Feria' })
+
+    expect(screen.queryByRole('button', { name: /subir/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /bajar/i })).not.toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'carteleria')
+
+    expect(screen.getByRole('button', { name: 'Subir Cartel Feria' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Bajar Folleto Cultural' })).toBeInTheDocument()
+  })
+
+  it('reordena la subcategoría filtrada enviando solo sus orderedIds', async () => {
     const user = userEvent.setup()
     renderView()
     await screen.findByRole('cell', { name: 'Cartel Feria' })
 
     await user.selectOptions(screen.getByLabelText('Filtrar por subcategoría'), 'carteleria')
 
-    expect(screen.queryByRole('button', { name: /subir/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /bajar/i })).not.toBeInTheDocument()
-  })
+    await user.click(await screen.findByRole('button', { name: 'Bajar Cartel Feria' }))
 
-  it('reordena enviando SOLO { orderedIds }', async () => {
-    const user = userEvent.setup()
-    renderView()
-    await screen.findByRole('cell', { name: 'Cartel Feria' })
-
-    await user.click(screen.getByRole('button', { name: 'Bajar Cartel Feria' }))
-
-    await waitFor(() => expect(adminApi.reorder).toHaveBeenCalledWith('design', [31, 30]))
+    await waitFor(() => expect(adminApi.reorder).toHaveBeenCalledWith('design', [33, 30]))
     expect(adminApi.reorder.mock.calls[0]).toHaveLength(2)
   })
 
