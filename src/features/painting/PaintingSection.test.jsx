@@ -117,7 +117,7 @@ describe('PaintingSection', () => {
 
     expect(await screen.findByRole('link', { name: 'Ver exposiciones' })).toHaveAttribute(
       'href',
-      '/painting/exhibitions',
+      '/pintura/exposiciones',
     )
   })
 

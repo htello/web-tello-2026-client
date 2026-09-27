@@ -34,7 +34,7 @@ const ExhibitionList = () => {
 
   return (
     <section className="exhibition-list">
-      <SeoMeta title={`Exposiciones — ${ARTIST_NAME}`} path="/painting/exhibitions" />
+      <SeoMeta title={`Exposiciones — ${ARTIST_NAME}`} path="/pintura/exposiciones" />
       <SectionHeader title="Exposiciones" />
       <MasterDetail
         items={sorted.map((exhibition) => ({ id: exhibition.id, title: exhibition.title }))}

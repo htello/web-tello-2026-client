@@ -15,11 +15,11 @@ export const DESIGN_SUBCATEGORIES = [
 
 /** Secciones públicas del portfolio y sus rutas. */
 export const NAV_SECTIONS = [
-  { label: 'Pintura', to: '/painting' },
-  { label: 'Ilustración', to: '/illustration' },
-  { label: 'Diseño', to: '/design' },
-  { label: 'Biografía', to: '/biography' },
-  { label: 'Contacto', to: '/contact' },
+  { label: 'Pintura', to: '/pintura' },
+  { label: 'Ilustración', to: '/ilustracion' },
+  { label: 'Diseño', to: '/diseno' },
+  { label: 'Biografía', to: '/biografia' },
+  { label: 'Contacto', to: '/contacto' },
 ]
 
 /** Secciones del panel de administración y sus rutas. */

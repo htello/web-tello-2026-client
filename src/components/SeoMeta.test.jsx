@@ -20,7 +20,7 @@ describe('SeoMeta', () => {
   })
 
   it('define el título y las etiquetas SEO y Open Graph básicas', () => {
-    render(<SeoMeta title="Pintura — Antonio Tello" path="/painting" />)
+    render(<SeoMeta title="Pintura — Antonio Tello" path="/pintura" />)
 
     expect(document.title).toBe('Pintura — Antonio Tello')
     expect(metaContent('meta[name="description"]')).toBe(SITE_DESCRIPTION)
@@ -29,11 +29,11 @@ describe('SeoMeta', () => {
     expect(metaContent('meta[property="og:site_name"]')).toBe(ARTIST_NAME)
     expect(metaContent('meta[property="og:type"]')).toBe('website')
     expect(metaContent('meta[property="og:url"]')).toBe(
-      `${window.location.origin}/painting`,
+      `${window.location.origin}/pintura`,
     )
     expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute(
       'href',
-      `${window.location.origin}/painting`,
+      `${window.location.origin}/pintura`,
     )
     expect(metaContent('meta[property="og:image"]')).toContain('prueba-camisa')
   })
@@ -71,7 +71,7 @@ describe('SeoMeta', () => {
     expect(metaContent('meta[name="robots"]')).toBe('noindex, nofollow')
     expect(document.head.querySelector('link[rel="canonical"]')).not.toBeInTheDocument()
 
-    rerender(<SeoMeta title="Pintura — Antonio Tello" path="/painting" />)
+    rerender(<SeoMeta title="Pintura — Antonio Tello" path="/pintura" />)
     expect(document.head.querySelector('meta[name="robots"]')).not.toBeInTheDocument()
     expect(document.head.querySelector('link[rel="canonical"]')).toBeInTheDocument()
   })

@@ -44,7 +44,7 @@ const DesignSection = () => {
 
   return (
     <section className="design-section">
-      <SeoMeta title={`Diseño — ${ARTIST_NAME}`} path="/design" />
+      <SeoMeta title={`Diseño — ${ARTIST_NAME}`} path="/diseno" />
       <SectionHeader title="Diseño" />
       <MasterDetail
         items={visibleSubcategories.map(({ key, label }) => ({ id: key, title: label }))}

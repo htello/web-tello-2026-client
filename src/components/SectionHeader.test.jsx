@@ -16,7 +16,7 @@ describe('SectionHeader', () => {
     render(
       <SectionHeader
         title="Pintura"
-        action={<a href="/painting/exhibitions">Ver exposiciones</a>}
+        action={<a href="/pintura/exposiciones">Ver exposiciones</a>}
       />,
     )
 

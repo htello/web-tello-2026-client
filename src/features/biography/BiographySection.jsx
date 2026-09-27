@@ -30,7 +30,7 @@ const BiographySection = () => {
 
   return (
     <section className="biography">
-      <SeoMeta title={`Biografía — ${ARTIST_NAME}`} description={description} path="/biography" />
+      <SeoMeta title={`Biografía — ${ARTIST_NAME}`} description={description} path="/biografia" />
       <h1 className="biography__title">Biografía</h1>
       <p className="biography__content">{biography.content}</p>
       {biography.imageUrl && (

@@ -12,6 +12,6 @@ describe('ExhibitionLink', () => {
     )
 
     const link = screen.getByRole('link', { name: /ver exposiciones/i })
-    expect(link).toHaveAttribute('href', '/painting/exhibitions')
+    expect(link).toHaveAttribute('href', '/pintura/exposiciones')
   })
 })
